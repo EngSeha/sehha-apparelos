@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "frosty-dust-0b06",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-02",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "STATIC",
+    "run_worker_first": ["/api/*", "/uploads/*"]
+  },
+  "d1_databases": [
+    { "binding": "DB" }
+  ],
+  "r2_buckets": [
+    { "binding": "UPLOADS" }
+  ],
+  "vars": {
+    "APP_ENV": "development",
+    "SEHHA_PRODUCT_ID": "SEHHA_APPAREL",
+    "OPENAI_MODEL": "gpt-6-luna"
+  }
+}
