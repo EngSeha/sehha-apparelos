@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "frosty-dust-0b06",
+ "name": "sehha-apparelos-dev",
   "main": "src/worker.js",
   "compatibility_date": "2026-10-02",
   "workers_dev": true,
