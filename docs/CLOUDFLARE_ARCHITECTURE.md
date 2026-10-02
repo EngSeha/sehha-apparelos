@@ -1,29 +1,54 @@
-# SEHHA ApparelOS — Cloudflare Architecture Preview 02
+# SEHHA ApparelOS — Cloudflare Architecture Preview 03
 
-## Runtime
-- Cloudflare Worker: API + auth + orchestration.
-- Workers Static Assets: responsive PWA.
-- D1: tenants/users/styles/DNA/POM/BOM/operations/versions/audit/entitlements.
-- R2: uploaded garment/reference/detail images.
+```text
+Browser / PWA
+   │
+   ├── Static Assets (Cloudflare Worker Assets)
+   │
+   └── /api/*
+        │
+        ▼
+Cloudflare Worker
+   ├── Auth / Session HMAC
+   ├── Tenant / RBAC / Entitlements
+   ├── Style Digital Twin API
+   ├── AI Gateway / Auto Router
+   │    ├── Anthropic / Claude Vision
+   │    ├── OpenAI multimodal
+   │    └── Gemini slot (future)
+   ├── Output Studio
+   │    ├── Technical A4
+   │    ├── Pattern/Cutting
+   │    ├── Factory Supervisor
+   │    ├── Management Book
+   │    ├── MOHSEN Tech Pack
+   │    └── Poster/Social profiles
+   ├── D1
+   │    ├── users / memberships / organizations
+   │    ├── styles / dna / measurements
+   │    ├── bom / operations / pattern_pieces
+   │    ├── versions / ai_runs / audit
+   │    └── entitlements
+   └── R2
+        └── style assets / uploaded images
+```
 
-## Tenant model
-SEHHA IT = platform owner.
-MOHSEN = first production/design workspace.
-Users are members of workspaces. License entitlements remain separate from RBAC.
+## Source of truth
 
-## AI
-Provider routing is server-side. The browser never receives provider keys.
-OpenAI path uses the Responses API and image input. AI results remain Draft/Observed/Inferred/Unknown and do not become production truth automatically.
+Structured Style data is the source of truth. PDFs/posters are rendered views, never the primary data store.
 
-## Licensing
-Development entitlements live in D1 only as a temporary adapter.
-Production target: `LICENSE_MODE=remote` + `SEHHA_LICENSE_ENDPOINT`, reusing the shared signed/fail-closed SEHHA Licensing Core derived from ATLAS.
+## AI provider boundary
 
-## Next engineering slices
-1. Admin user management + password reset.
-2. Editable POM/BOM/Operations instead of read-only tables.
-3. Dynamic garment template/rules engine.
-4. Weight-band engine for Islamic wear.
-5. Asset segmentation/detail crops.
-6. Poster/output template engine.
-7. Version compare + production-lock workflow.
+Provider adapters are isolated behind the AI Gateway. Business logic does not depend on one provider.
+
+Default router:
+
+```text
+AI_PROVIDER_ORDER=anthropic,openai
+```
+
+AI results are never production-locked automatically.
+
+## Licensing boundary
+
+`entitlements()` is the seam for the shared SEHHA Licensing Core strategy reused from ATLAS. `LICENSE_MODE=development` uses local D1 entitlements; `remote` is reserved for the central licensing service.
