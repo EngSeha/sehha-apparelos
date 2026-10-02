@@ -1,8 +1,0 @@
-SESSION_SECRET=replace-with-long-random-secret
-DEV_BOOTSTRAP_PASSWORD=replace-dev-password
-MOHSEN_BOOTSTRAP_PASSWORD=replace-mohsen-password
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-6-luna
-# Future shared licensing service:
-# LICENSE_MODE=remote
-# SEHHA_LICENSE_ENDPOINT=https://license.example.com
