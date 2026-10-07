@@ -1,5 +1,9 @@
 # SEHHA ApparelOS — Cloudflare Developer Preview 21
 
+## Product completion integration branch
+
+فرع `codex/apparelos-preview21-integration` يحافظ على Preview 21 ويضيف طبقة هندسية additive في schema 18 عبر `0016_engineering_foundation.sql`: Digital Twin identity، Fabric/Trims/Pattern/Marker/Routing/31 Factory Stages، حساب استهلاك معلّم كـ`CALCULATED`، Tech Pack A4 ديناميكي، ومراجعات محفوظة. راجع [المعمارية](docs/PRODUCT_ENGINEERING_ARCHITECTURE.md) و[تقرير الجاهزية](docs/APPARELOS_PRODUCT_READINESS.md) قبل أي استخدام تجريبي. بوابة إصدار الإنتاج القديمة لم تُوصل بعد بفحص الجاهزية الجديد؛ Remote Preview ينتظر تفعيل R2.
+
 
 Preview 21 يضيف **Full Actual Cost Reconciliation** داخل Production Lot: عمالة فعلية مرتبطة بعمليات التشغيل + مصاريف فعلية صريحة + مقارنة Planned vs Actual Total Production Cost بدون أي افتراضات.
 

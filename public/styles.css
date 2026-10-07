@@ -16,3 +16,15 @@
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #276da0;outline-offset:2px}
 button:disabled,.btn:disabled{cursor:not-allowed;opacity:.5}
 @media(max-width:720px){.workspace .editor-form{grid-template-columns:1fr}.style-tabs{gap:5px}.style-tabs button{font-size:12px}}
+@media(max-width:620px){
+  .shell{grid-template-columns:minmax(0,1fr);width:100%;overflow-x:clip}
+  .main,.top{min-width:0;max-width:100%}
+  .top{display:grid;grid-template-columns:minmax(0,1fr)}
+  .top>div,.top .bar,.top h1{min-width:0;max-width:100%}
+  .top h1{overflow-wrap:anywhere}
+  .top .bar{justify-content:flex-start}
+  .top .bar>*{max-width:100%}
+  .top .compact{width:100%;max-width:100%}
+  .side .nav{max-width:100%;overflow-x:auto}
+  .panel,.notice{overflow-wrap:anywhere}
+}

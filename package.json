@@ -9,7 +9,7 @@
     "tail": "wrangler tail",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
-    "check": "node --check src/worker.js && node --check public/app.js",
+    "check": "node --check src/worker.js && node --check src/engineering.js && node --check src/spreadsheet_adapter.js && node --check src/techpack_composer.js && node --check public/app.js",
     "test": "node tests/run_all.mjs",
     "test:batch04": "node tests/batch04_integration.mjs",
     "test:batch05": "node tests/batch05_integration.mjs",
@@ -30,9 +30,13 @@
     "test:batch20": "node tests/batch20_integration.mjs && node tests/batch20_metadata.mjs",
     "test:batch21": "node tests/batch21_integration.mjs && node tests/batch21_upgrade.mjs && node tests/batch21_metadata.mjs",
     "test:asset-security": "node tests/asset_security.mjs",
-    "test:upgrade-main": "node tests/integration_upgrade_preview03_to21.mjs"
+    "test:upgrade-main": "node tests/integration_upgrade_preview03_to21.mjs",
+    "test:engineering": "node tests/engineering_foundation.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.45.0"
+  },
+  "overrides": {
+    "sharp": "0.35.5"
   }
 }
