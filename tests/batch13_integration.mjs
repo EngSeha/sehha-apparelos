@@ -1,0 +1,17 @@
+import {makeHarness,ok} from './test_helpers.mjs';
+const {db,call,login}=makeHarness();await login();let x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
+x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'LOT-013',name:'Production Quality Test',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD'}});const id=x.data.id;
+const uid=db.prepare("SELECT id FROM users WHERE email='dev@sehha.local'").get().id,ts=new Date().toISOString();db.prepare("INSERT INTO style_releases(id,style_id,release_no,release_type,status,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)").run('rel_test',id,1,'PRODUCTION','RELEASED','mohsen_nexz_20p','{}','{}','{}',uid,ts);
+x=await call(`/api/styles/${id}/production-lots`,{method:'POST',body:{releaseNo:1,lotCode:'LOT-A',plannedQty:500}});ok(x.r.status===201&&x.data.lot.status==='OPEN','production lot created only from production release');const lid=x.data.lot.id;
+x=await call(`/api/styles/${id}/production-lots/${lid}/release`,{method:'POST',body:{}});ok(x.r.status===409,'lot cannot release without QC evidence');
+x=await call(`/api/styles/${id}/production-lots/${lid}/checks`,{method:'POST',body:{checkType:'FINAL',sampleSize:32,defectCount:0,status:'PASS'}});ok(x.r.status===201&&x.data.gate.openChecks===0,'PASS QC check accepted');
+x=await call(`/api/styles/${id}/production-lots/${lid}/defects`,{method:'POST',body:{code:'DEF-01',title:'Closure misalignment',severity:'MAJOR',qty:3}});ok(x.r.status===201&&x.data.gate.openCritical===1,'open major defect blocks lot');const did=x.data.defects[0].id;
+x=await call(`/api/styles/${id}/production-lots/${lid}/release`,{method:'POST',body:{}});ok(x.r.status===409,'major open defect blocks release');
+x=await call(`/api/styles/${id}/production-lots/${lid}/defects/${did}/resolve`,{method:'POST',body:{}});ok(x.r.status===400,'defect cannot resolve without corrective action');
+x=await call(`/api/styles/${id}/production-lots/${lid}/defects/${did}/resolve`,{method:'POST',body:{rootCause:'Guide mark drift',correctiveAction:'Reset guide and re-inspect affected units'}});ok(x.r.status===200&&x.data.gate.ready,'CAPA resolution clears lot gate when QC passed');
+x=await call(`/api/styles/${id}/production-lots/${lid}/release`,{method:'POST',body:{}});ok(x.r.status===200&&x.data.lot.status==='RELEASED'&&x.data.lot.released_by,'production lot released after QC/CAPA closure');
+x=await call(`/api/styles/${id}/production-lots/${lid}/checks`,{method:'POST',body:{checkType:'POST_RELEASE',status:'PASS'}});ok(x.r.status===409,'released lot rejects new QC mutations');
+x=await call(`/api/styles/${id}/production-lots/${lid}/defects`,{method:'POST',body:{code:'DEF-LATE',title:'Late defect',severity:'MAJOR'}});ok(x.r.status===409,'released lot rejects new defects');
+x=await call(`/api/styles/${id}/production-lots/${lid}/release`,{method:'POST',body:{}});ok(x.r.status===409,'released lot cannot be released twice');
+x=await call(`/api/audit?orgId=${org.id}`);ok(x.data.items.some(a=>a.entity_type==='QUALITY_CHECK'&&a.action==='CREATE')&&x.data.items.some(a=>a.entity_type==='PRODUCTION_DEFECT'&&a.action==='RESOLVE'),'QC and CAPA actions are audited');
+console.log('BATCH13_INTEGRATION_PASS');

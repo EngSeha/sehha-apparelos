@@ -1,0 +1,17 @@
+import { DatabaseSync } from 'node:sqlite';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'..'),db=new DatabaseSync(':memory:');
+const sql=f=>readFileSync(resolve(root,'migrations',f),'utf8');
+for(const f of ['0001_init.sql','0002_ai_review_pattern.sql','0003_mohsen_master_bilingual.sql','0004_pattern_intelligence_grading.sql','0005_release_workflow.sql'])db.exec(sql(f));
+const before=db.prepare("SELECT value FROM app_meta WHERE key='schema_version'").get()?.value;if(before!=='7')throw new Error(`Expected schema 7, got ${before}`);
+const ts='2026-10-04T00:00:00.000Z';
+db.prepare('INSERT INTO organizations(id,code,name,brand_json,created_at) VALUES(?,?,?,?,?)').run('org7','M07','Migration 07','{}',ts);
+db.prepare('INSERT INTO styles(id,org_id,code,name,created_by,created_at,updated_at) VALUES(?,?,?,?,?,?,?)').run('sty7','org7','LEGACY-07','Legacy Preview06 Style','u7',ts,ts);
+db.prepare('INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,note,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)').run('rel7','sty7',1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}','{"style":{"id":"sty7","code":"LEGACY-07"}}','legacy','u7',ts);
+db.exec(sql('0006_factory_collaboration.sql'));
+const after=db.prepare("SELECT value FROM app_meta WHERE key='schema_version'").get()?.value;if(after!=='8')throw new Error(`Expected schema 8, got ${after}`);
+const rel=db.prepare('SELECT release_no,release_type,snapshot_json FROM style_releases WHERE id=?').get('rel7');if(Number(rel?.release_no)!==1||rel?.release_type!=='PRODUCTION'||!rel?.snapshot_json.includes('LEGACY-07'))throw new Error('Existing frozen release changed during schema 7 -> 8 upgrade');
+for(const table of ['review_items','release_signoffs'])if(!db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(table))throw new Error(`Missing new table ${table}`);
+console.log('BATCH07_UPGRADE_PASS schema=8 frozenReleasePreserved=1 newTables=2');

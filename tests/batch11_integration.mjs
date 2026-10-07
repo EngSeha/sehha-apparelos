@@ -1,0 +1,16 @@
+import {makeHarness,ok} from './test_helpers.mjs';
+const {db,call,login}=makeHarness();await login();
+let x=await call('/api/health');ok(x.r.status===200&&x.data.version==='0.21.0-cloudflare'&&x.data.schemaVersion==='17','Preview 21 health/schema while Batch11 module active');
+x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
+x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'FIT-011',name:'Sample Fit Test',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD',baseSize:'M'}});const id=x.data.id;ok(x.r.status===201,'style created');
+await call(`/api/styles/${id}/measurements`,{method:'POST',body:{code:'A',name:'طول',nameEn:'Length',value:57,tolerancePlus:1,toleranceMinus:1,state:'LOCKED',provenance:'USER_CONFIRMED'}});
+await call(`/api/styles/${id}/measurements`,{method:'POST',body:{code:'C',name:'صدر',nameEn:'Chest',value:56,tolerancePlus:0.5,toleranceMinus:0.5,state:'LOCKED',provenance:'USER_CONFIRMED'}});
+x=await call(`/api/styles/${id}/versions`,{method:'POST',body:{label:'Fit Base'}});ok(x.r.status===201&&x.data.versionNo===1,'version V1 created');
+x=await call(`/api/styles/${id}/samples`,{method:'POST',body:{versionNo:1,sampleType:'FIT',note:'first fit'}});ok(x.r.status===201&&x.data.sample.round_no===1&&x.data.measurements.length===2,'fit sample created from frozen version POM');const sid=x.data.sample.id;
+x=await call(`/api/styles/${id}/samples/${sid}/measurements/A`,{method:'PATCH',body:{actualValue:57.6}});ok(x.data.measurements.find(r=>r.measurement_code==='A').result==='PASS','A inside tolerance passes');
+x=await call(`/api/styles/${id}/samples/${sid}/measurements/C`,{method:'PATCH',body:{actualValue:57}});ok(x.data.measurements.find(r=>r.measurement_code==='C').result==='FAIL','C outside tolerance fails');
+x=await call(`/api/styles/${id}/samples/${sid}/status`,{method:'PATCH',body:{status:'APPROVED'}});ok(x.r.status===409,'sample approval blocked while measurement FAIL exists');
+x=await call(`/api/styles/${id}/samples/${sid}/measurements/C`,{method:'PATCH',body:{actualValue:56.4}});ok(x.data.readyForApproval,'sample ready after all entered measurements pass explicit tolerances');
+x=await call(`/api/styles/${id}/samples/${sid}/status`,{method:'PATCH',body:{status:'APPROVED'}});ok(x.r.status===200&&x.data.sample.status==='APPROVED'&&x.data.sample.approved_by,'sample approved');
+x=await call(`/api/styles/${id}/samples/${sid}/measurements/A`,{method:'PATCH',body:{actualValue:57.2}});ok(x.data.sample.status==='IN_REVIEW'&&!x.data.sample.approved_by&&!x.data.sample.approved_at,'editing actual after approval automatically revokes approval');
+console.log('BATCH11_INTEGRATION_PASS');
