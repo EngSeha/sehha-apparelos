@@ -2,7 +2,7 @@ import {readFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 
 const {scripts}=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8'));
-const suites=Object.entries(scripts).filter(([name])=>/^test:(?:batch\d+|asset-security|upgrade-main|engineering)$/.test(name)).sort(([a],[b])=>a.localeCompare(b));
+const suites=Object.entries(scripts).filter(([name])=>/^test:(?:batch\d+|asset-security|upgrade-main|engineering|human|human-qc|human-store)$/.test(name)).sort(([a],[b])=>a.localeCompare(b));
 let assertions=0;
 for(const [name,command] of suites){
   const files=[...command.matchAll(/node (tests\/[A-Za-z0-9_]+\.mjs)/g)].map(match=>match[1]);

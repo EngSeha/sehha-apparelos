@@ -217,8 +217,8 @@ npm run dev
 بعد migrations:
 
 ```text
-schemaVersion: "17"
-expectedSchemaVersion: "17"
+schemaVersion: "21"
+expectedSchemaVersion: "21"
 version: "0.21.0-cloudflare"
 ```
 
@@ -289,3 +289,7 @@ version: "0.21.0-cloudflare"
 ## Deployment boundary
 
 اختبارات Preview 07 المحلية تستخدم D1/R2/Static mocks قريبة من عقود Cloudflare وتغطي الـrelease + collaboration + handoff workflow. قبل نشر حقيقي يلزم re-gate عبر `wrangler dev`/Cloudflare Preview + D1/R2 حقيقيين، وتجربة AI provider حقيقية باستخدام secrets خارج Git.
+
+## تجربة المستخدم الموجّهة
+
+أضيفت واجهة عربية تعتمد على الدور ومهام المستخدم المسندة: إدخال كمية الإنتاج، فحص قطعة وتوثيق عيب بالصورة، وحركات خامة مرتبطة بأمر إنتاج. المشرف يرى الاستثناءات أولًا ويمكنه إسناد المهام أو فتح السجل الفني. تفضيل كثافة العرض ومساحة العمل محفوظ لكل مستخدم، ولا يغيّر صلاحياته. شرح التشغيل المحلي، نتائج الاختبار، وحدود القبول موثقة في [Human Experience acceptance](docs/HUMAN_EXPERIENCE_ACCEPTANCE.md).

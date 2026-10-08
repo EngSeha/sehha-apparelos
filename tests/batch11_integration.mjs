@@ -1,6 +1,6 @@
 import {makeHarness,ok} from './test_helpers.mjs';
 const {db,call,login}=makeHarness();await login();
-let x=await call('/api/health');ok(x.r.status===200&&x.data.version==='0.21.0-cloudflare'&&x.data.schemaVersion==='18','Preview 21 health/schema while Batch11 module active');
+let x=await call('/api/health');ok(x.r.status===200&&x.data.version==='0.21.0-cloudflare'&&x.data.schemaVersion==='21','Preview 21 health/schema while Batch11 module active');
 x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
 x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'FIT-011',name:'Sample Fit Test',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD',baseSize:'M'}});const id=x.data.id;ok(x.r.status===201,'style created');
 await call(`/api/styles/${id}/measurements`,{method:'POST',body:{code:'A',name:'طول',nameEn:'Length',value:57,tolerancePlus:1,toleranceMinus:1,state:'LOCKED',provenance:'USER_CONFIRMED'}});

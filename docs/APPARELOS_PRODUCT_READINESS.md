@@ -39,3 +39,9 @@ Verdict: **BLOCKED** for a production pilot. Local engineering work is reviewabl
 4. Enable R2 on the Cloudflare account, provision remote D1/R2 resources and secrets, deploy a preview, and run remote acceptance including authenticated assets and tenant isolation.
 
 Unknown production values remain `TBC`; local calculations are not approvals or production facts.
+
+## Human Experience update — 2026-10-08
+
+Schema 21 adds a role-derived Arabic guided surface for assigned production quantity entry, one-piece QC with defect photos, and lot-specific material receipt/issue/return. Supervisor home puts held operations and unresolved critical defects first, with a named owner and a route to the production lot. Preferences, task deep links, partial task search, and local-only demo users are included. The full acceptance matrix and remaining gaps are in [HUMAN_EXPERIENCE_ACCEPTANCE.md](HUMAN_EXPERIENCE_ACCEPTANCE.md).
+
+This improves the local guided demo but does **not** change the blocked production-pilot verdict above. The latest local aggregate test count is 24 suites and 539 assertions; remote migration/deployment and full factory pilot validation remain outstanding.
