@@ -1,0 +1,10 @@
+import {makeHarness,ok} from './test_helpers.mjs';
+const {call,login}=makeHarness();await login();let x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
+x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'COST-012',name:'Costing Test',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD'}});const id=x.data.id;
+x=await call(`/api/styles/${id}/cost-sheets`,{method:'POST',body:{name:'Factory Cost V1',currency:'EGP',laborCost:120,overheadPct:10}});ok(x.r.status===201,'cost sheet created with explicit labor/overhead');const cid=x.data.id;
+x=await call(`/api/styles/${id}/cost-sheets/${cid}/approve`,{method:'POST',body:{}});ok(x.r.status===409,'empty cost sheet cannot be approved');
+x=await call(`/api/styles/${id}/cost-sheets/${cid}/lines`,{method:'POST',body:{description:'Main fabric',sourceType:'BOM',sourceRef:'B01',qty:1.8,unit:'m',unitCost:150,wastePct:5}});ok(x.r.status===201&&Math.abs(x.data.lines[0].line_total-283.5)<0.001,'line total uses explicit qty/cost/waste only');ok(x.data.summary.total!==null,'sheet total computed once all mandatory inputs explicit');
+x=await call(`/api/styles/${id}/cost-sheets/${cid}/approve`,{method:'POST',body:{}});ok(x.r.status===200&&x.data.summary.complete&&x.data.summary.total>400,'complete cost sheet approved');
+x=await call(`/api/styles/${id}/cost-sheets/${cid}/lines`,{method:'POST',body:{description:'Trim',qty:4,unit:'unit',unitCost:12}});ok(x.r.status===201,'new line can be added after approval');
+x=await call(`/api/styles/${id}/cost-sheets`);const sh=x.data.items.find(i=>i.id===cid);ok(sh.status==='DRAFT','editing approved costing automatically reopens it for review');
+console.log('BATCH12_INTEGRATION_PASS');

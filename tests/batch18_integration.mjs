@@ -1,0 +1,22 @@
+import {makeHarness,ok} from './test_helpers.mjs';
+const h=makeHarness();const {db,call,login}=h;await login();let x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
+x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'ROLE-018',name:'Factory Role Test',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD'}});const id=x.data.id,adminUid=db.prepare("SELECT id FROM users WHERE email='dev@sehha.local'").get().id,mohsenUid=db.prepare("SELECT id FROM users WHERE email='mohsen@mohsen.local'").get().id,ts=new Date().toISOString();
+const frozen={style:{id,org_id:org.id,code:'ROLE-018',name:'Factory Role Test'},sizeBands:[],colorways:[],measurements:[],bom:[],operations:[],patternPieces:[],patternLinks:[],requirements:[],assets:[],dna:[],gradingRules:[],annotations:[],samples:[],costSheets:[]};
+db.prepare("INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)").run('rel18',id,1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}',JSON.stringify(frozen),adminUid,ts);
+x=await call('/api/auth/login',{method:'POST',body:{email:'mohsen@mohsen.local',password:h.env.MOHSEN_BOOTSTRAP_PASSWORD},cookieOverride:''});ok(x.r.status===200,'specialist login');const userCookie=(x.r.headers.get('set-cookie')||'').split(';')[0];
+async function userCall(path,opt={}){return call(path,{...opt,cookieOverride:userCookie})}
+x=await userCall(`/api/styles/${id}/production-lots`,{method:'POST',body:{releaseNo:1,lotCode:'LOT-RBAC',plannedQty:10}});ok(x.r.status===403,'DESIGN_PATTERN_MASTER cannot create production lot');
+db.prepare("UPDATE memberships SET role='FACTORY_SUPERVISOR' WHERE user_id=? AND org_id=?").run(mohsenUid,org.id);
+x=await userCall(`/api/styles/${id}/production-lots`,{method:'POST',body:{releaseNo:1,lotCode:'LOT-RBAC',plannedQty:10}});ok(x.r.status===201,'FACTORY_SUPERVISOR can create production lot');const lid=x.data.lot.id;
+x=await userCall(`/api/styles/${id}/production-lots/${lid}/checks`,{method:'POST',body:{checkType:'FINAL',status:'PASS',expectedVersion:x.data.lot.row_version}});ok(x.r.status===403,'FACTORY_SUPERVISOR cannot self-author QC evidence');
+db.prepare("UPDATE memberships SET role='QC_MANAGER' WHERE user_id=? AND org_id=?").run(mohsenUid,org.id);
+x=await userCall(`/api/styles/${id}/production-lots/${lid}/checks`,{method:'POST',body:{checkType:'FINAL',status:'PASS',expectedVersion:1}});ok(x.r.status===201,'QC_MANAGER can add QC evidence');let version=x.data.lot.row_version;
+x=await userCall(`/api/styles/${id}/production-lots/${lid}/defects`,{method:'POST',body:{code:'D18',title:'Test defect',severity:'MAJOR',qty:1,expectedVersion:version}});ok(x.r.status===201&&x.data.gate.openCritical===1,'QC_MANAGER can record major defect');version=x.data.lot.row_version;const defect=x.data.defects.find(d=>d.code==='D18');
+x=await userCall(`/api/styles/${id}/production-lots/${lid}/defects/${defect.id}/resolve`,{method:'POST',body:{rootCause:'Test cause',correctiveAction:'Test CAPA',expectedVersion:version}});ok(x.r.status===200&&x.data.gate.openCritical===0,'QC_MANAGER can close defect with CAPA');version=x.data.lot.row_version;
+x=await userCall(`/api/styles/${id}/production-lots/${lid}/release`,{method:'POST',body:{expectedVersion:version}});ok(x.r.status===403,'QC_MANAGER cannot release production lot');
+db.prepare("UPDATE memberships SET role='FACTORY_SUPERVISOR' WHERE user_id=? AND org_id=?").run(mohsenUid,org.id);
+x=await userCall(`/api/styles/${id}/production-lots/${lid}/release`,{method:'POST',body:{expectedVersion:version}});ok(x.r.status===403,'FACTORY_SUPERVISOR cannot perform independent final release');
+db.prepare("UPDATE memberships SET role='RELEASE_MANAGER' WHERE user_id=? AND org_id=?").run(mohsenUid,org.id);
+x=await userCall(`/api/styles/${id}/production-lots/${lid}/checks`,{method:'POST',body:{checkType:'FINAL',status:'PASS',expectedVersion:version}});ok(x.r.status===403,'RELEASE_MANAGER cannot self-author QC evidence');
+x=await userCall(`/api/styles/${id}/production-lots/${lid}/release`,{method:'POST',body:{expectedVersion:version}});ok(x.r.status===200&&x.data.lot.status==='RELEASED','RELEASE_MANAGER releases after QC/CAPA evidence');
+console.log('BATCH18_INTEGRATION_PASS');

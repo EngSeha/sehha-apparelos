@@ -1,83 +1,34 @@
-# Output Studio — Profiles v03
+# Output Studio — Profiles v06
 
-المبدأ الحاكم: **Style Digital Twin واحد، مخرجات متعددة حسب المستلم**.
+المبدأ: Style Digital Twin واحد، مخرجات متعددة، ويمكن للمخرجات أن تقرأ إما Working Style أو Frozen Release Snapshot.
 
-## 1) MOHSEN Tech Pack — المتفق عليه
+## Template Registry
+Preview 06 يعرّف Registry مركزي يشمل على الأقل:
+- `mohsen_nexz_20p`: A4 Landscape، 20 صفحة، bilingual.
+- `visual_simulation_2d`: A4 Landscape، صفحة مراجعة تقنية.
+- `factory_supervisor`: Factory-focused profile.
 
-الغرض: الملف الفني الكامل الذي يجمع الشكل البصري مع البيانات الفنية من غير خلط المؤكد بالـAI Draft.
+## MOHSEN Tech Pack
+`mohsen_techpack` هو Master فني 20 صفحة A4 Landscape عربي/English مبني على منطق NEXZ وموسع للباترون والماركر والمرفوك والتشغيل والجودة. الصور توضع حسب Asset Role، وأي Role مفقود يظهر Placeholder مهني.
 
-المحتوى الحالي:
-- هوية المصمم/Workspace + Model Code.
-- Cover بصري.
-- Technical/Construction page.
-- تفاصيل الصور المتاحة.
-- POM/Measurements.
-- Pattern Architecture.
-- BOM.
-- Operation Bulletin.
-- QC gates.
-- Production Lock note.
+يمكن فتحه كـWorking Output أو كـFrozen Release Output. الـFrozen Release لا يعاد بناؤه من الـWorking Style.
 
-الهوية البصرية الأساسية: بني/عاجي/ذهبي مثل المخرجات المرجعية لمكتب MOHSEN.
+## Technical A4 B/W
+ورقة مختصرة للباترون والتنفيذ من نفس البيانات.
 
-## 2) A4 Technical B/W
+## Pattern & Cutting
+POM + Pattern Architecture + cutting notes. Pattern Architecture ليست CAD Pattern.
 
-للباترون والتنفيذ والطباعة اليومية:
-- A4.
-- أبيض وأسود قدر الإمكان.
-- Technical/reference image.
-- POM.
-- Pattern Pieces.
-- BOM.
-- Operations.
+## Factory Supervisor
+BOM + Operations + QC + Pattern.
 
-## 3) Pattern & Cutting Sheet
+## Management
+Hero + DNA + assets + version/release history.
 
-للمقص والباترون:
-- POM.
-- Pattern Architecture + Qty.
-- Cutting/Grain/Fold/Nap notes.
-- لا يعتمد تخمينات AI كبيانات قص نهائية.
+## Marketing outputs
+Poster landscape/portrait + social square + story؛ مستقلة بصريًا عن Tech Pack لكنها تقرأ نفس Style data.
 
-## 4) Factory Supervisor
-
-للمشرف:
-- Hero للتعرف على الموديل.
-- BOM.
-- Operations / Machine / Stitch.
-- QC points.
-- Pattern register.
-
-## 5) Management Product Book
-
-للإدارة/مدير المصنع/العميل الداخلي:
-- Hero قوي.
-- Garment DNA.
-- Visual assets.
-- Status / Base / Sizing.
-- Version history.
-
-## 6) Professional Poster
-
-نسختان Landscape وPortrait.
-
-التوزيع الحالي:
-- Hero كبير.
-- Model/Type/Base.
-- أهم Garment DNA.
-- Measurement cards.
-- Detail images حسب Assets المرفوعة.
-- هوية Workspace/Designer.
-
-## 7) Social / Story
-
-نفس محرك الـPoster ولكن بأبعاد 1:1 و9:16.
-
-## المرحلة التالية للمحرك
-
-- Auto-layout scoring حسب عدد الصور واتجاهها.
-- اختيار أفضل Hero تلقائيًا.
-- Front/Back/Side/Detail slots.
-- Dynamic hiding: القسم الذي ليس له بيانات لا يترك فراغًا.
-- Output presets خاصة بكل Workspace.
-- Template marketplace لاحقًا.
+## Marker semantics
+- `MARKER_STUDY`: تخطيط/دراسة.
+- `PRODUCTION_MARKER`: يتطلب بيانات هندسية معتمدة.
+لا يُسمح للـrenderer بترقية Study إلى Production لفظيًا.

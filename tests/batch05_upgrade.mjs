@@ -1,0 +1,18 @@
+import { DatabaseSync } from 'node:sqlite';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'..'),db=new DatabaseSync(':memory:');
+for(const f of ['0001_init.sql','0002_ai_review_pattern.sql','0003_mohsen_master_bilingual.sql'])db.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
+const ts=new Date().toISOString();
+db.prepare('INSERT INTO organizations(id,code,name,brand_json,created_at) VALUES(?,?,?,?,?)').run('org1','MOHSEN','MOHSEN Fashion Designer','{}',ts);
+db.prepare('INSERT INTO styles(id,org_id,code,name,created_by,created_at,updated_at) VALUES(?,?,?,?,?,?,?)').run('sty1','org1','MFD-WJ-001','Existing Style','u1',ts,ts);
+db.prepare('INSERT INTO measurements(id,style_id,code,name,name_en,value,unit,provenance,state,sort_order) VALUES(?,?,?,?,?,?,?,?,?,?)').run('m1','sty1','A','طول','Length',57,'cm','USER_CONFIRMED','LOCKED',0);
+db.prepare('INSERT INTO colorways(id,style_id,code,name,name_en,provenance,state,sort_order,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?)').run('cw1','sty1','CW01','مرجع','Reference','USER_CONFIRMED','APPROVED',0,ts,ts);
+db.exec(readFileSync(resolve(root,'migrations','0004_pattern_intelligence_grading.sql'),'utf8'));
+const v=db.prepare("SELECT value FROM app_meta WHERE key='schema_version'").get()?.value;
+const m=db.prepare("SELECT value,state FROM measurements WHERE id='m1'").get();
+const cw=db.prepare("SELECT state FROM colorways WHERE id='cw1'").get();
+const tables=db.prepare("SELECT COUNT(*) n FROM sqlite_master WHERE type='table' AND name IN ('size_bands','grading_rules','pattern_links','asset_annotations')").get().n;
+if(v!=='6'||m.value!==57||m.state!=='LOCKED'||cw.state!=='APPROVED'||Number(tables)!==4)throw new Error(JSON.stringify({v,m,cw,tables}));
+console.log('BATCH05_UPGRADE_PASS schema=6 lockedMeasurementPreserved=1 colorwayPreserved=1 newTables=4');

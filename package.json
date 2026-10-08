@@ -1,6 +1,6 @@
 {
-  "name": "sehha-apparelos-cloudflare-preview-03-0",
-  "version": "0.3.0",
+  "name": "sehha-apparelos-cloudflare-preview-21-0",
+  "version": "0.21.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,9 +9,37 @@
     "tail": "wrangler tail",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
-    "check": "node --check src/worker.js && node --check public/app.js"
+    "check": "node --check src/worker.js && node --check src/human_experience.js && node --check src/human_qc.js && node --check src/human_store.js && node --check src/engineering.js && node --check src/spreadsheet_adapter.js && node --check src/techpack_composer.js && node --check public/app.js && node --check public/human_ui.js && node --check public/human_language.js",
+    "test": "node tests/run_all.mjs",
+    "test:batch04": "node tests/batch04_integration.mjs",
+    "test:batch05": "node tests/batch05_integration.mjs",
+    "test:batch06": "node tests/batch06_integration.mjs && node tests/batch06_upgrade.mjs && node tests/batch06_preview03_upgrade.mjs",
+    "test:batch07": "node tests/batch07_integration.mjs && node tests/batch07_upgrade.mjs && node tests/batch07_preview03_upgrade.mjs",
+    "test:batch08": "node tests/batch08_integration.mjs",
+    "test:batch09": "node tests/batch09_integration.mjs",
+    "test:batch10": "node tests/batch10_integration.mjs && node tests/batch10_upgrade.mjs && node tests/batch10_preview03_upgrade.mjs",
+    "test:batch11": "node tests/batch11_integration.mjs",
+    "test:batch12": "node tests/batch12_integration.mjs",
+    "test:batch13": "node tests/batch13_integration.mjs && node tests/batch13_release_evidence.mjs && node tests/batch13_upgrade.mjs && node tests/batch13_preview03_upgrade.mjs",
+    "test:batch14": "node tests/batch14_integration.mjs && node tests/batch14_metadata.mjs",
+    "test:batch15": "node tests/batch15_integration.mjs && node tests/batch15_metadata.mjs",
+    "test:batch16": "node tests/batch16_integration.mjs && node tests/batch16_metadata.mjs && node tests/batch16_upgrade.mjs && node tests/batch16_preview03_upgrade.mjs",
+    "test:batch17": "node tests/batch17_integration.mjs && node tests/batch17_upgrade.mjs && node tests/batch17_metadata.mjs",
+    "test:batch18": "node tests/batch18_integration.mjs && node tests/batch18_metadata.mjs",
+    "test:batch19": "node tests/batch19_integration.mjs && node tests/batch19_metadata.mjs",
+    "test:batch20": "node tests/batch20_integration.mjs && node tests/batch20_metadata.mjs",
+    "test:batch21": "node tests/batch21_integration.mjs && node tests/batch21_upgrade.mjs && node tests/batch21_metadata.mjs",
+    "test:asset-security": "node tests/asset_security.mjs",
+    "test:upgrade-main": "node tests/integration_upgrade_preview03_to21.mjs",
+    "test:engineering": "node tests/engineering_foundation.mjs",
+    "test:human": "node tests/human_experience.mjs",
+    "test:human-qc": "node tests/human_qc.mjs",
+    "test:human-store": "node tests/human_store.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.45.0"
+  },
+  "overrides": {
+    "sharp": "0.35.5"
   }
 }

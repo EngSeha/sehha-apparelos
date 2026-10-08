@@ -1,0 +1,17 @@
+import { DatabaseSync } from 'node:sqlite';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'..'),db=new DatabaseSync(':memory:');
+const sql=f=>readFileSync(resolve(root,'migrations',f),'utf8');
+for(const f of ['0001_init.sql','0002_ai_review_pattern.sql'])db.exec(sql(f));
+const before=db.prepare("SELECT value FROM app_meta WHERE key='schema_version'").get()?.value;if(before!=='4')throw new Error(`Expected Preview03 schema 4, got ${before}`);
+const ts='2026-10-04T00:00:00.000Z';
+db.prepare('INSERT INTO organizations(id,code,name,brand_json,created_at) VALUES(?,?,?,?,?)').run('org_p03b7','M03B7','Preview03 Legacy','{}',ts);
+db.prepare('INSERT INTO styles(id,org_id,code,name,created_by,created_at,updated_at) VALUES(?,?,?,?,?,?,?)').run('sty_p03b7','org_p03b7','LEGACY-03-B7','Legacy Preview03 Style','u0',ts,ts);
+db.prepare('INSERT INTO measurements(id,style_id,code,name,value,unit,method,provenance,state,sort_order) VALUES(?,?,?,?,?,?,?,?,?,?)').run('pom_p03b7','sty_p03b7','A','طول',57,'cm','legacy','USER_CONFIRMED','LOCKED',0);
+for(const f of ['0003_mohsen_master_bilingual.sql','0004_pattern_intelligence_grading.sql','0005_release_workflow.sql','0006_factory_collaboration.sql'])db.exec(sql(f));
+const after=db.prepare("SELECT value FROM app_meta WHERE key='schema_version'").get()?.value;if(after!=='8')throw new Error(`Expected schema 8, got ${after}`);
+const pom=db.prepare('SELECT value,state,name_en FROM measurements WHERE id=?').get('pom_p03b7');if(Number(pom?.value)!==57||pom?.state!=='LOCKED'||pom?.name_en!==null)throw new Error('Legacy locked POM not preserved');
+for(const table of ['colorways','size_bands','grading_rules','pattern_links','asset_annotations','style_variants','style_releases','review_items','release_signoffs'])if(!db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(table))throw new Error(`Missing cumulative table ${table}`);
+console.log('BATCH07_PREVIEW03_UPGRADE_PASS schema=8 lockedPomPreserved=1 cumulativeTables=9');

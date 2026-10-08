@@ -1,0 +1,17 @@
+import {makeHarness,ok} from './test_helpers.mjs';
+const {call,login}=makeHarness();await login();let x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
+x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'REL-EVID-013',name:'Release Evidence Test',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD',baseSize:'M'}});const id=x.data.id;
+await call(`/api/styles/${id}/measurements`,{method:'POST',body:{code:'A',name:'طول',nameEn:'Length',value:57,tolerancePlus:1,toleranceMinus:1,state:'LOCKED',provenance:'USER_CONFIRMED'}});
+await call(`/api/styles/${id}/bom`,{method:'POST',body:{code:'B01',category:'SHELL',name:'قماش',nameEn:'Fabric',specification:'Approved shell',specificationEn:'Approved shell',qty:1.8,unit:'m',status:'APPROVED',provenance:'USER_CONFIRMED'}});
+await call(`/api/styles/${id}/patterns`,{method:'POST',body:{code:'P01',name:'أمام',nameEn:'Front',qty:2,grainline:'STRAIGHT',state:'APPROVED',provenance:'USER_CONFIRMED'}});
+await call(`/api/styles/${id}/patterns`,{method:'POST',body:{code:'P02',name:'خلف',nameEn:'Back',qty:1,grainline:'STRAIGHT',state:'APPROVED',provenance:'USER_CONFIRMED'}});
+await call(`/api/styles/${id}/pattern-links`,{method:'POST',body:{fromCode:'P01',toCode:'P02',relation:'SEAM_JOIN',label:'Side seam',labelEn:'Side seam',state:'APPROVED',provenance:'USER_CONFIRMED'}});
+await call(`/api/styles/${id}/operations`,{method:'POST',body:{seq:1,name:'تجميع',nameEn:'Assembly',description:'Approved',descriptionEn:'Approved',machine:'SN',stitch:'301',qcPoint:'مطابقة',qcPointEn:'Match',state:'APPROVED',provenance:'USER_CONFIRMED'}});
+x=await call(`/api/styles/${id}/versions`,{method:'POST',body:{label:'Production Candidate'}});ok(x.r.status===201&&x.data.versionNo===1,'production candidate version created');
+x=await call(`/api/styles/${id}/samples`,{method:'POST',body:{versionNo:1,sampleType:'PP'}});const sid=x.data.sample.id;await call(`/api/styles/${id}/samples/${sid}/measurements/A`,{method:'PATCH',body:{actualValue:57}});
+x=await call(`/api/styles/${id}/cost-sheets`,{method:'POST',body:{versionNo:1,name:'V1 Cost',currency:'EGP',laborCost:100,overheadPct:10}});const cid=x.data.id;await call(`/api/styles/${id}/cost-sheets/${cid}/lines`,{method:'POST',body:{description:'Fabric',qty:1.8,unit:'m',unitCost:150}});
+x=await call(`/api/styles/${id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:1}});ok(x.r.status===409&&x.data.gate.blockers.some(b=>b.code==='SAMPLE_NOT_APPROVED')&&x.data.gate.blockers.some(b=>b.code==='COSTING_NOT_APPROVED'),'production release sees current sample/cost evidence and blocks unapproved evidence');
+await call(`/api/styles/${id}/samples/${sid}/status`,{method:'PATCH',body:{status:'APPROVED'}});await call(`/api/styles/${id}/cost-sheets/${cid}/approve`,{method:'POST',body:{}});
+x=await call(`/api/styles/${id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:1}});ok(x.r.status===201&&x.data.releaseType==='PRODUCTION','production release succeeds after approved sample + costing evidence');
+x=await call(`/api/styles/${id}/releases/${x.data.releaseNo}/manifest`);ok(x.r.status===200&&x.data.counts.samples===1&&x.data.counts.costSheets===1,'frozen release manifest captures sample/cost evidence counts');
+console.log('BATCH13_RELEASE_EVIDENCE_PASS');
