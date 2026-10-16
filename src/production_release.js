@@ -69,23 +69,26 @@ export async function createRelease(request,env,styleId,ctx){
   const requestSha=await sha256Text(JSON.stringify(stableComparable({operation:OPERATION,styleId,releaseType:type,sourceVersionNo:requestedVersion,templateKey,note})));
   // Idempotent replay: same actor + tenant + operation + key. Access was re-verified above, so a revoked actor never sees it.
   const prior=await receiptFor(env,orgId,sess.userId,key);if(prior){const r=replay(prior,requestSha);return r.replayed||send(r.response);}
+  // A concurrent request with the same key may commit at any point after this lookup. Every non-success answer below is
+  // therefore routed through settle(), which prefers that winner's receipt over a conflict computed from stale reads.
+  const settle=async r=>{const won=await receiptFor(env,orgId,sess.userId,key);if(won){const rp=replay(won,requestSha);return rp.replayed||send(rp.response);}return send(r);};
 
   // Fingerprints are read BEFORE the evidence they protect, so any later change is visible at commit.
   const fp=await fingerprints(env,styleId);
   const current=await styleSnapshot(env,styleId);
   let sourceVersionNo=requestedVersion,frozen=current,candidateRaw=null;
-  if(sourceVersionNo==null&&type==='PRODUCTION'){const latest=current.versions?.[0];if(!latest)return send({status:409,body:{error:'Production release requires a frozen Style Version',code:'VERSION_REQUIRED',gate:releaseGate(current,type)}});sourceVersionNo=Number(latest.version_no);}
-  if(sourceVersionNo!=null){candidateRaw=await env.DB.prepare('SELECT snapshot_json,length(snapshot_json) len FROM style_versions WHERE style_id=? AND version_no=?').bind(styleId,sourceVersionNo).first();if(!candidateRaw)return send({status:404,body:{error:'Source version not found'}});frozen=await loadVersionSnapshot(env,styleId,sourceVersionNo);}
+  if(sourceVersionNo==null&&type==='PRODUCTION'){const latest=current.versions?.[0];if(!latest)return settle({status:409,body:{error:'Production release requires a frozen Style Version',code:'VERSION_REQUIRED',gate:releaseGate(current,type)}});sourceVersionNo=Number(latest.version_no);}
+  if(sourceVersionNo!=null){candidateRaw=await env.DB.prepare('SELECT snapshot_json,length(snapshot_json) len FROM style_versions WHERE style_id=? AND version_no=?').bind(styleId,sourceVersionNo).first();if(!candidateRaw)return settle({status:404,body:{error:'Source version not found'}});frozen=await loadVersionSnapshot(env,styleId,sourceVersionNo);}
   const releaseSnapshot={...frozen,samples:(current.samples||[]).filter(x=>sourceVersionNo==null||Number(x.version_no)===Number(sourceVersionNo)),costSheets:(current.costSheets||[]).filter(x=>x.version_no==null||sourceVersionNo==null||Number(x.version_no)===Number(sourceVersionNo))};
-  const gate=releaseGate(releaseSnapshot,type,{sourceVersionNo});if(!gate.ready)return send({status:409,body:{error:'Release gate blocked',code:'RELEASE_GATE_BLOCKED',gate}});
+  const gate=releaseGate(releaseSnapshot,type,{sourceVersionNo});if(!gate.ready)return settle({status:409,body:{error:'Release gate blocked',code:'RELEASE_GATE_BLOCKED',gate}});
   const candidateSha=await sha256Text(candidateRaw?candidateRaw.snapshot_json:JSON.stringify(stableComparable(frozen)));
   if(type==='PRODUCTION'){
-    if(await env.DB.prepare("SELECT 1 x FROM style_releases WHERE style_id=? AND release_type='PRODUCTION' AND source_version_no=?").bind(styleId,sourceVersionNo).first())return send(fail(409,'PRODUCTION_ALREADY_RELEASED',{sourceVersionNo}));
+    if(await env.DB.prepare("SELECT 1 x FROM style_releases WHERE style_id=? AND release_type='PRODUCTION' AND source_version_no=?").bind(styleId,sourceVersionNo).first())return settle(fail(409,'PRODUCTION_ALREADY_RELEASED',{sourceVersionNo}));
     const r=frozenEngineeringReadiness(frozen,releaseSnapshot.samples);
     const evidenceSha=await sha256Text(JSON.stringify(stableComparable({samples:releaseSnapshot.samples,costSheets:releaseSnapshot.costSheets})));
     const engineering={...r,basis:'FROZEN_STYLE_VERSION',captureContract:ENGINEERING_CAPTURE_CONTRACT,sourceVersionNo,candidateSha256:candidateSha,evidenceSha256:evidenceSha,evaluatedAt:now(),
       decision:r.status,humanApproval:{state:'NOT_GRANTED_BY_THIS_GATE',requiredSignoffsForHandoff:['DESIGN','PATTERN','PRODUCTION','QC']}};
-    if(r.status!=='ELIGIBLE_FOR_MANUAL_RELEASE_REVIEW'){const code=r.blockers.includes('ENGINEERING_NOT_CAPTURED_IN_VERSION')?'ENGINEERING_NOT_CAPTURED_IN_VERSION':'ENGINEERING_READINESS_BLOCKED';return send(fail(409,code,{engineering,gate}));}
+    if(r.status!=='ELIGIBLE_FOR_MANUAL_RELEASE_REVIEW'){const code=r.blockers.includes('ENGINEERING_NOT_CAPTURED_IN_VERSION')?'ENGINEERING_NOT_CAPTURED_IN_VERSION':'ENGINEERING_READINESS_BLOCKED';return settle(fail(409,code,{engineering,gate}));}
     engineering.decisionSha256=await sha256Text(JSON.stringify(stableComparable({rulesVersion:r.rulesVersion,blockers:r.blockers,status:r.status,candidateSha256:candidateSha,evidenceSha256:evidenceSha})));
     gate.engineering=engineering;releaseSnapshot.engineeringReadiness=engineering;
   }
@@ -118,7 +121,7 @@ export async function createRelease(request,env,styleId,ctx){
   catch(e){
     const msg=String(e?.message||e);
     // A concurrent request with the same key may have won: answer with its receipt, never with a second release.
-    const won=await receiptFor(env,orgId,sess.userId,key);if(won){const r=replay(won,requestSha);return r.replayed||send(r.response);}
+    const won=await receiptFor(env,orgId,sess.userId,key);if(won){const rp=replay(won,requestSha);return rp.replayed||send(rp.response);}
     if(/NOT NULL constraint failed: release_receipts\.release_id/.test(msg)){
       const now2=await actorAccess(env,sess.userId,orgId);if(!now2.ok)return send(fail(403,now2.code));
       if(!(await licensed(env,orgId)))return send(fail(403,'FEATURE_NOT_LICENSED'));

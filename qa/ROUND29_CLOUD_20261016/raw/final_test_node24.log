@@ -22,10 +22,10 @@ test:human: PASS (30 assertions)
 test:human-qc: PASS (17 assertions)
 test:human-store: PASS (19 assertions)
 test:round28: PASS (17 assertions)
-test:round29: PASS (66 assertions)
+test:round29: PASS (67 assertions)
 test:upgrade-main: PASS (8 assertions)
-ALL_TESTS_PASS suites=26 assertions=622
+ALL_TESTS_PASS suites=26 assertions=623
 
-real	0m11.292s
-user	0m10.716s
-sys	0m1.433s
+real	0m10.622s
+user	0m10.278s
+sys	0m1.269s

@@ -80,6 +80,15 @@ const sha=t=>createHash('sha256').update(String(t)).digest('hex');
 {const {id,v}=await readyStyle('T06e');const key='r29-t06e-same-key';const rs=await withBarrier(25,()=>Promise.all(Array.from({length:25},()=>rel(id,{releaseType:'PRODUCTION',sourceVersionNo:v},{key}))));const st=rs.map(r=>r.r.status),c=counts(id);
  ok(lastArrivals===25&&c.releases===1&&c.receipts===1&&rs.every(r=>r.r.status===201&&r.data.id===rs[0].data.id)&&rs.filter(r=>r.r.headers.get('idempotency-replayed')==='true').length===24,'R29-T06 barrier race (same key, 25/25 reached the commit batch): 1 commit, the 24 guard losers answer with the winner\'s receipt');evidence('T06-barrier-same-key',{statuses:st.reduce((a,s)=>(a[s]=(a[s]||0)+1,a),{}),...c});}
 
+// T06 deterministic same-key interleaving (found by CI on workerd D1): B looks up the receipt (none), then the original
+// request A commits, then B reaches its pre-checks. B must replay A's result, not report a conflict.
+{const {id,v}=await readyStyle('T06f');const key='r29-t06f-interleave';const body={releaseType:'PRODUCTION',sourceVersionNo:v};let a=null;
+ const realPrepare=env.DB.prepare.bind(env.DB);let armed=true;
+ env.DB.prepare=sql=>{const st=realPrepare(sql);if(armed&&/^SELECT 1 x FROM style_releases WHERE style_id=\? AND release_type='PRODUCTION'/.test(sql)){armed=false;return {bind:(...args)=>{const bound=st.bind(...args);return {...bound,first:async()=>{a=await rel(id,body,{key});return bound.first();}}}}}return st;};
+ let b;try{b=await rel(id,body,{key})}finally{env.DB.prepare=realPrepare}
+ evidence('T06-interleave',{a:a?.r.status,b:b.r.status,bCode:b.data.code||null,...counts(id)});
+ ok(a?.r.status===201&&b.r.status===201&&b.data.id===a.data.id&&b.r.headers.get('idempotency-replayed')==='true'&&counts(id).releases===1,'R29-T06 same-key request overtaken by the original between receipt lookup and pre-check replays the original (no 409)');}
+
 // T07 failure injection at every mandatory statement: zero partial writes, zero receipt, no SQL leakage, clean retry.
 for(const [label,ddl] of [['style_releases INSERT',"CREATE TRIGGER inj BEFORE INSERT ON style_releases BEGIN SELECT RAISE(ABORT,'INJECTED_FAILURE'); END"],['release_receipts INSERT',"CREATE TRIGGER inj BEFORE INSERT ON release_receipts BEGIN SELECT RAISE(ABORT,'INJECTED_FAILURE'); END"],['styles UPDATE',"CREATE TRIGGER inj BEFORE UPDATE OF status ON styles WHEN NEW.status='PRODUCTION_RELEASED' BEGIN SELECT RAISE(ABORT,'INJECTED_FAILURE'); END"],['audit_log INSERT',"CREATE TRIGGER inj BEFORE INSERT ON audit_log WHEN NEW.entity_type='RELEASE' BEGIN SELECT RAISE(ABORT,'INJECTED_FAILURE'); END"]]){
  const {id,v}=await readyStyle('T07');const key=`r29-t07-${label.replace(/\W/g,'')}`;const before=counts(id);db.exec(ddl);

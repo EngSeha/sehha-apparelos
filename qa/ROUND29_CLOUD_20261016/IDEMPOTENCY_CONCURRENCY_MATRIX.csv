@@ -15,6 +15,7 @@ S13,Cost line added inside commit window,409 STALE_CANDIDATE,409 STALE_CANDIDATE
 S14,Competing release committed inside commit window,409 RELEASE_CONFLICT,409 RELEASE_CONFLICT,R29-T08#4,PASS
 S15,Newer version after stale attempt,"evaluated afresh, own candidate hash","201 with sourceVersionNo=new, candidateSha256 set",R29-T08#5,PASS
 S16,Retry after failed (non-receipted) attempt with same key,re-evaluates; commits once,201 after injected failure removed; receipts=1,R29-T07 retry rows,PASS
+S20,Same key: retry overtaken by the original between its receipt lookup and its pre-check (found by GitHub CI run 38838696311 on workerd D1),replay original 201,"before fix: 409 PRODUCTION_ALREADY_RELEASED (node + workerd reproduced); after fix: 201 replay, release=1",R29-T06#9; R29-W9; raw/round29_workerd_d1_PREFIX_FAIL.log,PASS (after fix)
 S17,Tenant archive / maintenance / incident HOLD during commit,fail closed,no such state exists in product,—,BLOCKED_NO_HOLD_MODEL
 S18,Revocation of one specific session cookie during commit,fail closed,stateless HMAC sessions; only user deactivation/membership removal enforceable (both PASS),R29-T09 drift rows,BLOCKED_NO_SESSION_STORE
 S19,Same scenarios on remote Cloudflare D1,as above,not executed (no approved non-production remote D1),—,BLOCKED_ENV
