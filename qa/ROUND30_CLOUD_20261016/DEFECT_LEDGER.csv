@@ -16,3 +16,6 @@ R30-D14,P2,Lot planning/execution routes outside creation are not atomic batches
 R30-D15,P2,ROUND29 IDEMPOTENCY_CONCURRENCY_MATRIX.csv uses CRLF line endings (flagged by git diff --check across PR #3),qa/ROUND29_CLOUD_20261016,OPEN,evidence file in PR #3 left untouched; ROUND30 CSVs use LF
 R30-D16,P2,Rollback of the Worker alone is impossible after migration (strict schema equality),src/worker.js ensureDatabaseReady,OPEN,documented deploy/rollback order; a compatible-range check is a design decision
 R29-F10,P2,"SAMPLE release from working snapshot not drift-guarded (pre-existing, kept)",src/production_release.js,OPEN,unchanged
+R30-C01,INFO,Closure suite found no new product defect; one test-spec error (owner ACK expectation) was corrected in the test before commit,tests/round30_closure_matrix.mjs,CLOSED,owners may acknowledge per AUTHORITY_MATRIX.md; matrix expectation aligned
+R30-C02,INFO,workerd D1 refuses PRAGMA integrity_check (SQLITE_AUTH),environment,DOCUMENTED,integrity_check/foreign_key_check proven on node:sqlite; D1 proof = row identity + DDL identity vs fresh
+R30-C03,P2,Migration files are not idempotent at SQL level (ALTER TABLE); safety relies on d1_migrations tracking; D1 per-file atomicity not verified,"migrations/0020, migrations/0021",OPEN,MIGRATION_REVIEW_0020_0021.md residual risks

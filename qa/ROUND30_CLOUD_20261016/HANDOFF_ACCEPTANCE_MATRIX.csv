@@ -1,0 +1,132 @@
+id,transition,dimension,scenario,expected,actual,verdict,engine,source
+R30C-001,PREPARE,permission,role eng denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-002,PREPARE,permission,role prod denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-003,PREPARE,permission,role qc denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-004,PREPARE,permission,role fs denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-005,PREPARE,permission,role op denied,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-006,PREPARE,permission,role store denied,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-007,PREPARE,permission,role dev allowed,201,201 PREPARED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-008,PREPARE,permission,role rm allowed,201,201 PREPARED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-009,PREPARE,permission,role own2 allowed,201,201 PREPARED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-010,DISPATCH,permission,role eng denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-011,DISPATCH,permission,role prod denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-012,DISPATCH,permission,role qc denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-013,DISPATCH,permission,role fs denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-014,DISPATCH,permission,role op denied,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-015,DISPATCH,permission,role store denied,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-016,DISPATCH,permission,role dev allowed,200,200 HANDED_OFF,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-017,DISPATCH,permission,role rm allowed,200,200 HANDED_OFF,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-018,DISPATCH,permission,role own2 allowed,200,200 HANDED_OFF,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-019,WITHDRAW,permission,role eng denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-020,WITHDRAW,permission,role prod denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-021,WITHDRAW,permission,role qc denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-022,WITHDRAW,permission,role fs denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-023,WITHDRAW,permission,role op denied,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-024,WITHDRAW,permission,role store denied,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-025,WITHDRAW,permission,role dev allowed,200,200 WITHDRAWN,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-026,WITHDRAW,permission,role rm allowed,200,200 WITHDRAWN,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-027,WITHDRAW,permission,role own2 allowed,200,200 WITHDRAWN,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-028,ACKNOWLEDGE,permission,role rm denied,403 ROLE_NOT_PERMITTED (also the dispatcher),403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-029,ACKNOWLEDGE,permission,role eng denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-030,ACKNOWLEDGE,permission,role qc denied,403 ROLE_NOT_PERMITTED,403 ROLE_NOT_PERMITTED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-031,ACKNOWLEDGE,permission,role op denied,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-032,ACKNOWLEDGE,permission,role store denied,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-033,ACKNOWLEDGE,permission,role dev allowed,200,200 ACKNOWLEDGED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-034,ACKNOWLEDGE,permission,role own2 allowed,200,200 ACKNOWLEDGED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-035,ACKNOWLEDGE,permission,role prod allowed,200,200 ACKNOWLEDGED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-036,ACKNOWLEDGE,permission,role fs allowed,200,200 ACKNOWLEDGED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-037,ACKNOWLEDGE,permission,dispatcher acknowledging own dispatch (owner),403 SELF_ACKNOWLEDGE_FORBIDDEN,403 SELF_ACKNOWLEDGE_FORBIDDEN,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-038,INSPECT,permission,role dev reads frozen package,200,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-039,INSPECT,permission,role rm reads frozen package,200,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-040,INSPECT,permission,role own2 reads frozen package,200,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-041,INSPECT,permission,role eng reads frozen package,200,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-042,INSPECT,permission,role prod reads frozen package,200,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-043,INSPECT,permission,role qc reads frozen package,200,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-044,INSPECT,permission,role fs reads frozen package,200,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-045,INSPECT,permission,role op reads frozen package,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-046,INSPECT,permission,role store reads frozen package,403 (simple-role surface),403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-047,PREPARE,tenant isolation,foreign-tenant owner by direct ids,"403, nothing changed, no package bytes",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-048,DISPATCH,tenant isolation,foreign-tenant owner by direct ids,"403, nothing changed, no package bytes",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-049,WITHDRAW,tenant isolation,foreign-tenant owner by direct ids,"403, nothing changed, no package bytes",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-050,ACKNOWLEDGE,tenant isolation,foreign-tenant owner by direct ids,"403, nothing changed, no package bytes",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-051,INSPECT,tenant isolation,foreign-tenant owner by direct ids,"403, nothing changed, no package bytes",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-052,LIST,tenant isolation,foreign-tenant owner by direct ids,"403, nothing changed, no package bytes",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-053,DETAIL,tenant isolation,foreign-tenant owner by direct ids,"403, nothing changed, no package bytes",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-054,DISPATCH,tenant isolation,handoff id of another style on this style path,"404, nothing changed",404,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-055,WITHDRAW,tenant isolation,handoff id of another style on this style path,"404, nothing changed",404,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-056,ACKNOWLEDGE,tenant isolation,handoff id of another style on this style path,"404, nothing changed",404,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-057,PREPARE,idempotency,"same key, same request (lost response)","original status/body, replay header, no new rows",201 replayed=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-058,PREPARE,idempotency,"same key, different intent","409 IDEMPOTENCY_KEY_REUSED, no writes",409 IDEMPOTENCY_KEY_REUSED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-059,PREPARE,idempotency,same key from a foreign tenant,"403, original response not disclosed",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-060,DISPATCH,idempotency,"same key, same request (lost response)","original status/body, replay header, no new rows",200 replayed=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-061,DISPATCH,idempotency,"same key, different intent","409 IDEMPOTENCY_KEY_REUSED, no writes",409 IDEMPOTENCY_KEY_REUSED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-062,DISPATCH,idempotency,same key from a foreign tenant,"403, original response not disclosed",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-063,ACKNOWLEDGE,idempotency,"same key, same request (lost response)","original status/body, replay header, no new rows",200 replayed=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-064,ACKNOWLEDGE,idempotency,"same key, different intent","409 IDEMPOTENCY_KEY_REUSED, no writes",409 IDEMPOTENCY_KEY_REUSED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-065,ACKNOWLEDGE,idempotency,same key from a foreign tenant,"403, original response not disclosed",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-066,WITHDRAW,idempotency,"same key, same request (lost response)","original status/body, replay header, no new rows",200 replayed=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-067,WITHDRAW,idempotency,"same key, different intent","409 IDEMPOTENCY_KEY_REUSED, no writes",409 IDEMPOTENCY_KEY_REUSED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-068,WITHDRAW,idempotency,same key from a foreign tenant,"403, original response not disclosed",403,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-069,PREPARE,concurrency,"12 concurrent requests, different keys","1×201, 11×409, no 500","{""201"":1,""409"":11}",PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-070,PREPARE,concurrency,"12 concurrent requests, same key",all 201 with one event; 11 replays,"{""201"":12}",PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-071,DISPATCH,concurrency,"12 concurrent requests, different keys","1×200, 11×409, no 500","{""200"":1,""409"":11}",PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-072,DISPATCH,concurrency,"12 concurrent requests, same key",all 200 with one event; 11 replays,"{""200"":12}",PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-073,ACKNOWLEDGE,concurrency,"12 concurrent requests, different keys","1×200, 11×409, no 500","{""200"":1,""409"":11}",PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-074,ACKNOWLEDGE,concurrency,"12 concurrent requests, same key",all 200 with one event; 11 replays,"{""200"":12}",PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-075,WITHDRAW,concurrency,"12 concurrent requests, different keys","1×200, 11×409, no 500","{""200"":1,""409"":11}",PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-076,WITHDRAW,concurrency,"12 concurrent requests, same key",all 200 with one event; 11 replays,"{""200"":12}",PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-077,DISPATCH|WITHDRAW,concurrency,12 concurrent dispatch vs withdraw,"exactly one winner, consistent state","{""200"":1,""409"":11} → WITHDRAWN",PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-078,PREPARE,failure injection,abort at factory_handoffs INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-079,PREPARE,failure injection,retry after abort at factory_handoffs INSERT,commits exactly once with complete evidence,201,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-080,PREPARE,failure injection,abort at event INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-081,PREPARE,failure injection,retry after abort at event INSERT,commits exactly once with complete evidence,201,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-082,PREPARE,failure injection,abort at receipt INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-083,PREPARE,failure injection,retry after abort at receipt INSERT,commits exactly once with complete evidence,201,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-084,PREPARE,failure injection,abort at audit INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-085,PREPARE,failure injection,retry after abort at audit INSERT,commits exactly once with complete evidence,201,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-086,DISPATCH,failure injection,abort at factory_handoffs UPDATE,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-087,DISPATCH,failure injection,retry after abort at factory_handoffs UPDATE,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-088,DISPATCH,failure injection,abort at event INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-089,DISPATCH,failure injection,retry after abort at event INSERT,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-090,DISPATCH,failure injection,abort at receipt INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-091,DISPATCH,failure injection,retry after abort at receipt INSERT,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-092,DISPATCH,failure injection,abort at audit INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-093,DISPATCH,failure injection,retry after abort at audit INSERT,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-094,ACKNOWLEDGE,failure injection,abort at factory_handoffs UPDATE,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-095,ACKNOWLEDGE,failure injection,retry after abort at factory_handoffs UPDATE,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-096,ACKNOWLEDGE,failure injection,abort at event INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-097,ACKNOWLEDGE,failure injection,retry after abort at event INSERT,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-098,ACKNOWLEDGE,failure injection,abort at receipt INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-099,ACKNOWLEDGE,failure injection,retry after abort at receipt INSERT,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-100,ACKNOWLEDGE,failure injection,abort at audit INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-101,ACKNOWLEDGE,failure injection,retry after abort at audit INSERT,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-102,WITHDRAW,failure injection,abort at factory_handoffs UPDATE,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-103,WITHDRAW,failure injection,retry after abort at factory_handoffs UPDATE,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-104,WITHDRAW,failure injection,abort at event INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-105,WITHDRAW,failure injection,retry after abort at event INSERT,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-106,WITHDRAW,failure injection,abort at receipt INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-107,WITHDRAW,failure injection,retry after abort at receipt INSERT,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-108,WITHDRAW,failure injection,abort at audit INSERT,500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical,500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-109,WITHDRAW,failure injection,retry after abort at audit INSERT,commits exactly once with complete evidence,200,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-110,LOT_CREATE,failure injection,abort at production_lots INSERT,500 INTERNAL_ERROR; handoff/event/receipt/audit/lot rows byte-identical,500 INTERNAL_ERROR · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-111,LOT_CREATE,failure injection,retry after abort at production_lots INSERT,commits exactly once with complete evidence,201,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-112,LOT_CREATE,failure injection,abort at audit INSERT,500 INTERNAL_ERROR; handoff/event/receipt/audit/lot rows byte-identical,500 INTERNAL_ERROR · rowsUnchanged=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-113,LOT_CREATE,failure injection,retry after abort at audit INSERT,commits exactly once with complete evidence,201,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-114,PREPARE→DISPATCH→ACKNOWLEDGE,frozen data,package bytes + hashes across every transition and after a newer release,identical,identical,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-115,ALL,frozen data,upstream release row while its handoff moves,byte-identical,identical,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-116,WITHDRAW,frozen data,package after withdrawal,identical and still readable,identical,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-117,PREPARE,legacy release,LEGACY_UNVERIFIED (pre-R29),409 LEGACY_RELEASE_NOT_ELIGIBLE,409 LEGACY_RELEASE_NOT_ELIGIBLE,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-118,LOT_CREATE,legacy release,LEGACY_UNVERIFIED (pre-R29),"409 LEGACY_RELEASE_NOT_ELIGIBLE, release row untouched",409 LEGACY_RELEASE_NOT_ELIGIBLE,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-119,PREPARE,legacy release,LIVE_UNVERSIONED_R28,409 LEGACY_RELEASE_NOT_ELIGIBLE,409 LEGACY_RELEASE_NOT_ELIGIBLE,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-120,LOT_CREATE,legacy release,LIVE_UNVERSIONED_R28,"409 LEGACY_RELEASE_NOT_ELIGIBLE, release row untouched",409 LEGACY_RELEASE_NOT_ELIGIBLE,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-121,LOT_CREATE,handoff gate,frozen release with handoff state none,409 HANDOFF_NOT_ACKNOWLEDGED,409 HANDOFF_NOT_ACKNOWLEDGED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-122,LOT_CREATE,handoff gate,frozen release with handoff state PREPARED,409 HANDOFF_NOT_ACKNOWLEDGED,409 HANDOFF_NOT_ACKNOWLEDGED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-123,LOT_CREATE,handoff gate,frozen release with handoff state HANDED_OFF,409 HANDOFF_NOT_ACKNOWLEDGED,409 HANDOFF_NOT_ACKNOWLEDGED,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-124,LOT_CREATE,handoff gate,frozen release with ACKNOWLEDGED handoff,201 with handoff_id provenance,201,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-125,ALL,atomicity invariant,DB-wide over 58 handoffs after races/replays/injections,events = version = receipts = audits per handoff; last event = status; no orphans; every handoff-seeded lot has 1 audit and an ACKNOWLEDGED handoff,violations=0 orphans=0 lotIssues=0,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-126,MIGRATION,upgrade 21→22→23,"historical rows (styles, versions, 3 releases incl. duplicate PRODUCTION version, signoffs, OPEN+RELEASED lots, audit)",identical in all pre-existing columns; new columns NULL,schema 21→22→23 · identical=true · newColsNull=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-127,MIGRATION,upgrade 21→22→23,PRAGMA integrity_check / foreign_key_check,ok / none,ok / 0,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-128,MIGRATION,upgrade vs fresh,schema objects after upgrade vs fresh install,"identical set of tables, indexes and triggers with identical DDL",upgraded=117 fresh=117 identical=true,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-129,MIGRATION,0020 + 0021 coexistence,trigger sets,"ROUND29: 5, ROUND30: 11, no name collision",5 + 11 (total 17),PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-130,MIGRATION,legacy behaviour,"legacy release/signoff/lot rows remain maintainable (no contract, no live handoff)",allowed,allowed,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs
+R30C-131,MIGRATION,runtime after upgrade,schema-23 Worker on the upgraded historical DB,"health ok, schema 23",200 23,PASS,node:sqlite (D1 adapter),tests/round30_closure_matrix.mjs

@@ -1,0 +1,281 @@
+MATRIX {"id":"R30C-001","transition":"PREPARE","dimension":"permission","scenario":"role eng denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-001 PREPARE · permission · role eng denied
+MATRIX {"id":"R30C-002","transition":"PREPARE","dimension":"permission","scenario":"role prod denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-002 PREPARE · permission · role prod denied
+MATRIX {"id":"R30C-003","transition":"PREPARE","dimension":"permission","scenario":"role qc denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-003 PREPARE · permission · role qc denied
+MATRIX {"id":"R30C-004","transition":"PREPARE","dimension":"permission","scenario":"role fs denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-004 PREPARE · permission · role fs denied
+MATRIX {"id":"R30C-005","transition":"PREPARE","dimension":"permission","scenario":"role op denied","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-005 PREPARE · permission · role op denied
+MATRIX {"id":"R30C-006","transition":"PREPARE","dimension":"permission","scenario":"role store denied","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-006 PREPARE · permission · role store denied
+MATRIX {"id":"R30C-007","transition":"PREPARE","dimension":"permission","scenario":"role dev allowed","expected":"201","actual":"201 PREPARED","verdict":"PASS"}
+PASS R30C-007 PREPARE · permission · role dev allowed
+MATRIX {"id":"R30C-008","transition":"PREPARE","dimension":"permission","scenario":"role rm allowed","expected":"201","actual":"201 PREPARED","verdict":"PASS"}
+PASS R30C-008 PREPARE · permission · role rm allowed
+MATRIX {"id":"R30C-009","transition":"PREPARE","dimension":"permission","scenario":"role own2 allowed","expected":"201","actual":"201 PREPARED","verdict":"PASS"}
+PASS R30C-009 PREPARE · permission · role own2 allowed
+MATRIX {"id":"R30C-010","transition":"DISPATCH","dimension":"permission","scenario":"role eng denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-010 DISPATCH · permission · role eng denied
+MATRIX {"id":"R30C-011","transition":"DISPATCH","dimension":"permission","scenario":"role prod denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-011 DISPATCH · permission · role prod denied
+MATRIX {"id":"R30C-012","transition":"DISPATCH","dimension":"permission","scenario":"role qc denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-012 DISPATCH · permission · role qc denied
+MATRIX {"id":"R30C-013","transition":"DISPATCH","dimension":"permission","scenario":"role fs denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-013 DISPATCH · permission · role fs denied
+MATRIX {"id":"R30C-014","transition":"DISPATCH","dimension":"permission","scenario":"role op denied","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-014 DISPATCH · permission · role op denied
+MATRIX {"id":"R30C-015","transition":"DISPATCH","dimension":"permission","scenario":"role store denied","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-015 DISPATCH · permission · role store denied
+MATRIX {"id":"R30C-016","transition":"DISPATCH","dimension":"permission","scenario":"role dev allowed","expected":"200","actual":"200 HANDED_OFF","verdict":"PASS"}
+PASS R30C-016 DISPATCH · permission · role dev allowed
+MATRIX {"id":"R30C-017","transition":"DISPATCH","dimension":"permission","scenario":"role rm allowed","expected":"200","actual":"200 HANDED_OFF","verdict":"PASS"}
+PASS R30C-017 DISPATCH · permission · role rm allowed
+MATRIX {"id":"R30C-018","transition":"DISPATCH","dimension":"permission","scenario":"role own2 allowed","expected":"200","actual":"200 HANDED_OFF","verdict":"PASS"}
+PASS R30C-018 DISPATCH · permission · role own2 allowed
+MATRIX {"id":"R30C-019","transition":"WITHDRAW","dimension":"permission","scenario":"role eng denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-019 WITHDRAW · permission · role eng denied
+MATRIX {"id":"R30C-020","transition":"WITHDRAW","dimension":"permission","scenario":"role prod denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-020 WITHDRAW · permission · role prod denied
+MATRIX {"id":"R30C-021","transition":"WITHDRAW","dimension":"permission","scenario":"role qc denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-021 WITHDRAW · permission · role qc denied
+MATRIX {"id":"R30C-022","transition":"WITHDRAW","dimension":"permission","scenario":"role fs denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-022 WITHDRAW · permission · role fs denied
+MATRIX {"id":"R30C-023","transition":"WITHDRAW","dimension":"permission","scenario":"role op denied","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-023 WITHDRAW · permission · role op denied
+MATRIX {"id":"R30C-024","transition":"WITHDRAW","dimension":"permission","scenario":"role store denied","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-024 WITHDRAW · permission · role store denied
+MATRIX {"id":"R30C-025","transition":"WITHDRAW","dimension":"permission","scenario":"role dev allowed","expected":"200","actual":"200 WITHDRAWN","verdict":"PASS"}
+PASS R30C-025 WITHDRAW · permission · role dev allowed
+MATRIX {"id":"R30C-026","transition":"WITHDRAW","dimension":"permission","scenario":"role rm allowed","expected":"200","actual":"200 WITHDRAWN","verdict":"PASS"}
+PASS R30C-026 WITHDRAW · permission · role rm allowed
+MATRIX {"id":"R30C-027","transition":"WITHDRAW","dimension":"permission","scenario":"role own2 allowed","expected":"200","actual":"200 WITHDRAWN","verdict":"PASS"}
+PASS R30C-027 WITHDRAW · permission · role own2 allowed
+MATRIX {"id":"R30C-028","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"role rm denied","expected":"403 ROLE_NOT_PERMITTED (also the dispatcher)","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-028 ACKNOWLEDGE · permission · role rm denied
+MATRIX {"id":"R30C-029","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"role eng denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-029 ACKNOWLEDGE · permission · role eng denied
+MATRIX {"id":"R30C-030","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"role qc denied","expected":"403 ROLE_NOT_PERMITTED","actual":"403 ROLE_NOT_PERMITTED","verdict":"PASS"}
+PASS R30C-030 ACKNOWLEDGE · permission · role qc denied
+MATRIX {"id":"R30C-031","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"role op denied","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-031 ACKNOWLEDGE · permission · role op denied
+MATRIX {"id":"R30C-032","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"role store denied","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-032 ACKNOWLEDGE · permission · role store denied
+MATRIX {"id":"R30C-033","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"role dev allowed","expected":"200","actual":"200 ACKNOWLEDGED","verdict":"PASS"}
+PASS R30C-033 ACKNOWLEDGE · permission · role dev allowed
+MATRIX {"id":"R30C-034","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"role own2 allowed","expected":"200","actual":"200 ACKNOWLEDGED","verdict":"PASS"}
+PASS R30C-034 ACKNOWLEDGE · permission · role own2 allowed
+MATRIX {"id":"R30C-035","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"role prod allowed","expected":"200","actual":"200 ACKNOWLEDGED","verdict":"PASS"}
+PASS R30C-035 ACKNOWLEDGE · permission · role prod allowed
+MATRIX {"id":"R30C-036","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"role fs allowed","expected":"200","actual":"200 ACKNOWLEDGED","verdict":"PASS"}
+PASS R30C-036 ACKNOWLEDGE · permission · role fs allowed
+MATRIX {"id":"R30C-037","transition":"ACKNOWLEDGE","dimension":"permission","scenario":"dispatcher acknowledging own dispatch (owner)","expected":"403 SELF_ACKNOWLEDGE_FORBIDDEN","actual":"403 SELF_ACKNOWLEDGE_FORBIDDEN","verdict":"PASS"}
+PASS R30C-037 ACKNOWLEDGE · permission · dispatcher acknowledging own dispatch (owner)
+MATRIX {"id":"R30C-038","transition":"INSPECT","dimension":"permission","scenario":"role dev reads frozen package","expected":"200","actual":"200","verdict":"PASS"}
+PASS R30C-038 INSPECT · permission · role dev reads frozen package
+MATRIX {"id":"R30C-039","transition":"INSPECT","dimension":"permission","scenario":"role rm reads frozen package","expected":"200","actual":"200","verdict":"PASS"}
+PASS R30C-039 INSPECT · permission · role rm reads frozen package
+MATRIX {"id":"R30C-040","transition":"INSPECT","dimension":"permission","scenario":"role own2 reads frozen package","expected":"200","actual":"200","verdict":"PASS"}
+PASS R30C-040 INSPECT · permission · role own2 reads frozen package
+MATRIX {"id":"R30C-041","transition":"INSPECT","dimension":"permission","scenario":"role eng reads frozen package","expected":"200","actual":"200","verdict":"PASS"}
+PASS R30C-041 INSPECT · permission · role eng reads frozen package
+MATRIX {"id":"R30C-042","transition":"INSPECT","dimension":"permission","scenario":"role prod reads frozen package","expected":"200","actual":"200","verdict":"PASS"}
+PASS R30C-042 INSPECT · permission · role prod reads frozen package
+MATRIX {"id":"R30C-043","transition":"INSPECT","dimension":"permission","scenario":"role qc reads frozen package","expected":"200","actual":"200","verdict":"PASS"}
+PASS R30C-043 INSPECT · permission · role qc reads frozen package
+MATRIX {"id":"R30C-044","transition":"INSPECT","dimension":"permission","scenario":"role fs reads frozen package","expected":"200","actual":"200","verdict":"PASS"}
+PASS R30C-044 INSPECT · permission · role fs reads frozen package
+MATRIX {"id":"R30C-045","transition":"INSPECT","dimension":"permission","scenario":"role op reads frozen package","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-045 INSPECT · permission · role op reads frozen package
+MATRIX {"id":"R30C-046","transition":"INSPECT","dimension":"permission","scenario":"role store reads frozen package","expected":"403 (simple-role surface)","actual":"403","verdict":"PASS"}
+PASS R30C-046 INSPECT · permission · role store reads frozen package
+MATRIX {"id":"R30C-047","transition":"PREPARE","dimension":"tenant isolation","scenario":"foreign-tenant owner by direct ids","expected":"403, nothing changed, no package bytes","actual":"403","verdict":"PASS"}
+PASS R30C-047 PREPARE · tenant isolation · foreign-tenant owner by direct ids
+MATRIX {"id":"R30C-048","transition":"DISPATCH","dimension":"tenant isolation","scenario":"foreign-tenant owner by direct ids","expected":"403, nothing changed, no package bytes","actual":"403","verdict":"PASS"}
+PASS R30C-048 DISPATCH · tenant isolation · foreign-tenant owner by direct ids
+MATRIX {"id":"R30C-049","transition":"WITHDRAW","dimension":"tenant isolation","scenario":"foreign-tenant owner by direct ids","expected":"403, nothing changed, no package bytes","actual":"403","verdict":"PASS"}
+PASS R30C-049 WITHDRAW · tenant isolation · foreign-tenant owner by direct ids
+MATRIX {"id":"R30C-050","transition":"ACKNOWLEDGE","dimension":"tenant isolation","scenario":"foreign-tenant owner by direct ids","expected":"403, nothing changed, no package bytes","actual":"403","verdict":"PASS"}
+PASS R30C-050 ACKNOWLEDGE · tenant isolation · foreign-tenant owner by direct ids
+MATRIX {"id":"R30C-051","transition":"INSPECT","dimension":"tenant isolation","scenario":"foreign-tenant owner by direct ids","expected":"403, nothing changed, no package bytes","actual":"403","verdict":"PASS"}
+PASS R30C-051 INSPECT · tenant isolation · foreign-tenant owner by direct ids
+MATRIX {"id":"R30C-052","transition":"LIST","dimension":"tenant isolation","scenario":"foreign-tenant owner by direct ids","expected":"403, nothing changed, no package bytes","actual":"403","verdict":"PASS"}
+PASS R30C-052 LIST · tenant isolation · foreign-tenant owner by direct ids
+MATRIX {"id":"R30C-053","transition":"DETAIL","dimension":"tenant isolation","scenario":"foreign-tenant owner by direct ids","expected":"403, nothing changed, no package bytes","actual":"403","verdict":"PASS"}
+PASS R30C-053 DETAIL · tenant isolation · foreign-tenant owner by direct ids
+MATRIX {"id":"R30C-054","transition":"DISPATCH","dimension":"tenant isolation","scenario":"handoff id of another style on this style path","expected":"404, nothing changed","actual":"404","verdict":"PASS"}
+PASS R30C-054 DISPATCH · tenant isolation · handoff id of another style on this style path
+MATRIX {"id":"R30C-055","transition":"WITHDRAW","dimension":"tenant isolation","scenario":"handoff id of another style on this style path","expected":"404, nothing changed","actual":"404","verdict":"PASS"}
+PASS R30C-055 WITHDRAW · tenant isolation · handoff id of another style on this style path
+MATRIX {"id":"R30C-056","transition":"ACKNOWLEDGE","dimension":"tenant isolation","scenario":"handoff id of another style on this style path","expected":"404, nothing changed","actual":"404","verdict":"PASS"}
+PASS R30C-056 ACKNOWLEDGE · tenant isolation · handoff id of another style on this style path
+MATRIX {"id":"R30C-057","transition":"PREPARE","dimension":"idempotency","scenario":"same key, same request (lost response)","expected":"original status/body, replay header, no new rows","actual":"201 replayed=true","verdict":"PASS"}
+PASS R30C-057 PREPARE · idempotency · same key, same request (lost response)
+MATRIX {"id":"R30C-058","transition":"PREPARE","dimension":"idempotency","scenario":"same key, different intent","expected":"409 IDEMPOTENCY_KEY_REUSED, no writes","actual":"409 IDEMPOTENCY_KEY_REUSED","verdict":"PASS"}
+PASS R30C-058 PREPARE · idempotency · same key, different intent
+MATRIX {"id":"R30C-059","transition":"PREPARE","dimension":"idempotency","scenario":"same key from a foreign tenant","expected":"403, original response not disclosed","actual":"403","verdict":"PASS"}
+PASS R30C-059 PREPARE · idempotency · same key from a foreign tenant
+MATRIX {"id":"R30C-060","transition":"DISPATCH","dimension":"idempotency","scenario":"same key, same request (lost response)","expected":"original status/body, replay header, no new rows","actual":"200 replayed=true","verdict":"PASS"}
+PASS R30C-060 DISPATCH · idempotency · same key, same request (lost response)
+MATRIX {"id":"R30C-061","transition":"DISPATCH","dimension":"idempotency","scenario":"same key, different intent","expected":"409 IDEMPOTENCY_KEY_REUSED, no writes","actual":"409 IDEMPOTENCY_KEY_REUSED","verdict":"PASS"}
+PASS R30C-061 DISPATCH · idempotency · same key, different intent
+MATRIX {"id":"R30C-062","transition":"DISPATCH","dimension":"idempotency","scenario":"same key from a foreign tenant","expected":"403, original response not disclosed","actual":"403","verdict":"PASS"}
+PASS R30C-062 DISPATCH · idempotency · same key from a foreign tenant
+MATRIX {"id":"R30C-063","transition":"ACKNOWLEDGE","dimension":"idempotency","scenario":"same key, same request (lost response)","expected":"original status/body, replay header, no new rows","actual":"200 replayed=true","verdict":"PASS"}
+PASS R30C-063 ACKNOWLEDGE · idempotency · same key, same request (lost response)
+MATRIX {"id":"R30C-064","transition":"ACKNOWLEDGE","dimension":"idempotency","scenario":"same key, different intent","expected":"409 IDEMPOTENCY_KEY_REUSED, no writes","actual":"409 IDEMPOTENCY_KEY_REUSED","verdict":"PASS"}
+PASS R30C-064 ACKNOWLEDGE · idempotency · same key, different intent
+MATRIX {"id":"R30C-065","transition":"ACKNOWLEDGE","dimension":"idempotency","scenario":"same key from a foreign tenant","expected":"403, original response not disclosed","actual":"403","verdict":"PASS"}
+PASS R30C-065 ACKNOWLEDGE · idempotency · same key from a foreign tenant
+MATRIX {"id":"R30C-066","transition":"WITHDRAW","dimension":"idempotency","scenario":"same key, same request (lost response)","expected":"original status/body, replay header, no new rows","actual":"200 replayed=true","verdict":"PASS"}
+PASS R30C-066 WITHDRAW · idempotency · same key, same request (lost response)
+MATRIX {"id":"R30C-067","transition":"WITHDRAW","dimension":"idempotency","scenario":"same key, different intent","expected":"409 IDEMPOTENCY_KEY_REUSED, no writes","actual":"409 IDEMPOTENCY_KEY_REUSED","verdict":"PASS"}
+PASS R30C-067 WITHDRAW · idempotency · same key, different intent
+MATRIX {"id":"R30C-068","transition":"WITHDRAW","dimension":"idempotency","scenario":"same key from a foreign tenant","expected":"403, original response not disclosed","actual":"403","verdict":"PASS"}
+PASS R30C-068 WITHDRAW · idempotency · same key from a foreign tenant
+MATRIX {"id":"R30C-069","transition":"PREPARE","dimension":"concurrency","scenario":"12 concurrent requests, different keys","expected":"1×201, 11×409, no 500","actual":"{\"201\":1,\"409\":11}","verdict":"PASS"}
+PASS R30C-069 PREPARE · concurrency · 12 concurrent requests, different keys
+MATRIX {"id":"R30C-070","transition":"PREPARE","dimension":"concurrency","scenario":"12 concurrent requests, same key","expected":"all 201 with one event; 11 replays","actual":"{\"201\":12}","verdict":"PASS"}
+PASS R30C-070 PREPARE · concurrency · 12 concurrent requests, same key
+MATRIX {"id":"R30C-071","transition":"DISPATCH","dimension":"concurrency","scenario":"12 concurrent requests, different keys","expected":"1×200, 11×409, no 500","actual":"{\"200\":1,\"409\":11}","verdict":"PASS"}
+PASS R30C-071 DISPATCH · concurrency · 12 concurrent requests, different keys
+MATRIX {"id":"R30C-072","transition":"DISPATCH","dimension":"concurrency","scenario":"12 concurrent requests, same key","expected":"all 200 with one event; 11 replays","actual":"{\"200\":12}","verdict":"PASS"}
+PASS R30C-072 DISPATCH · concurrency · 12 concurrent requests, same key
+MATRIX {"id":"R30C-073","transition":"ACKNOWLEDGE","dimension":"concurrency","scenario":"12 concurrent requests, different keys","expected":"1×200, 11×409, no 500","actual":"{\"200\":1,\"409\":11}","verdict":"PASS"}
+PASS R30C-073 ACKNOWLEDGE · concurrency · 12 concurrent requests, different keys
+MATRIX {"id":"R30C-074","transition":"ACKNOWLEDGE","dimension":"concurrency","scenario":"12 concurrent requests, same key","expected":"all 200 with one event; 11 replays","actual":"{\"200\":12}","verdict":"PASS"}
+PASS R30C-074 ACKNOWLEDGE · concurrency · 12 concurrent requests, same key
+MATRIX {"id":"R30C-075","transition":"WITHDRAW","dimension":"concurrency","scenario":"12 concurrent requests, different keys","expected":"1×200, 11×409, no 500","actual":"{\"200\":1,\"409\":11}","verdict":"PASS"}
+PASS R30C-075 WITHDRAW · concurrency · 12 concurrent requests, different keys
+MATRIX {"id":"R30C-076","transition":"WITHDRAW","dimension":"concurrency","scenario":"12 concurrent requests, same key","expected":"all 200 with one event; 11 replays","actual":"{\"200\":12}","verdict":"PASS"}
+PASS R30C-076 WITHDRAW · concurrency · 12 concurrent requests, same key
+MATRIX {"id":"R30C-077","transition":"DISPATCH|WITHDRAW","dimension":"concurrency","scenario":"12 concurrent dispatch vs withdraw","expected":"exactly one winner, consistent state","actual":"{\"200\":1,\"409\":11} → WITHDRAWN","verdict":"PASS"}
+PASS R30C-077 DISPATCH|WITHDRAW · concurrency · 12 concurrent dispatch vs withdraw
+MATRIX {"id":"R30C-078","transition":"PREPARE","dimension":"failure injection","scenario":"abort at factory_handoffs INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-078 PREPARE · failure injection · abort at factory_handoffs INSERT
+MATRIX {"id":"R30C-079","transition":"PREPARE","dimension":"failure injection","scenario":"retry after abort at factory_handoffs INSERT","expected":"commits exactly once with complete evidence","actual":"201","verdict":"PASS"}
+PASS R30C-079 PREPARE · failure injection · retry after abort at factory_handoffs INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"PREPARE","statement":"factory_handoffs INSERT","before":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"after":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"afterRetry":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0}}
+MATRIX {"id":"R30C-080","transition":"PREPARE","dimension":"failure injection","scenario":"abort at event INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-080 PREPARE · failure injection · abort at event INSERT
+MATRIX {"id":"R30C-081","transition":"PREPARE","dimension":"failure injection","scenario":"retry after abort at event INSERT","expected":"commits exactly once with complete evidence","actual":"201","verdict":"PASS"}
+PASS R30C-081 PREPARE · failure injection · retry after abort at event INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"PREPARE","statement":"event INSERT","before":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"after":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"afterRetry":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0}}
+MATRIX {"id":"R30C-082","transition":"PREPARE","dimension":"failure injection","scenario":"abort at receipt INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-082 PREPARE · failure injection · abort at receipt INSERT
+MATRIX {"id":"R30C-083","transition":"PREPARE","dimension":"failure injection","scenario":"retry after abort at receipt INSERT","expected":"commits exactly once with complete evidence","actual":"201","verdict":"PASS"}
+PASS R30C-083 PREPARE · failure injection · retry after abort at receipt INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"PREPARE","statement":"receipt INSERT","before":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"after":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"afterRetry":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0}}
+MATRIX {"id":"R30C-084","transition":"PREPARE","dimension":"failure injection","scenario":"abort at audit INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-084 PREPARE · failure injection · abort at audit INSERT
+MATRIX {"id":"R30C-085","transition":"PREPARE","dimension":"failure injection","scenario":"retry after abort at audit INSERT","expected":"commits exactly once with complete evidence","actual":"201","verdict":"PASS"}
+PASS R30C-085 PREPARE · failure injection · retry after abort at audit INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"PREPARE","statement":"audit INSERT","before":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"after":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"afterRetry":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0}}
+MATRIX {"id":"R30C-086","transition":"DISPATCH","dimension":"failure injection","scenario":"abort at factory_handoffs UPDATE","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-086 DISPATCH · failure injection · abort at factory_handoffs UPDATE
+MATRIX {"id":"R30C-087","transition":"DISPATCH","dimension":"failure injection","scenario":"retry after abort at factory_handoffs UPDATE","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-087 DISPATCH · failure injection · retry after abort at factory_handoffs UPDATE
+EVIDENCE {"scenario":"closure-injection","transition":"DISPATCH","statement":"factory_handoffs UPDATE","before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"after":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+MATRIX {"id":"R30C-088","transition":"DISPATCH","dimension":"failure injection","scenario":"abort at event INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-088 DISPATCH · failure injection · abort at event INSERT
+MATRIX {"id":"R30C-089","transition":"DISPATCH","dimension":"failure injection","scenario":"retry after abort at event INSERT","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-089 DISPATCH · failure injection · retry after abort at event INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"DISPATCH","statement":"event INSERT","before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"after":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+MATRIX {"id":"R30C-090","transition":"DISPATCH","dimension":"failure injection","scenario":"abort at receipt INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-090 DISPATCH · failure injection · abort at receipt INSERT
+MATRIX {"id":"R30C-091","transition":"DISPATCH","dimension":"failure injection","scenario":"retry after abort at receipt INSERT","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-091 DISPATCH · failure injection · retry after abort at receipt INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"DISPATCH","statement":"receipt INSERT","before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"after":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+MATRIX {"id":"R30C-092","transition":"DISPATCH","dimension":"failure injection","scenario":"abort at audit INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-092 DISPATCH · failure injection · abort at audit INSERT
+MATRIX {"id":"R30C-093","transition":"DISPATCH","dimension":"failure injection","scenario":"retry after abort at audit INSERT","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-093 DISPATCH · failure injection · retry after abort at audit INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"DISPATCH","statement":"audit INSERT","before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"after":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+MATRIX {"id":"R30C-094","transition":"ACKNOWLEDGE","dimension":"failure injection","scenario":"abort at factory_handoffs UPDATE","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-094 ACKNOWLEDGE · failure injection · abort at factory_handoffs UPDATE
+MATRIX {"id":"R30C-095","transition":"ACKNOWLEDGE","dimension":"failure injection","scenario":"retry after abort at factory_handoffs UPDATE","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-095 ACKNOWLEDGE · failure injection · retry after abort at factory_handoffs UPDATE
+EVIDENCE {"scenario":"closure-injection","transition":"ACKNOWLEDGE","statement":"factory_handoffs UPDATE","before":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"after":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0}}
+MATRIX {"id":"R30C-096","transition":"ACKNOWLEDGE","dimension":"failure injection","scenario":"abort at event INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-096 ACKNOWLEDGE · failure injection · abort at event INSERT
+MATRIX {"id":"R30C-097","transition":"ACKNOWLEDGE","dimension":"failure injection","scenario":"retry after abort at event INSERT","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-097 ACKNOWLEDGE · failure injection · retry after abort at event INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"ACKNOWLEDGE","statement":"event INSERT","before":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"after":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0}}
+MATRIX {"id":"R30C-098","transition":"ACKNOWLEDGE","dimension":"failure injection","scenario":"abort at receipt INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-098 ACKNOWLEDGE · failure injection · abort at receipt INSERT
+MATRIX {"id":"R30C-099","transition":"ACKNOWLEDGE","dimension":"failure injection","scenario":"retry after abort at receipt INSERT","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-099 ACKNOWLEDGE · failure injection · retry after abort at receipt INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"ACKNOWLEDGE","statement":"receipt INSERT","before":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"after":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0}}
+MATRIX {"id":"R30C-100","transition":"ACKNOWLEDGE","dimension":"failure injection","scenario":"abort at audit INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-100 ACKNOWLEDGE · failure injection · abort at audit INSERT
+MATRIX {"id":"R30C-101","transition":"ACKNOWLEDGE","dimension":"failure injection","scenario":"retry after abort at audit INSERT","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-101 ACKNOWLEDGE · failure injection · retry after abort at audit INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"ACKNOWLEDGE","statement":"audit INSERT","before":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"after":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0}}
+MATRIX {"id":"R30C-102","transition":"WITHDRAW","dimension":"failure injection","scenario":"abort at factory_handoffs UPDATE","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-102 WITHDRAW · failure injection · abort at factory_handoffs UPDATE
+MATRIX {"id":"R30C-103","transition":"WITHDRAW","dimension":"failure injection","scenario":"retry after abort at factory_handoffs UPDATE","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-103 WITHDRAW · failure injection · retry after abort at factory_handoffs UPDATE
+EVIDENCE {"scenario":"closure-injection","transition":"WITHDRAW","statement":"factory_handoffs UPDATE","before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"after":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["WITHDRAWN:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+MATRIX {"id":"R30C-104","transition":"WITHDRAW","dimension":"failure injection","scenario":"abort at event INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-104 WITHDRAW · failure injection · abort at event INSERT
+MATRIX {"id":"R30C-105","transition":"WITHDRAW","dimension":"failure injection","scenario":"retry after abort at event INSERT","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-105 WITHDRAW · failure injection · retry after abort at event INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"WITHDRAW","statement":"event INSERT","before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"after":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["WITHDRAWN:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+MATRIX {"id":"R30C-106","transition":"WITHDRAW","dimension":"failure injection","scenario":"abort at receipt INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-106 WITHDRAW · failure injection · abort at receipt INSERT
+MATRIX {"id":"R30C-107","transition":"WITHDRAW","dimension":"failure injection","scenario":"retry after abort at receipt INSERT","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-107 WITHDRAW · failure injection · retry after abort at receipt INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"WITHDRAW","statement":"receipt INSERT","before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"after":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["WITHDRAWN:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+MATRIX {"id":"R30C-108","transition":"WITHDRAW","dimension":"failure injection","scenario":"abort at audit INSERT","expected":"500 HANDOFF_COMMIT_FAILED; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 HANDOFF_COMMIT_FAILED · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-108 WITHDRAW · failure injection · abort at audit INSERT
+MATRIX {"id":"R30C-109","transition":"WITHDRAW","dimension":"failure injection","scenario":"retry after abort at audit INSERT","expected":"commits exactly once with complete evidence","actual":"200","verdict":"PASS"}
+PASS R30C-109 WITHDRAW · failure injection · retry after abort at audit INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"WITHDRAW","statement":"audit INSERT","before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"after":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["WITHDRAWN:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+MATRIX {"id":"R30C-110","transition":"LOT_CREATE","dimension":"failure injection","scenario":"abort at production_lots INSERT","expected":"500 INTERNAL_ERROR; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 INTERNAL_ERROR · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-110 LOT_CREATE · failure injection · abort at production_lots INSERT
+MATRIX {"id":"R30C-111","transition":"LOT_CREATE","dimension":"failure injection","scenario":"retry after abort at production_lots INSERT","expected":"commits exactly once with complete evidence","actual":"201","verdict":"PASS"}
+PASS R30C-111 LOT_CREATE · failure injection · retry after abort at production_lots INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"LOT_CREATE","statement":"production_lots INSERT","before":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0},"after":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":4,"lots":1}}
+MATRIX {"id":"R30C-112","transition":"LOT_CREATE","dimension":"failure injection","scenario":"abort at audit INSERT","expected":"500 INTERNAL_ERROR; handoff/event/receipt/audit/lot rows byte-identical","actual":"500 INTERNAL_ERROR · rowsUnchanged=true","verdict":"PASS"}
+PASS R30C-112 LOT_CREATE · failure injection · abort at audit INSERT
+MATRIX {"id":"R30C-113","transition":"LOT_CREATE","dimension":"failure injection","scenario":"retry after abort at audit INSERT","expected":"commits exactly once with complete evidence","actual":"201","verdict":"PASS"}
+PASS R30C-113 LOT_CREATE · failure injection · retry after abort at audit INSERT
+EVIDENCE {"scenario":"closure-injection","transition":"LOT_CREATE","statement":"audit INSERT","before":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0},"after":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":4,"lots":1}}
+MATRIX {"id":"R30C-114","transition":"PREPARE→DISPATCH→ACKNOWLEDGE","dimension":"frozen data","scenario":"package bytes + hashes across every transition and after a newer release","expected":"identical","actual":"identical","verdict":"PASS"}
+PASS R30C-114 PREPARE→DISPATCH→ACKNOWLEDGE · frozen data · package bytes + hashes across every transition and after a newer release
+MATRIX {"id":"R30C-115","transition":"ALL","dimension":"frozen data","scenario":"upstream release row while its handoff moves","expected":"byte-identical","actual":"identical","verdict":"PASS"}
+PASS R30C-115 ALL · frozen data · upstream release row while its handoff moves
+MATRIX {"id":"R30C-116","transition":"WITHDRAW","dimension":"frozen data","scenario":"package after withdrawal","expected":"identical and still readable","actual":"identical","verdict":"PASS"}
+PASS R30C-116 WITHDRAW · frozen data · package after withdrawal
+MATRIX {"id":"R30C-117","transition":"PREPARE","dimension":"legacy release","scenario":"LEGACY_UNVERIFIED (pre-R29)","expected":"409 LEGACY_RELEASE_NOT_ELIGIBLE","actual":"409 LEGACY_RELEASE_NOT_ELIGIBLE","verdict":"PASS"}
+PASS R30C-117 PREPARE · legacy release · LEGACY_UNVERIFIED (pre-R29)
+MATRIX {"id":"R30C-118","transition":"LOT_CREATE","dimension":"legacy release","scenario":"LEGACY_UNVERIFIED (pre-R29)","expected":"409 LEGACY_RELEASE_NOT_ELIGIBLE, release row untouched","actual":"409 LEGACY_RELEASE_NOT_ELIGIBLE","verdict":"PASS"}
+PASS R30C-118 LOT_CREATE · legacy release · LEGACY_UNVERIFIED (pre-R29)
+MATRIX {"id":"R30C-119","transition":"PREPARE","dimension":"legacy release","scenario":"LIVE_UNVERSIONED_R28","expected":"409 LEGACY_RELEASE_NOT_ELIGIBLE","actual":"409 LEGACY_RELEASE_NOT_ELIGIBLE","verdict":"PASS"}
+PASS R30C-119 PREPARE · legacy release · LIVE_UNVERSIONED_R28
+MATRIX {"id":"R30C-120","transition":"LOT_CREATE","dimension":"legacy release","scenario":"LIVE_UNVERSIONED_R28","expected":"409 LEGACY_RELEASE_NOT_ELIGIBLE, release row untouched","actual":"409 LEGACY_RELEASE_NOT_ELIGIBLE","verdict":"PASS"}
+PASS R30C-120 LOT_CREATE · legacy release · LIVE_UNVERSIONED_R28
+MATRIX {"id":"R30C-121","transition":"LOT_CREATE","dimension":"handoff gate","scenario":"frozen release with handoff state none","expected":"409 HANDOFF_NOT_ACKNOWLEDGED","actual":"409 HANDOFF_NOT_ACKNOWLEDGED","verdict":"PASS"}
+PASS R30C-121 LOT_CREATE · handoff gate · frozen release with handoff state none
+MATRIX {"id":"R30C-122","transition":"LOT_CREATE","dimension":"handoff gate","scenario":"frozen release with handoff state PREPARED","expected":"409 HANDOFF_NOT_ACKNOWLEDGED","actual":"409 HANDOFF_NOT_ACKNOWLEDGED","verdict":"PASS"}
+PASS R30C-122 LOT_CREATE · handoff gate · frozen release with handoff state PREPARED
+MATRIX {"id":"R30C-123","transition":"LOT_CREATE","dimension":"handoff gate","scenario":"frozen release with handoff state HANDED_OFF","expected":"409 HANDOFF_NOT_ACKNOWLEDGED","actual":"409 HANDOFF_NOT_ACKNOWLEDGED","verdict":"PASS"}
+PASS R30C-123 LOT_CREATE · handoff gate · frozen release with handoff state HANDED_OFF
+MATRIX {"id":"R30C-124","transition":"LOT_CREATE","dimension":"handoff gate","scenario":"frozen release with ACKNOWLEDGED handoff","expected":"201 with handoff_id provenance","actual":"201","verdict":"PASS"}
+PASS R30C-124 LOT_CREATE · handoff gate · frozen release with ACKNOWLEDGED handoff
+EVIDENCE {"scenario":"invariant","handoffs":58,"violations":[],"orphanEv":0,"orphanRc":0,"orphanAu":0,"lotsBad":0,"lotsNoAck":0}
+MATRIX {"id":"R30C-125","transition":"ALL","dimension":"atomicity invariant","scenario":"DB-wide over 58 handoffs after races/replays/injections","expected":"events = version = receipts = audits per handoff; last event = status; no orphans; every handoff-seeded lot has 1 audit and an ACKNOWLEDGED handoff","actual":"violations=0 orphans=0 lotIssues=0","verdict":"PASS"}
+PASS R30C-125 ALL · atomicity invariant · DB-wide over 58 handoffs after races/replays/injections
+MATRIX {"id":"R30C-126","transition":"MIGRATION","dimension":"upgrade 21→22→23","scenario":"historical rows (styles, versions, 3 releases incl. duplicate PRODUCTION version, signoffs, OPEN+RELEASED lots, audit)","expected":"identical in all pre-existing columns; new columns NULL","actual":"schema 21→22→23 · identical=true · newColsNull=true","verdict":"PASS"}
+PASS R30C-126 MIGRATION · upgrade 21→22→23 · historical rows (styles, versions, 3 releases incl. duplicate PRODUCTION version, signoffs, OPEN+RELEASED lots, audit)
+MATRIX {"id":"R30C-127","transition":"MIGRATION","dimension":"upgrade 21→22→23","scenario":"PRAGMA integrity_check / foreign_key_check","expected":"ok / none","actual":"ok / 0","verdict":"PASS"}
+PASS R30C-127 MIGRATION · upgrade 21→22→23 · PRAGMA integrity_check / foreign_key_check
+MATRIX {"id":"R30C-128","transition":"MIGRATION","dimension":"upgrade vs fresh","scenario":"schema objects after upgrade vs fresh install","expected":"identical set of tables, indexes and triggers with identical DDL","actual":"upgraded=117 fresh=117 identical=true","verdict":"PASS"}
+PASS R30C-128 MIGRATION · upgrade vs fresh · schema objects after upgrade vs fresh install
+MATRIX {"id":"R30C-129","transition":"MIGRATION","dimension":"0020 + 0021 coexistence","scenario":"trigger sets","expected":"ROUND29: 5, ROUND30: 11, no name collision","actual":"5 + 11 (total 17)","verdict":"PASS"}
+PASS R30C-129 MIGRATION · 0020 + 0021 coexistence · trigger sets
+MATRIX {"id":"R30C-130","transition":"MIGRATION","dimension":"legacy behaviour","scenario":"legacy release/signoff/lot rows remain maintainable (no contract, no live handoff)","expected":"allowed","actual":"allowed","verdict":"PASS"}
+PASS R30C-130 MIGRATION · legacy behaviour · legacy release/signoff/lot rows remain maintainable (no contract, no live handoff)
+MATRIX {"id":"R30C-131","transition":"MIGRATION","dimension":"runtime after upgrade","scenario":"schema-23 Worker on the upgraded historical DB","expected":"health ok, schema 23","actual":"200 23","verdict":"PASS"}
+PASS R30C-131 MIGRATION · runtime after upgrade · schema-23 Worker on the upgraded historical DB
