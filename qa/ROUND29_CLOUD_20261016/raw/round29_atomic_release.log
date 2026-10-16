@@ -1,0 +1,85 @@
+PASS R29-T01 valid frozen candidate released with recorded authority
+PASS R29-T01 release, receipt, audit and style status committed together
+EVIDENCE {"scenario":"T01","releases":1,"receipts":1,"audits":1,"signoffs":0,"status":"PRODUCTION_RELEASED"}
+PASS R29-T02 pre-ROUND29 version without frozen engineering fails closed (live tables are not consulted)
+PASS R29-T03 ELIGIBLE_FOR_MANUAL_RELEASE_REVIEW creates zero signoffs
+PASS R29-T03 body-supplied identity/role fields are ignored (actor comes from session + DB)
+PASS R29-T03 factory handoff still requires all four human signoffs
+PASS R29-T03 FACTORY_SUPERVISOR cannot self-assert a QC signoff by JSON
+PASS R29-T04 lost-response retry returns the original 201 body
+PASS R29-T04 retry creates no second release/receipt/audit
+PASS R29-T04 replay after the Style advanced still returns the original result
+EVIDENCE {"scenario":"T04","before":{"releases":1,"receipts":1,"audits":3,"signoffs":0,"status":"PRODUCTION_RELEASED"},"after":{"releases":2,"receipts":2,"audits":4,"signoffs":0,"status":"SAMPLE_RELEASED"}}
+PASS R29-T05 same key with altered payload is 409 IDEMPOTENCY_KEY_REUSED without writes
+PASS R29-T05 same key against another Style is a conflict, not a disclosure
+PASS R29-T05 malformed Idempotency-Key is 400
+PASS R29-T06 25 concurrent same-key requests: 1 durable release, every caller gets the same result
+PASS R29-T06 same-key race produces no 500
+EVIDENCE {"scenario":"T06-same-key","statuses":{"201":25},"replayed":24,"releases":1,"receipts":1,"audits":6,"signoffs":0,"status":"PRODUCTION_RELEASED"}
+PASS R29-T06 25 concurrent different-key requests: exactly one 201, 24×409, no 500
+PASS R29-T06 losers leave no release/receipt/audit and get a stable conflict code
+EVIDENCE {"scenario":"T06-diff-keys","statuses":{"201":1,"409":24},"codes":{"PRODUCTION_ALREADY_RELEASED":24},"releases":1,"receipts":1,"audits":7,"signoffs":0,"status":"PRODUCTION_RELEASED"}
+PASS R29-T06 20 concurrent SAMPLE releases: release_no contiguous, no gaps, no 500, receipts = releases
+EVIDENCE {"scenario":"T06-sample-release-no","statuses":{"201":1,"409":19},"codes":{"RELEASE_CONFLICT":19},"releaseNos":[1],"releases":1,"receipts":1,"audits":8,"signoffs":0,"status":"SAMPLE_RELEASED"}
+PASS R29-T06 barrier race (different keys, 25/25 reached the commit batch): guard admits exactly one commit, 24×409, no 500, no extra evidence
+PASS R29-T06 barrier race losers are classified as stable conflicts
+EVIDENCE {"scenario":"T06-barrier-diff-keys","statuses":{"201":1,"409":24},"codes":{"PRODUCTION_ALREADY_RELEASED":24},"releases":1,"receipts":1,"audits":9,"signoffs":0,"status":"PRODUCTION_RELEASED"}
+PASS R29-T06 barrier race (same key, 25/25 reached the commit batch): 1 commit, the 24 guard losers answer with the winner's receipt
+EVIDENCE {"scenario":"T06-barrier-same-key","statuses":{"201":25},"releases":1,"receipts":1,"audits":10,"signoffs":0,"status":"PRODUCTION_RELEASED"}
+PASS R29-T07 failure at style_releases INSERT: 500 with correlation id, no SQL internals
+PASS R29-T07 failure at style_releases INSERT: zero partial business changes and zero receipt
+PASS R29-T07 failure at style_releases INSERT: same-key retry commits once afterwards
+EVIDENCE {"scenario":"T07","injectedAt":"style_releases INSERT","before":{"releases":0,"receipts":0,"audits":10,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":10,"signoffs":0,"status":"DRAFT"},"afterRetry":{"releases":1,"receipts":1,"audits":11,"signoffs":0,"status":"PRODUCTION_RELEASED"}}
+PASS R29-T07 failure at release_receipts INSERT: 500 with correlation id, no SQL internals
+PASS R29-T07 failure at release_receipts INSERT: zero partial business changes and zero receipt
+PASS R29-T07 failure at release_receipts INSERT: same-key retry commits once afterwards
+EVIDENCE {"scenario":"T07","injectedAt":"release_receipts INSERT","before":{"releases":0,"receipts":0,"audits":11,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":11,"signoffs":0,"status":"DRAFT"},"afterRetry":{"releases":1,"receipts":1,"audits":12,"signoffs":0,"status":"PRODUCTION_RELEASED"}}
+PASS R29-T07 failure at styles UPDATE: 500 with correlation id, no SQL internals
+PASS R29-T07 failure at styles UPDATE: zero partial business changes and zero receipt
+PASS R29-T07 failure at styles UPDATE: same-key retry commits once afterwards
+EVIDENCE {"scenario":"T07","injectedAt":"styles UPDATE","before":{"releases":0,"receipts":0,"audits":12,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":12,"signoffs":0,"status":"DRAFT"},"afterRetry":{"releases":1,"receipts":1,"audits":13,"signoffs":0,"status":"PRODUCTION_RELEASED"}}
+PASS R29-T07 failure at audit_log INSERT: 500 with correlation id, no SQL internals
+PASS R29-T07 failure at audit_log INSERT: zero partial business changes and zero receipt
+PASS R29-T07 failure at audit_log INSERT: same-key retry commits once afterwards
+EVIDENCE {"scenario":"T07","injectedAt":"audit_log INSERT","before":{"releases":0,"receipts":0,"audits":13,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":13,"signoffs":0,"status":"DRAFT"},"afterRetry":{"releases":1,"receipts":1,"audits":14,"signoffs":0,"status":"PRODUCTION_RELEASED"}}
+PASS R29-T08 new Style Version created during commit window: 409 STALE_CANDIDATE, no release/receipt/status change
+EVIDENCE {"scenario":"T08","drift":"new Style Version created","code":"STALE_CANDIDATE","before":{"releases":0,"receipts":0,"audits":14,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":14,"signoffs":0,"status":"DRAFT"}}
+PASS R29-T08 PP sample approval revoked during commit window: 409 STALE_CANDIDATE, no release/receipt/status change
+EVIDENCE {"scenario":"T08","drift":"PP sample approval revoked","code":"STALE_CANDIDATE","before":{"releases":0,"receipts":0,"audits":14,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":14,"signoffs":0,"status":"DRAFT"}}
+PASS R29-T08 cost line added during commit window: 409 STALE_CANDIDATE, no release/receipt/status change
+EVIDENCE {"scenario":"T08","drift":"cost line added","code":"STALE_CANDIDATE","before":{"releases":0,"receipts":0,"audits":14,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":14,"signoffs":0,"status":"DRAFT"}}
+PASS R29-T08 competing release committed during commit window: 409 RELEASE_CONFLICT, no release/receipt/status change
+EVIDENCE {"scenario":"T08","drift":"competing release committed","code":"RELEASE_CONFLICT","before":{"releases":0,"receipts":0,"audits":14,"signoffs":0,"status":"DRAFT"},"after":{"releases":1,"receipts":0,"audits":14,"signoffs":0,"status":"DRAFT"}}
+PASS R29-T08 the newer version is evaluated afresh and frozen with its own candidate hash
+PASS R29-T09 direct style-id attack from another tenant is 403
+PASS R29-T09 another actor reusing the same key never receives the original response
+PASS R29-T09 deactivated user with a still-valid session cookie is refused
+PASS R29-T09 replay after membership revocation discloses nothing (403)
+PASS R29-T09 membership removed inside the commit window: 403 FORBIDDEN_ACTOR, zero writes
+EVIDENCE {"scenario":"T09-drift","drift":"membership removed","code":"FORBIDDEN_ACTOR","before":{"releases":0,"receipts":0,"audits":17,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":17,"signoffs":0,"status":"DRAFT"}}
+PASS R29-T09 user deactivated inside the commit window: 403 FORBIDDEN_ACTOR, zero writes
+EVIDENCE {"scenario":"T09-drift","drift":"user deactivated","code":"FORBIDDEN_ACTOR","before":{"releases":0,"receipts":0,"audits":17,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":17,"signoffs":0,"status":"DRAFT"}}
+PASS R29-T09 platform admin flag revoked (no membership) inside the commit window: 403 FORBIDDEN_ACTOR, zero writes
+EVIDENCE {"scenario":"T09-drift","drift":"platform admin flag revoked (no membership)","code":"FORBIDDEN_ACTOR","before":{"releases":0,"receipts":0,"audits":17,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":17,"signoffs":0,"status":"DRAFT"}}
+PASS R29-T09 RELEASES entitlement disabled inside the commit window: 403 FEATURE_NOT_LICENSED, zero writes
+EVIDENCE {"scenario":"T09-drift","drift":"RELEASES entitlement disabled","code":"FEATURE_NOT_LICENSED","before":{"releases":0,"receipts":0,"audits":17,"signoffs":0,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":17,"signoffs":0,"status":"DRAFT"}}
+PASS R29-T11 stored snapshot re-hashes to manifest.snapshotSha256
+PASS R29-T11 candidate_sha256 reproduces from the frozen Style Version
+PASS R29-T11 frozen output unchanged after Working Style edits
+PASS R29-T11 database triggers block UPDATE/DELETE of contract releases, receipts and frozen versions
+PASS R29-T11 backup/restore into a fresh schema-22 database preserves bytes and hash
+PASS R29-T11 a tamper that bypasses triggers is detected by hash mismatch
+PASS R29-T12 legacy and ROUND28 releases are labelled LEGACY_UNVERIFIED / LIVE_UNVERSIONED_R28
+PASS R29-T12 manifest and handoff expose the unverified state; handoff is not ready
+PASS R29-T12 reads never mutate legacy rows or synthesize signoffs
+PASS R29-T12 a legacy PRODUCTION release still blocks a duplicate release of the same version
+PASS R29-T13 SAMPLE releases (with and without source version) keep the existing contract
+PASS R29-T13 key-less releases still get an immutable receipt
+PASS R29-T13 release-gate read route unchanged
+PASS R29-T14 a SAMPLE release number cannot open a Production Lot
+PASS R29-T14 another Style's PRODUCTION release id/number cannot open a lot here
+PASS R29-T14 a SAMPLE release can never be factory-handoff ready
+PASS R29-T14 signoff on a non-existent release is 404
+PASS R29-T15 fresh install reaches schema 22 with table, partial unique index and 5 triggers
+PASS R29-T15 upgrade 21→22 succeeds over historical duplicate PRODUCTION releases without touching them
+PASS R29-T15 a raw repeat of 0020 fails at its first ALTER without damaging data (wrangler records applied migrations)

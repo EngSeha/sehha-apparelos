@@ -85,6 +85,13 @@ export async function engineeringRoute(request,env,ctx){const url=new URL(reques
   if(request.method==='PUT'&&DOMAIN[domain]&&key){const body=await ctx.requestBody(request),updated=await upsert(env,{...ctx,userId:session.userId,session},style,domain,key,body);return response(updated);}
   return response({error:'Engineering route not found'},404);
 }
-// Authority used by the frozen production release path: live engineering records must be release-eligible.
-export async function engineeringReleaseGate(env,style){const b=await bundleFor(env,style);return {...b.readiness,checkedAt:stamp(),basis:'LIVE_ENGINEERING_RECORDS'};}
+// Engineering records captured into a frozen Style Version so production readiness is evaluated on immutable candidate data.
+export const ENGINEERING_CAPTURE_CONTRACT='ENGINEERING_IN_VERSION/R29';
+export const ENGINEERING_READINESS_RULES='engineering-readiness/r29-2026-10-16';
+export async function engineeringVersionCapture(env,style){const id=style.id;const [identity,fabrics,trims,patterns,markers,routing]=await Promise.all([read(env,'SELECT * FROM style_identity WHERE style_id=?',id),all(env,'SELECT * FROM fabric_specifications WHERE style_id=? ORDER BY code',id),all(env,'SELECT * FROM trim_specifications WHERE style_id=? ORDER BY code',id),all(env,'SELECT * FROM pattern_piece_specs WHERE style_id=? ORDER BY code,size_code',id),all(env,'SELECT * FROM marker_plans WHERE style_id=? ORDER BY code',id),all(env,'SELECT * FROM routing_steps WHERE style_id=? ORDER BY sequence_no',id)]);
+  return {contract:ENGINEERING_CAPTURE_CONTRACT,identity:identity||null,fabrics,trims,patterns,markers,routing};}
+// Pure evaluation over a frozen version snapshot plus the sample evidence that the release freezes with it. No database reads.
+export function frozenEngineeringReadiness(versionSnap,samples){const e=versionSnap?.engineering;if(!e||e.contract!==ENGINEERING_CAPTURE_CONTRACT)return {status:'BLOCKED',percent:0,blockers:['ENGINEERING_NOT_CAPTURED_IN_VERSION'],rulesVersion:ENGINEERING_READINESS_RULES};
+  const r=readiness({style:versionSnap.style||{},measurements:versionSnap.measurements||[],bom:versionSnap.bom||[],dna:versionSnap.dna||[],fabrics:e.fabrics||[],trims:e.trims||[],patterns:e.patterns||[],markers:e.markers||[],routing:e.routing||[],samples:samples||[]});
+  return {...r,rulesVersion:ENGINEERING_READINESS_RULES};}
 export {materialRequirement,routingValidation,readiness};

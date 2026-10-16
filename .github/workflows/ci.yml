@@ -20,3 +20,5 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm test
+      # Local workerd-backed D1 (wrangler getPlatformProxy): release atomicity, idempotency, races, failure injection.
+      - run: npm run test:workerd-d1

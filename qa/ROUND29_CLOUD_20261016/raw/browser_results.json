@@ -1,0 +1,42 @@
+{
+ "base": "http://127.0.0.1:8799",
+ "styleId": "sty_963a39b757177b2e3b69768c",
+ "posts": [
+  {
+   "key": "7699de63-f9c4-4ee4-a77a-2db59fbf5564"
+  },
+  {
+   "key": "288b3f1f-ba50-4ba6-ada7-19225ac6efc9"
+  }
+ ],
+ "results": [
+  {
+   "check": "Release table shows the Arabic evidence column",
+   "result": "PASS"
+  },
+  {
+   "check": "Blocked production release shows the Arabic readiness message",
+   "result": "PASS"
+  },
+  {
+   "check": "Double-click on Create Sample Release sends exactly one request",
+   "result": "PASS"
+  },
+  {
+   "check": "Exactly one SAMPLE release exists after the double-click",
+   "result": "PASS"
+  },
+  {
+   "check": "Every release request carries an Idempotency-Key",
+   "result": "PASS"
+  },
+  {
+   "check": "Released row is rendered in the table",
+   "result": "PASS"
+  },
+  {
+   "check": "Page is RTL",
+   "result": "PASS"
+  }
+ ]
+}

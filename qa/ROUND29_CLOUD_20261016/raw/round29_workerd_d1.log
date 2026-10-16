@@ -1,0 +1,27 @@
+PASS R29-W1 wrangler local upgrade 21→22 over historical duplicate PRODUCTION rows; rows unchanged; 7 objects present
+PASS R29-W1 re-running wrangler migrations is a no-op (applied migrations are recorded)
+PASS R29-W2 worker on workerd D1 reports schema 22
+PASS R29-W3 production release commits release+receipt+status+audit on workerd D1
+PASS R29-W3 same-key replay on workerd D1 adds nothing
+PASS R29-W3 same key + different payload is 409 on workerd D1
+PASS R29-W3 immutability triggers fire on workerd D1
+EVIDENCE {"scenario":"W3","releases":1,"receipts":1,"audits":1,"status":"PRODUCTION_RELEASED"}
+PASS R29-W4 25 concurrent different-key requests on workerd D1: one commit, no 500
+EVIDENCE {"scenario":"W4","statuses":{"201":1,"409":24},"codes":{"PRODUCTION_ALREADY_RELEASED":24},"releases":1,"receipts":1,"audits":2,"status":"PRODUCTION_RELEASED"}
+PASS R29-W5 25 concurrent same-key requests on workerd D1: one release, identical responses
+EVIDENCE {"scenario":"W5","statuses":{"201":25},"replayed":24,"releases":1,"receipts":1,"audits":3,"status":"PRODUCTION_RELEASED"}
+PASS R29-W8 barrier race on workerd D1 (25/25 at commit): in-transaction guard admits exactly one, 24×409, no 500
+EVIDENCE {"scenario":"W8","arrivals":25,"statuses":{"201":1,"409":24},"codes":{"PRODUCTION_ALREADY_RELEASED":24},"releases":1,"receipts":1,"audits":4,"status":"PRODUCTION_RELEASED"}
+PASS R29-W6 workerd D1 failure at style_releases INSERT: full rollback, sanitized 500
+EVIDENCE {"scenario":"W6","injectedAt":"style_releases INSERT","before":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"}}
+PASS R29-W6 workerd D1 failure at release_receipts INSERT: full rollback, sanitized 500
+EVIDENCE {"scenario":"W6","injectedAt":"release_receipts INSERT","before":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"}}
+PASS R29-W6 workerd D1 failure at styles UPDATE: full rollback, sanitized 500
+EVIDENCE {"scenario":"W6","injectedAt":"styles UPDATE","before":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"}}
+PASS R29-W6 workerd D1 failure at audit_log INSERT: full rollback, sanitized 500
+EVIDENCE {"scenario":"W6","injectedAt":"audit_log INSERT","before":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"}}
+PASS R29-W7 workerd D1 commit-window drift (new Style Version created): 409 STALE_CANDIDATE, nothing written
+EVIDENCE {"scenario":"W7","drift":"new Style Version created","code":"STALE_CANDIDATE","before":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"}}
+PASS R29-W7 workerd D1 commit-window drift (membership of actor removed): 403 FORBIDDEN_ACTOR, nothing written
+EVIDENCE {"scenario":"W7","drift":"membership of actor removed","code":"FORBIDDEN_ACTOR","before":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":4,"status":"DRAFT"}}
+real	1m34.331s

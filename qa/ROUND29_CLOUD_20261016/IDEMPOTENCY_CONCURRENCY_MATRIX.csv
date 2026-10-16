@@ -1,0 +1,20 @@
+id,scenario,expected,actual,test_id,verdict
+S01,Same key + same request (lost response retry),"201 replay, byte-identical body, 0 new rows",201 replay identical; release=1 receipt=1,R29-T04#1-2; R29-W3,PASS
+S02,Same key replay after Style advanced (new version + another release),original 201 body,original body returned,R29-T04#3,PASS
+S03,Same key + altered payload,"409 IDEMPOTENCY_KEY_REUSED, no writes","409, counts unchanged",R29-T05#1; R29-W3,PASS
+S04,Same key against another Style,"409, no disclosure of first body","409, no manifest in body",R29-T05#2,PASS
+S05,Malformed Idempotency-Key,400 IDEMPOTENCY_KEY_INVALID,400,R29-T05#3,PASS
+S06,25 concurrent same key (free-running),"1 release, all callers same result, no 500","201×25 (24 replayed), release=1 receipt=1",R29-T06#1-2; R29-W5,PASS
+S07,25 concurrent different keys (free-running),"1×201, 24×409, no 500","1×201, 24×409 PRODUCTION_ALREADY_RELEASED",R29-T06#3-4; R29-W4,PASS
+S08,25 different keys held at commit barrier (all passed every pre-check),in-transaction guard admits 1; 24×409; no 500; audit+1 only,arrivals=25; 1×201; 24×409; release=1 receipt=1 audit+1 (node:sqlite and workerd D1),R29-T06#6-7; R29-W8,PASS
+S09,25 same key held at commit barrier,1 commit; 24 guard losers answer with winner receipt,arrivals=25; 25×201 same id; 24 replayed,R29-T06#8,PASS
+S10,20 concurrent SAMPLE releases (release_no race),"contiguous release_no, losers 409, no 500, receipts=releases",1×201 + 19×409 RELEASE_CONFLICT; release_no=[1]; no gaps,R29-T06#5,PASS
+S11,New Style Version created inside commit window,"409 STALE_CANDIDATE, nothing written",409 STALE_CANDIDATE; counts unchanged (node + workerd),R29-T08#1; R29-W7,PASS
+S12,PP sample approval revoked inside commit window,409 STALE_CANDIDATE,409 STALE_CANDIDATE,R29-T08#2,PASS
+S13,Cost line added inside commit window,409 STALE_CANDIDATE,409 STALE_CANDIDATE,R29-T08#3,PASS
+S14,Competing release committed inside commit window,409 RELEASE_CONFLICT,409 RELEASE_CONFLICT,R29-T08#4,PASS
+S15,Newer version after stale attempt,"evaluated afresh, own candidate hash","201 with sourceVersionNo=new, candidateSha256 set",R29-T08#5,PASS
+S16,Retry after failed (non-receipted) attempt with same key,re-evaluates; commits once,201 after injected failure removed; receipts=1,R29-T07 retry rows,PASS
+S17,Tenant archive / maintenance / incident HOLD during commit,fail closed,no such state exists in product,—,BLOCKED_NO_HOLD_MODEL
+S18,Revocation of one specific session cookie during commit,fail closed,stateless HMAC sessions; only user deactivation/membership removal enforceable (both PASS),R29-T09 drift rows,BLOCKED_NO_SESSION_STORE
+S19,Same scenarios on remote Cloudflare D1,as above,not executed (no approved non-production remote D1),—,BLOCKED_ENV
