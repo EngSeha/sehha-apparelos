@@ -1,0 +1,16 @@
+id,actor_role,tenant,action,expected,actual,evidence
+A01,PLATFORM_ADMIN (DB flag) ,MOHSEN,create PRODUCTION release,201; authority.actorRole=PLATFORM_ADMIN from DB,201,"R29-T01, R29-T03#2"
+A02,WORKSPACE_OWNER of another tenant,MOHSEN style (direct id),create release,403,"403, 0 rows",R29-T09#1; round28 #16-17
+A03,DESIGN_PATTERN_MASTER (other actor) reusing victim key,same tenant,replay victim key,no original body,"409 PRODUCTION_ALREADY_RELEASED, no receiptId/manifest",R29-T09#2
+A04,Deactivated user with valid cookie,MOHSEN,create release,403 FORBIDDEN_ACTOR,403,R29-T09#3
+A05,Actor whose membership was removed,MOHSEN,replay own successful key,"403, no disclosure",403,R29-T09#4
+A06,Membership removed inside commit window,MOHSEN,create release,"403, zero writes",403 FORBIDDEN_ACTOR (node + workerd),R29-T09 drift; R29-W7
+A07,User deactivated inside commit window,MOHSEN,create release,"403, zero writes",403 FORBIDDEN_ACTOR,R29-T09 drift
+A08,"Cookie claims platformAdmin, DB flag revoked mid-request, no membership",MOHSEN,create release,"403, zero writes",403 FORBIDDEN_ACTOR,R29-T09 drift
+A09,Member while RELEASES entitlement disabled mid-request,MOHSEN,create release,"403, zero writes",403 FEATURE_NOT_LICENSED,R29-T09 drift
+A10,FACTORY_SUPERVISOR,MOHSEN,sign QC with userId in JSON,"403, no signoff","403, signoffs=0",R29-T03#4
+A11,Any caller,MOHSEN,send signoffs/approvedBy/actorRole/userId in release JSON,ignored,created_by and authority from session+DB; no spoofed values stored,R29-T03#2
+A12,Any member,MOHSEN,open Production Lot from SAMPLE release number,"409, no lot",409,R29-T14#1
+A13,Any member,MOHSEN,open lot here with another Style PRODUCTION release id/number,409,409,R29-T14#2
+A14,Any member,MOHSEN,signoff on non-existent release,404,404,R29-T14#4
+A15,Role-restricted release creation (e.g. only RELEASE_MANAGER may create PRODUCTION),—,—,not defined by product; any member may create a release (unchanged),—,OPEN_DECISION

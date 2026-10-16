@@ -8,8 +8,8 @@ import { seedEngineeringReady } from './test_helpers.mjs';
 const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'..');
 const realConsoleError=console.error;console.error=(...args)=>{if(process.env.VERBOSE_TEST==='1')realConsoleError(...args)};
 const db=new DatabaseSync(':memory:');
-for(const f of ['0001_init.sql','0002_ai_review_pattern.sql','0003_mohsen_master_bilingual.sql','0004_pattern_intelligence_grading.sql','0005_release_workflow.sql','0006_factory_collaboration.sql','0007_requirements_matrix.sql','0008_sample_fit_validation.sql','0009_costing_consumption.sql','0010_production_quality.sql','0011_production_planning.sql','0012_frozen_planning_basis.sql','0013_factory_operation_execution.sql','0014_reconciliation_concurrency.sql','0015_full_actual_cost.sql','0016_engineering_foundation.sql','0017_human_experience.sql','0018_human_qc.sql','0019_human_store.sql'])db.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
-class D1Mock{constructor(db){this.db=db}prepare(sql){const st=this.db.prepare(sql);return{bind:(...args)=>{const vals=args.map(v=>v===undefined?null:v);return{first:()=>st.get(...vals)||null,all:()=>({results:st.all(...vals)}),run:()=>{const r=st.run(...vals);return{success:true,meta:{changes:Number(r.changes||0)}}}}}}}}
+for(const f of ['0001_init.sql','0002_ai_review_pattern.sql','0003_mohsen_master_bilingual.sql','0004_pattern_intelligence_grading.sql','0005_release_workflow.sql','0006_factory_collaboration.sql','0007_requirements_matrix.sql','0008_sample_fit_validation.sql','0009_costing_consumption.sql','0010_production_quality.sql','0011_production_planning.sql','0012_frozen_planning_basis.sql','0013_factory_operation_execution.sql','0014_reconciliation_concurrency.sql','0015_full_actual_cost.sql','0016_engineering_foundation.sql','0017_human_experience.sql','0018_human_qc.sql','0019_human_store.sql','0020_release_atomicity.sql'])db.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
+class D1Mock{constructor(db){this.db=db}batch(list){this.db.exec('BEGIN');try{const out=list.map(x=>x.run());this.db.exec('COMMIT');return out}catch(e){this.db.exec('ROLLBACK');throw e}}prepare(sql){const st=this.db.prepare(sql);return{bind:(...args)=>{const vals=args.map(v=>v===undefined?null:v);return{first:()=>st.get(...vals)||null,all:()=>({results:st.all(...vals)}),run:()=>{const r=st.run(...vals);return{success:true,meta:{changes:Number(r.changes||0)}}}}}}}}
 class R2Object{constructor(bytes,meta={}){this.bytes=bytes;this.meta=meta;this.httpEtag='test-etag';this.body=bytes}async arrayBuffer(){return this.bytes.buffer.slice(this.bytes.byteOffset,this.bytes.byteOffset+this.bytes.byteLength)}writeHttpMetadata(h){if(this.meta?.httpMetadata?.contentType)h.set('content-type',this.meta.httpMetadata.contentType)}}
 class R2Mock{constructor(){this.map=new Map()}async put(k,bytes,meta){this.map.set(k,new R2Object(new Uint8Array(bytes),meta));return{}}async get(k){return this.map.get(k)||null}}
 const demo=readFileSync(resolve(root,'public','demo_jk001_reference.png'));
@@ -22,7 +22,7 @@ function ok(cond,msg){if(!cond)throw new Error('ASSERT: '+msg);console.log('PASS
 // Bootstrap and Preview 07 health.
 await call('/api/me',{cookieOverride:''});
 let x=await call('/api/auth/login',{method:'POST',body:{email:'dev@sehha.local',password:env.DEV_BOOTSTRAP_PASSWORD},cookieOverride:''});ok(x.r.status===200,'developer login');cookie=(x.r.headers.get('set-cookie')||'').split(';')[0];
-x=await call('/api/health');ok(x.r.status===200&&x.data.schemaVersion==='21'&&x.data.version==='0.21.0-cloudflare','Preview 21 health/schema');
+x=await call('/api/health');ok(x.r.status===200&&x.data.schemaVersion==='22'&&x.data.version==='0.21.0-cloudflare','Preview 21 health/schema');
 x=await call('/api/me');const mohsen=x.data.workspaces.find(w=>w.code==='MOHSEN');ok(Boolean(mohsen),'MOHSEN workspace');
 x=await call(`/api/styles?orgId=${mohsen.id}`);const style=x.data.items.find(s=>s.code==='MFD-WJ-001');ok(Boolean(style),'MFD-WJ-001 seed');
 
@@ -42,9 +42,9 @@ db.prepare("UPDATE pattern_pieces SET grainline=CASE WHEN code='T01' THEN 'N/A' 
 const ts=new Date().toISOString();db.prepare("INSERT INTO pattern_links(id,style_id,from_code,to_code,relation,label,label_en,provenance,state,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)").run('pl_b07',style.id,'P01','P02','SEAM_JOIN','Assembly relation','Assembly relation','USER_CONFIRMED','APPROVED',ts,ts);
 
 // Freeze and release R1 through real APIs.
-x=await call(`/api/styles/${style.id}/versions`,{method:'POST',body:{label:'Batch07 Production Candidate R1'}});ok(x.r.status===201&&x.data.versionNo===1,'Production candidate V1 created');
+seedEngineeringReady(db,style.id);x=await call(`/api/styles/${style.id}/versions`,{method:'POST',body:{label:'Batch07 Production Candidate R1'}});ok(x.r.status===201&&x.data.versionNo===1,'Production candidate V1 created');
 x=await call(`/api/styles/${style.id}/release-gate?type=PRODUCTION`);ok(x.r.status===200&&x.data.ready===true,'Production gate ready after explicit approvals');
-seedEngineeringReady(db,style.id);x=await call(`/api/styles/${style.id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:1,note:'Batch07 factory handoff R1'}});ok(x.r.status===201&&x.data.releaseNo===1,'Production R1 created');
+x=await call(`/api/styles/${style.id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:1,note:'Batch07 factory handoff R1'}});ok(x.r.status===201&&x.data.releaseNo===1,'Production R1 created');
 
 // Release-scoped critical review blocks handoff even when the technical release exists.
 x=await call(`/api/styles/${style.id}/reviews`,{method:'POST',body:{releaseNo:1,severity:'CRITICAL',category:'QUALITY',title:'Factory sample seam check',description:'Hold handoff until sample seam is signed off',fieldRef:'QC:SEAM',pageNo:19}});ok(x.r.status===201,'Critical release review created');const criticalReviewId=x.data.id;
@@ -58,7 +58,7 @@ x=await call(`/api/styles/${style.id}/releases/1/handoff`);ok(x.r.status===200&&
 
 // Build R2 with a BOM change and prove semantic release comparison flags technical review risk.
 x=await call(`/api/styles/${style.id}/bom`,{method:'POST',body:{code:'B01',category:'SHELL',name:'القماش الخارجي',nameEn:'Main fabric',specification:'Approved production material fixture REV-B',specificationEn:'Approved production material fixture REV-B',qty:1,unit:'style',status:'APPROVED',provenance:'USER_CONFIRMED',sortOrder:0}});ok(x.r.status===200,'Approved BOM revision applied');
-x=await call(`/api/styles/${style.id}/versions`,{method:'POST',body:{label:'Batch07 Production Candidate R2'}});ok(x.r.status===201&&x.data.versionNo===2,'Production candidate V2 created');
+seedEngineeringReady(db,style.id);x=await call(`/api/styles/${style.id}/versions`,{method:'POST',body:{label:'Batch07 Production Candidate R2'}});ok(x.r.status===201&&x.data.versionNo===2,'Production candidate V2 created');
 x=await call(`/api/styles/${style.id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:2,note:'Batch07 release compare R2'}});ok(x.r.status===201&&x.data.releaseNo===2,'Production R2 created');
 x=await call(`/api/styles/${style.id}/releases/compare?from=1&to=2`);ok(x.r.status===200&&x.data.diff.domains.bom.some(d=>d.key==='B01'&&d.kind==='CHANGED'),'Release-to-release semantic diff detects BOM change');ok(x.data.risk.level==='REVIEW_REQUIRED'&&x.data.risk.technicalDomains.some(d=>d.domain==='bom'),'Technical release change requires review');
 x=await call(`/api/styles/${style.id}/releases/2/handoff`);ok(x.r.status===200&&x.data.change?.fromRelease===1&&x.data.change.risk.level==='REVIEW_REQUIRED','Handoff carries previous-release change risk');

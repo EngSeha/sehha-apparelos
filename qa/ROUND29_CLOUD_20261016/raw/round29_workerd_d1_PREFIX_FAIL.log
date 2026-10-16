@@ -1,0 +1,17 @@
+PASS R29-W1 wrangler local upgrade 21→22 over historical duplicate PRODUCTION rows; rows unchanged; 7 objects present
+PASS R29-W1 re-running wrangler migrations is a no-op (applied migrations are recorded)
+PASS R29-W2 worker on workerd D1 reports schema 22
+PASS R29-W3 production release commits release+receipt+status+audit on workerd D1
+PASS R29-W3 same-key replay on workerd D1 adds nothing
+PASS R29-W3 same key + different payload is 409 on workerd D1
+PASS R29-W3 immutability triggers fire on workerd D1
+EVIDENCE {"scenario":"W3","releases":1,"receipts":1,"audits":1,"status":"PRODUCTION_RELEASED"}
+PASS R29-W4 25 concurrent different-key requests on workerd D1: one commit, no 500
+EVIDENCE {"scenario":"W4","statuses":{"201":1,"409":24},"codes":{"PRODUCTION_ALREADY_RELEASED":24},"releases":1,"receipts":1,"audits":2,"status":"PRODUCTION_RELEASED"}
+PASS R29-W5 25 concurrent same-key requests on workerd D1: one release, identical responses
+EVIDENCE {"scenario":"W5","statuses":{"201":25},"replayed":24,"releases":1,"receipts":1,"audits":3,"status":"PRODUCTION_RELEASED"}
+PASS R29-W8 barrier race on workerd D1 (25/25 at commit): in-transaction guard admits exactly one, 24×409, no 500
+EVIDENCE {"scenario":"W8","arrivals":25,"statuses":{"201":1,"409":24},"codes":{"PRODUCTION_ALREADY_RELEASED":24},"releases":1,"receipts":1,"audits":4,"status":"PRODUCTION_RELEASED"}
+EVIDENCE {"scenario":"W9","a":201,"b":409,"bCode":"PRODUCTION_ALREADY_RELEASED","releases":1,"receipts":1,"audits":5,"status":"PRODUCTION_RELEASED"}
+export function ok(c,m){if(!c)throw new Error('ASSERT: '+m);console.log('PASS',m)}
+Error: ASSERT: R29-W9 same-key request overtaken by the original before its pre-check replays the original on workerd D1
