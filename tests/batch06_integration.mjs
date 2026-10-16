@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import worker from '../src/worker.js';
+import { seedEngineeringReady } from './test_helpers.mjs';
 
 const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'..');
 const realConsoleError=console.error;console.error=(...args)=>{if(process.env.VERBOSE_TEST==='1')realConsoleError(...args)};
@@ -92,7 +93,7 @@ x=await call(`/api/styles/${style.id}/pattern-links`,{method:'POST',body:{fromCo
 x=await call(`/api/styles/${style.id}/pattern-validation`);ok(x.r.status===200&&x.data.ready===true&&x.data.errors.length===0&&x.data.warnings.length===0,'Pattern validation closes all production blockers');
 x=await call(`/api/styles/${style.id}/versions`,{method:'POST',body:{label:'Batch06 Production Candidate'}});ok(x.r.status===201&&x.data.versionNo===2,'Production candidate Version V2 created');
 x=await call(`/api/styles/${style.id}/release-gate?type=PRODUCTION`);ok(x.r.status===200&&x.data.ready===true&&x.data.blockerCount===0,'Production gate becomes READY after explicit human approvals');
-x=await call(`/api/styles/${style.id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:2,note:'Batch06 production closure proof'}});ok(x.r.status===201&&x.data.releaseType==='PRODUCTION'&&x.data.releaseNo===2&&x.data.gate.ready===true,'Production Release succeeds from frozen V2');
+seedEngineeringReady(db,style.id);x=await call(`/api/styles/${style.id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:2,note:'Batch06 production closure proof'}});ok(x.r.status===201&&x.data.releaseType==='PRODUCTION'&&x.data.releaseNo===2&&x.data.gate.ready===true,'Production Release succeeds from frozen V2');
 x=await call(`/api/styles/${style.id}/releases/2/output?profile=mohsen_techpack`);ok(x.r.status===200&&(x.data.match(/class="tp-page/g)||[]).length===20,'Frozen Production Release renders exactly 20 pages');
 
 // Audit captures workflow actions.

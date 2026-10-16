@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import worker from '../src/worker.js';
+import { seedEngineeringReady } from './test_helpers.mjs';
 const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'..'),db=new DatabaseSync(':memory:');
 const realConsoleError=console.error;console.error=(...args)=>{if(process.env.VERBOSE_TEST==='1')realConsoleError(...args)};
 for(const f of ['0001_init.sql','0002_ai_review_pattern.sql','0003_mohsen_master_bilingual.sql','0004_pattern_intelligence_grading.sql','0005_release_workflow.sql','0006_factory_collaboration.sql','0007_requirements_matrix.sql'])db.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
@@ -33,7 +34,7 @@ const patterns=[
 for(let i=0;i<patterns.length;i++){const [code,name,nameEn,qty,mirror,onFold,grainline]=patterns[i];await call(`/api/styles/${st.id}/patterns`,{method:'POST',body:{code,name,nameEn,qty,mirror,onFold,grainline,note:'Approved production render fixture',noteEn:'Approved production render fixture',provenance:'USER_CONFIRMED',state:'APPROVED',sortOrder:i}});}
 await call(`/api/styles/${st.id}/pattern-links`,{method:'POST',body:{fromCode:'P01',toCode:'P02',relation:'SEAM_JOIN',label:'Approved assembly relationship',labelEn:'Approved assembly relationship',provenance:'USER_CONFIRMED',state:'APPROVED'}});
 x=await call(`/api/styles/${st.id}/versions`,{method:'POST',body:{label:'Production Visual Proof'}});const versionNo=x.data.versionNo;
-x=await call(`/api/styles/${st.id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:versionNo,note:'Production visual proof'}});const rel=x.data.releaseNo;
+seedEngineeringReady(db,st.id);x=await call(`/api/styles/${st.id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:versionNo,note:'Production visual proof'}});const rel=x.data.releaseNo;
 const frozen=(await call(`/api/styles/${st.id}/releases/${rel}/output?profile=mohsen_techpack`)).data;
 const manifest=(await call(`/api/styles/${st.id}/releases/${rel}/manifest`)).data;
 writeFileSync('/mnt/data/BATCH06_FROZEN_RELEASE_TECHPACK.html',frozen);writeFileSync('/mnt/data/BATCH06_RELEASE_MANIFEST.json',JSON.stringify(manifest,null,2));

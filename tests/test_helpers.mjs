@@ -18,3 +18,17 @@ export function makeHarness(){
  return {db,env,call,login,get cookie(){return cookie}};
 }
 export function ok(c,m){if(!c)throw new Error('ASSERT: '+m);console.log('PASS',m)}
+// Fixture: a fully approved engineering bundle so legacy production-release scenarios satisfy the engineering readiness gate.
+// Direct DB seeding is a fixture shortcut only; production code paths go through the approval API.
+export function seedEngineeringReady(db,styleId,{skip=[]}={}){
+ const ts=new Date().toISOString(),has=k=>!skip.includes(k);
+ db.prepare("UPDATE styles SET base_size=COALESCE(base_size,'M') WHERE id=?").run(styleId);
+ db.prepare("UPDATE measurements SET tolerance_plus=COALESCE(tolerance_plus,1),tolerance_minus=COALESCE(tolerance_minus,1) WHERE style_id=?").run(styleId);
+ db.prepare("UPDATE bom_items SET qty=COALESCE(qty,1) WHERE style_id=?").run(styleId);
+ if(has('fabric'))db.prepare("INSERT OR REPLACE INTO fabric_specifications(id,style_id,code,name_en,composition,construction,width_cm,usable_width_cm,purchase_unit,cutting_unit,shrinkage_warp_pct,defect_allowance_pct,direction_rule,state,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").run('fab_'+styleId,styleId,'F1','Shell','100% Cotton','Twill',150,140,'m','m',2,1,'TWO_WAY','APPROVED',ts,ts);
+ if(has('trim'))db.prepare("INSERT OR REPLACE INTO trim_specifications(id,style_id,code,trim_type,name_en,placement,quantity,unit,state,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)").run('trm_'+styleId,styleId,'T1','BUTTON','Button','Front',5,'pcs','APPROVED',ts,ts);
+ if(has('pattern'))db.prepare("INSERT OR REPLACE INTO pattern_piece_specs(id,style_id,code,name_en,size_code,cut_qty,material_code,grain_direction,seam_allowance_cm,state,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)").run('ppc_'+styleId,styleId,'PC1','Front','M',2,'F1','STRAIGHT',1,'APPROVED',ts,ts);
+ if(has('marker'))db.prepare("INSERT OR REPLACE INTO marker_plans(id,style_id,code,fabric_code,size_ratio_json,marker_length_m,usable_width_cm,plies,wastage_pct,layout_json,state,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)").run('mrk_'+styleId,styleId,'MK1','F1','{"M":1}',2.5,140,10,3,'{"direction":"TWO_WAY"}','APPROVED',ts,ts);
+ if(has('routing'))db.prepare("INSERT OR REPLACE INTO routing_steps(id,style_id,code,sequence_no,department,name_en,machine,qc_checkpoint,state,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)").run('rte_'+styleId,styleId,'R1',1,'SEWING','Assembly','SN','Seam check','APPROVED',ts,ts);
+ if(has('pp'))db.prepare("INSERT OR REPLACE INTO sample_rounds(id,style_id,version_no,round_no,sample_type,status,spec_snapshot_json,created_by,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?)").run('smp_pp_'+styleId,styleId,999,900,'PP','APPROVED','{}','fixture',ts,ts);
+}

@@ -85,4 +85,6 @@ export async function engineeringRoute(request,env,ctx){const url=new URL(reques
   if(request.method==='PUT'&&DOMAIN[domain]&&key){const body=await ctx.requestBody(request),updated=await upsert(env,{...ctx,userId:session.userId,session},style,domain,key,body);return response(updated);}
   return response({error:'Engineering route not found'},404);
 }
+// Authority used by the frozen production release path: live engineering records must be release-eligible.
+export async function engineeringReleaseGate(env,style){const b=await bundleFor(env,style);return {...b.readiness,checkedAt:stamp(),basis:'LIVE_ENGINEERING_RECORDS'};}
 export {materialRequirement,routingValidation,readiness};
