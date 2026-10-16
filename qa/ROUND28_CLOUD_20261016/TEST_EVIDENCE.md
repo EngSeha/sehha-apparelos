@@ -1,0 +1,4 @@
+# Test evidence
+New suite: tests/round28_engineering_release_gate.mjs (17 assertions): legacy gate ready but engineering BLOCKED → 409, no release row, style status unchanged; SAMPLE release unaffected; per-domain negative matrix (fabric, trim, pattern, marker, routing→QC_PLAN_MISSING); DRAFT fabric blocks; eligible → 201 with frozen evidence in gate_json/snapshot; later edits do not alter frozen evidence; cross-tenant 403 and no row.
+Legacy suites that create PRODUCTION releases through the API (batch06 x2, batch07, batch13_release_evidence) now seed an approved engineering bundle via tests/test_helpers.mjs:seedEngineeringReady (fixture shortcut; assertions unchanged, none weakened).
+Totals: npm test = 25 suites, 556 assertions (539 baseline + 17 new). Single run counted per file; assertions are unique PASS lines.

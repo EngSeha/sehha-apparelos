@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import worker from '../src/worker.js';
+import { seedEngineeringReady } from './test_helpers.mjs';
 
 const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'..');
 const realConsoleError=console.error;console.error=(...args)=>{if(process.env.VERBOSE_TEST==='1')realConsoleError(...args)};
@@ -43,7 +44,7 @@ const ts=new Date().toISOString();db.prepare("INSERT INTO pattern_links(id,style
 // Freeze and release R1 through real APIs.
 x=await call(`/api/styles/${style.id}/versions`,{method:'POST',body:{label:'Batch07 Production Candidate R1'}});ok(x.r.status===201&&x.data.versionNo===1,'Production candidate V1 created');
 x=await call(`/api/styles/${style.id}/release-gate?type=PRODUCTION`);ok(x.r.status===200&&x.data.ready===true,'Production gate ready after explicit approvals');
-x=await call(`/api/styles/${style.id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:1,note:'Batch07 factory handoff R1'}});ok(x.r.status===201&&x.data.releaseNo===1,'Production R1 created');
+seedEngineeringReady(db,style.id);x=await call(`/api/styles/${style.id}/releases`,{method:'POST',body:{releaseType:'PRODUCTION',sourceVersionNo:1,note:'Batch07 factory handoff R1'}});ok(x.r.status===201&&x.data.releaseNo===1,'Production R1 created');
 
 // Release-scoped critical review blocks handoff even when the technical release exists.
 x=await call(`/api/styles/${style.id}/reviews`,{method:'POST',body:{releaseNo:1,severity:'CRITICAL',category:'QUALITY',title:'Factory sample seam check',description:'Hold handoff until sample seam is signed off',fieldRef:'QC:SEAM',pageNo:19}});ok(x.r.status===201,'Critical release review created');const criticalReviewId=x.data.id;
