@@ -1,0 +1,51 @@
+{
+ "base": "http://127.0.0.1:8797",
+ "styleId": "sty_d962c33dcb055832ccf18ea0",
+ "releaseNo": 1,
+ "results": [
+  {
+   "check": "Empty state shown before any package is prepared",
+   "result": "PASS"
+  },
+  {
+   "check": "Double-click on “تجهيز حزمة تسليم” sends exactly one request and creates one package",
+   "result": "PASS"
+  },
+  {
+   "check": "Every handoff command carries an Idempotency-Key",
+   "result": "PASS"
+  },
+  {
+   "check": "Stale screen: withdrawing a package already dispatched elsewhere shows the Arabic 409 message",
+   "result": "PASS"
+  },
+  {
+   "check": "After the 409 the panel reloads the persisted state (HANDED_OFF), nothing was withdrawn",
+   "result": "PASS"
+  },
+  {
+   "check": "Dispatcher sees the acknowledge control (server will still refuse self-acknowledgement)",
+   "result": "PASS"
+  },
+  {
+   "check": "Self-acknowledgement is refused with an Arabic 403 message and no receipt is implied",
+   "result": "PASS"
+  },
+  {
+   "check": "Clicking “عرض” opens the frozen Arabic RTL package carrying its SHA-256",
+   "result": "PASS"
+  },
+  {
+   "check": "Page is RTL",
+   "result": "PASS"
+  },
+  {
+   "check": "A different authorized user acknowledges; success message appears only with the persisted ACK",
+   "result": "PASS"
+  },
+  {
+   "check": "Panel states that receipt is not a QC signoff or lot approval",
+   "result": "PASS"
+  }
+ ]
+}

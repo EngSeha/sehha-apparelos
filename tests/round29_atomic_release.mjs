@@ -114,7 +114,8 @@ for(const [label,mutate,code] of [
  x=await rel(id,{releaseType:'PRODUCTION',sourceVersionNo:v},{key,cookie:outsider});ok(x.r.status===403&&counts(id).releases===0,'R29-T09 direct style-id attack from another tenant is 403');
  const member=await userWith('u_mem_t09',{role:'DESIGN_PATTERN_MASTER'});const r1=await rel(id,{releaseType:'PRODUCTION',sourceVersionNo:v},{key});
  x=await rel(id,{releaseType:'PRODUCTION',sourceVersionNo:v},{key,cookie:member});ok(r1.r.status===201&&x.r.status===409&&x.data.code==='PRODUCTION_ALREADY_RELEASED'&&!x.data.receiptId&&!x.data.manifest,'R29-T09 another actor reusing the same key never receives the original response');
- db.prepare("UPDATE users SET active=0 WHERE id='u_mem_t09'").run();const s2=await readyStyle('T09c');x=await rel(s2.id,{releaseType:'PRODUCTION',sourceVersionNo:s2.v},{cookie:member});ok(x.r.status===403&&x.data.code==='FORBIDDEN_ACTOR'&&counts(s2.id).releases===0,'R29-T09 deactivated user with a still-valid session cookie is refused');}
+ db.prepare("UPDATE users SET active=0 WHERE id='u_mem_t09'").run();const s2=await readyStyle('T09c');x=await rel(s2.id,{releaseType:'PRODUCTION',sourceVersionNo:s2.v},{cookie:member});// ROUND30: refused earlier and globally by requireAuth (401 ACCOUNT_DISABLED) instead of 403 inside the release command.
+ ok(x.r.status===401&&x.data.code==='ACCOUNT_DISABLED'&&counts(s2.id).releases===0,'R29-T09 deactivated user with a still-valid session cookie is refused');}
 {const actor=await userWith('u_act_t09',{role:'DESIGN_PATTERN_MASTER'});const key='r29-t09-replay-revoked';const s=await readyStyle('T09d');x=await rel(s.id,{releaseType:'PRODUCTION',sourceVersionNo:s.v},{key,cookie:actor});
  db.prepare("DELETE FROM memberships WHERE user_id='u_act_t09'").run();const y=await rel(s.id,{releaseType:'PRODUCTION',sourceVersionNo:s.v},{key,cookie:actor});ok(x.r.status===201&&y.r.status===403&&!y.data.manifest,'R29-T09 replay after membership revocation discloses nothing (403)');}
 for(const [label,setup,mutate,code,status] of [
@@ -175,7 +176,7 @@ for(const [label,setup,mutate,code,status] of [
 
 // T15 migrations: fresh install, upgrade from baseline with historical duplicates, failed repeat leaves data intact.
 {const files=readdirSync(resolve(root,'migrations')).filter(f=>f.endsWith('.sql')).sort(),base=files.filter(f=>f<'0020'),m20=readFileSync(resolve(root,'migrations','0020_release_atomicity.sql'),'utf8');
- const fresh=new DatabaseSync(':memory:');for(const f of files)fresh.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
+ const fresh=new DatabaseSync(':memory:');for(const f of files.filter(f=>f<'0021'))fresh.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
  const names=fresh.prepare("SELECT type,name FROM sqlite_master WHERE name IN ('release_receipts','uq_style_releases_production_candidate','trg_style_releases_contract_immutable','trg_style_releases_contract_no_delete','trg_release_receipts_immutable','trg_release_receipts_no_delete','trg_style_versions_snapshot_immutable')").all();
  ok(fresh.prepare("SELECT value FROM app_meta WHERE key='schema_version'").get().value==='22'&&names.length===7,'R29-T15 fresh install reaches schema 22 with table, partial unique index and 5 triggers');
  const old=new DatabaseSync(':memory:');for(const f of base)old.exec(readFileSync(resolve(root,'migrations',f),'utf8'));const ts=new Date().toISOString();

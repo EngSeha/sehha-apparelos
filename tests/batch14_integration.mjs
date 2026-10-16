@@ -1,4 +1,4 @@
-import {makeHarness,ok} from './test_helpers.mjs';
+import {makeHarness,ok,admitReleasesForLotFixtures} from './test_helpers.mjs';
 const {db,call,login}=makeHarness();await login();let x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
 // create style with one size band + one colorway so planning matrix is required
 x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'PLAN-014',name:'Production Planning Test',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD'}});const id=x.data.id;
@@ -10,7 +10,7 @@ db.prepare("INSERT INTO cost_sheets(id,style_id,version_no,name,currency,status,
 db.prepare("INSERT INTO cost_lines(id,cost_sheet_id,source_type,source_ref,description,qty,unit,unit_cost,waste_pct,line_total,created_by,updated_by,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)").run('cl14','cs14','BOM','B01','Main fabric',1.8,'m',100,5,189,uid,uid,ts,ts);
 // freeze a production release containing dimensions; version/source no 1 is enough for planning test
 const frozen={style:{id,org_id:org.id,code:'PLAN-014',name:'Production Planning Test'},sizeBands:[{code:'M'}],colorways:[{code:'BLACK'}],measurements:[],bom:[],operations:[],patternPieces:[],patternLinks:[],requirements:[],assets:[],dna:[],gradingRules:[],annotations:[],samples:[],costSheets:[]};
-db.prepare("INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)").run('rel14',id,1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}',JSON.stringify(frozen),uid,ts);
+db.prepare("INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)").run('rel14',id,1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}',JSON.stringify(frozen),uid,ts);admitReleasesForLotFixtures(db);
 x=await call(`/api/styles/${id}/production-lots`,{method:'POST',body:{releaseNo:1,lotCode:'LOT-PLAN',plannedQty:100}});ok(x.r.status===201,'production lot created with planned quantity');const lid=x.data.lot.id;
 ok(x.data.planning.planningGate.ready===false&&x.data.planning.planningGate.blockers.some(b=>b.includes('breakdown')),'dimensioned release requires size/color breakdown');
 x=await call(`/api/styles/${id}/production-lots/${lid}/release`,{method:'POST',body:{}});ok(x.r.status===409,'lot release blocked while production plan incomplete');

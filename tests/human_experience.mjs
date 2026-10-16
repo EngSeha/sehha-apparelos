@@ -1,4 +1,4 @@
-import {makeHarness,ok} from './test_helpers.mjs';
+import {makeHarness,ok,admitReleasesForLotFixtures} from './test_helpers.mjs';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
@@ -14,7 +14,7 @@ for(const [name,expected] of [['cut','SIMPLE'],['sew','SIMPLE'],['qc','SIMPLE'],
 
 x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'HUMAN-01',name:'Human test style',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD'}});const styleId=x.data.id;
 const frozen={style:{id:styleId,org_id:org.id,code:'HUMAN-01',name:'Human test style'},sizeBands:[],colorways:[],measurements:[],bom:[],operations:[{seq:1,name:'خياطة الجنب',name_en:'Side seam'}],patternPieces:[],patternLinks:[],requirements:[],assets:[],dna:[],gradingRules:[],annotations:[],samples:[],costSheets:[]};
-db.prepare('INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run('hrel',styleId,1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}',JSON.stringify(frozen),admin.id,ts);
+db.prepare('INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run('hrel',styleId,1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}',JSON.stringify(frozen),admin.id,ts);admitReleasesForLotFixtures(db);
 x=await call(`/api/styles/${styleId}/production-lots`,{method:'POST',body:{releaseNo:1,lotCode:'HUMAN-LOT',plannedQty:100}});const lotId=x.data.lot.id;
 x=await call(`/api/styles/${styleId}/production-lots/${lotId}/operations/sync`,{method:'POST',body:{expectedVersion:x.data.lot.row_version}});ok(x.r.status===200,'existing production contract prepares operation');
 let y=await call(`/api/styles/${styleId}/production-lots/${lotId}/operations/1`,{method:'PATCH',body:{completedQty:50,expectedVersion:x.data.lot.row_version},cookieOverride:cookies.sew});ok(y.r.status===403,'worker cannot use professional operation mutation');

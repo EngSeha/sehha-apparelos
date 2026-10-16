@@ -1,4 +1,4 @@
-import {makeHarness,ok} from './test_helpers.mjs';
+import {makeHarness,ok,admitReleasesForLotFixtures} from './test_helpers.mjs';
 
 const {db,env,call,login}=makeHarness();await login();let x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN'),admin=db.prepare("SELECT * FROM users WHERE email='dev@sehha.local'").get(),ts=new Date().toISOString();
 db.prepare('INSERT INTO users(id,email,display_name,password_hash,password_salt,created_at) VALUES(?,?,?,?,?,?)').run('u_store','store@local.test','Store Clerk',admin.password_hash,admin.password_salt,ts);
@@ -6,7 +6,7 @@ db.prepare('INSERT INTO memberships(user_id,org_id,role) VALUES(?,?,?)').run('u_
 x=await call('/api/auth/login',{method:'POST',body:{email:'store@local.test',password:env.DEV_BOOTSTRAP_PASSWORD},cookieOverride:''});const storeCookie=(x.r.headers.get('set-cookie')||'').split(';')[0];ok(x.r.status===200,'store demo login');
 x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'STORE-HUMAN-01',name:'Guided store style',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD'}});const styleId=x.data.id;
 const frozen={style:{id:styleId,org_id:org.id,code:'STORE-HUMAN-01',name:'Guided store style'},sizeBands:[],colorways:[],measurements:[],bom:[],operations:[],patternPieces:[],patternLinks:[],requirements:[],assets:[],dna:[],gradingRules:[],annotations:[],samples:[],costSheets:[]};
-db.prepare('INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run('srel',styleId,1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}',JSON.stringify(frozen),admin.id,ts);
+db.prepare('INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run('srel',styleId,1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}',JSON.stringify(frozen),admin.id,ts);admitReleasesForLotFixtures(db);
 db.prepare('INSERT INTO cost_sheets(id,style_id,version_no,name,currency,status,labor_cost,overhead_pct,waste_pct,note,created_by,approved_by,created_at,updated_at,approved_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)').run('scost',styleId,1,'Approved Fabric','EGP','APPROVED',25,10,5,null,admin.id,admin.id,ts,ts,ts);
 db.prepare('INSERT INTO cost_lines(id,cost_sheet_id,source_type,source_ref,description,qty,unit,unit_cost,waste_pct,line_total,note,created_by,updated_by,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)').run('sline','scost','BOM','FABRIC-A','قماش رئيسي',1.8,'m',100,5,189,null,admin.id,admin.id,ts,ts);
 x=await call(`/api/styles/${styleId}/production-lots`,{method:'POST',body:{releaseNo:1,lotCode:'STORE-HUMAN-LOT',plannedQty:100}});const lotId=x.data.lot.id;ok(x.r.status===201,'production lot freezes approved material requirement');

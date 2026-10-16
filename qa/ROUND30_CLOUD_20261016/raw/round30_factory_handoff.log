@@ -1,0 +1,97 @@
+PASS R30-T01 computed handoff summary is READY with independent signoffs and frozen evidence
+PASS R30-T01 RELEASE_MANAGER prepares a frozen package from the latest frozen release
+PASS R30-T01 dispatch PREPARED -> HANDED_OFF
+PASS R30-T01 factory supervisor acknowledges HANDED_OFF -> ACKNOWLEDGED
+PASS R30-T01 three commands -> exactly three events, receipts and audit rows
+PASS R30-T01 package served with ETag = SHA-256 of the frozen bytes, 4 frozen signoffs, release hashes, HOLD gap explicit
+PASS R30-T01 If-None-Match with the package hash returns 304
+PASS R30-T01 Arabic RTL HTML rendering of the frozen package carries its hash and the ACK-is-not-QC notice
+PASS R30-T01 acknowledged handoff seeds a Production Lot with handoff provenance
+EVIDENCE {"scenario":"T01","handoffs":1,"events":3,"receipts":3,"audits":3,"states":"ACKNOWLEDGED","packageSha256":"9820653b03fd0117f0725baa23b810c4ae38e7476818ed86dfb7d8041f1b5447"}
+PASS R30-T02 legacy PRODUCTION release cannot be prepared for handoff
+PASS R30-T02 legacy release cannot open a new Production Lot
+PASS R30-T02 existing legacy lot stays readable and is flagged for separate review
+PASS R30-T02 legacy release and lot rows are byte-identical (no backfill, no deletion)
+PASS R30-T03 withdrawal without a real reason is 422
+PASS R30-T03 PREPARED -> WITHDRAWN with reason
+PASS R30-T03 withdrawn package bytes and hash unchanged, reason recorded
+PASS R30-T03 a withdrawn package cannot be dispatched
+PASS R30-T03 a new package can be prepared after withdrawal (old one kept)
+PASS R30-T03 withdrawal after dispatch is refused
+PASS R30-T03 no hard delete of handoff history
+PASS R30-T04 dispatch of a PREPARED package on a superseded release is refused
+PASS R30-T04 preparing a package for a superseded release is refused
+PASS R30-T04 handoff list marks superseded packages and never returns package bytes
+PASS R30-T04 acknowledged package of an older release stays readable and hash-stable after a newer release
+PASS R30-T05 prepare replay returns the original 201 body with no new rows
+PASS R30-T05 dispatch replay after the state advanced returns the original body
+PASS R30-T05 acknowledge replay: 3 events / 3 receipts total
+PASS R30-T05 withdraw replay returns the original body with no new rows
+EVIDENCE {"scenario":"T05","prepareDispatchAck":{"handoffs":1,"events":3,"receipts":3,"audits":3,"states":"ACKNOWLEDGED"},"withdraw":{"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"WITHDRAWN"}}
+PASS R30-T06 same key with a different withdrawal reason is 409 with no writes
+PASS R30-T06 another actor reusing a key gets their own command, never the original response
+PASS R30-T06 a foreign-tenant actor reusing the key is refused with no disclosure
+PASS R30-T06 malformed key is 400
+PASS R30-T07 25 concurrent prepares (25/25 at commit): one package, 24×409, no 500, single evidence set
+EVIDENCE {"scenario":"T07-prepare","arrivals":25,"statuses":{"201":1,"409":24},"codes":{"HANDOFF_ALREADY_EXISTS":24},"handoffs":1,"events":1,"receipts":1,"audits":1,"states":"PREPARED"}
+PASS R30-T07 25 concurrent dispatches: one transition, 24×409, events=2
+EVIDENCE {"scenario":"T07-dispatch","statuses":{"200":1,"409":24},"codes":{"INVALID_STATE":24},"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"HANDED_OFF"}
+PASS R30-T07 20 concurrent same-key acknowledgements: one event, 19 replays of the winner
+PASS R30-T07 dispatch vs withdraw race: exactly one winner, consistent final state
+EVIDENCE {"scenario":"T07-dispatch-vs-withdraw","statuses":{"200":1,"409":23},"final":"WITHDRAWN","handoffs":1,"events":2,"receipts":2,"audits":2,"states":"WITHDRAWN"}
+PASS R30-T08 failure at factory_handoffs INSERT: sanitized 500 with correlation id
+PASS R30-T08 failure at factory_handoffs INSERT: no partial state, event, receipt or audit
+PASS R30-T08 failure at factory_handoffs INSERT: same-key retry commits exactly once
+EVIDENCE {"scenario":"T08","injectedAt":"factory_handoffs INSERT","before":{"handoffs":0,"events":0,"receipts":0,"audits":0,"states":""},"after":{"handoffs":0,"events":0,"receipts":0,"audits":0,"states":""},"afterRetry":{"handoffs":1,"events":1,"receipts":1,"audits":1,"states":"PREPARED"}}
+PASS R30-T08 failure at factory_handoff_events INSERT: sanitized 500 with correlation id
+PASS R30-T08 failure at factory_handoff_events INSERT: no partial state, event, receipt or audit
+PASS R30-T08 failure at factory_handoff_events INSERT: same-key retry commits exactly once
+EVIDENCE {"scenario":"T08","injectedAt":"factory_handoff_events INSERT","before":{"handoffs":0,"events":0,"receipts":0,"audits":0,"states":""},"after":{"handoffs":0,"events":0,"receipts":0,"audits":0,"states":""},"afterRetry":{"handoffs":1,"events":1,"receipts":1,"audits":1,"states":"PREPARED"}}
+PASS R30-T08 failure at handoff_receipts INSERT: sanitized 500 with correlation id
+PASS R30-T08 failure at handoff_receipts INSERT: no partial state, event, receipt or audit
+PASS R30-T08 failure at handoff_receipts INSERT: same-key retry commits exactly once
+EVIDENCE {"scenario":"T08","injectedAt":"handoff_receipts INSERT","before":{"handoffs":0,"events":0,"receipts":0,"audits":0,"states":""},"after":{"handoffs":0,"events":0,"receipts":0,"audits":0,"states":""},"afterRetry":{"handoffs":1,"events":1,"receipts":1,"audits":1,"states":"PREPARED"}}
+PASS R30-T08 failure at audit_log INSERT: sanitized 500 with correlation id
+PASS R30-T08 failure at audit_log INSERT: no partial state, event, receipt or audit
+PASS R30-T08 failure at audit_log INSERT: same-key retry commits exactly once
+EVIDENCE {"scenario":"T08","injectedAt":"audit_log INSERT","before":{"handoffs":0,"events":0,"receipts":0,"audits":0,"states":""},"after":{"handoffs":0,"events":0,"receipts":0,"audits":0,"states":""},"afterRetry":{"handoffs":1,"events":1,"receipts":1,"audits":1,"states":"PREPARED"}}
+PASS R30-T08 failure at factory_handoffs UPDATE (dispatch): sanitized 500 with correlation id
+PASS R30-T08 failure at factory_handoffs UPDATE (dispatch): no partial state, event, receipt or audit
+PASS R30-T08 failure at factory_handoffs UPDATE (dispatch): same-key retry commits exactly once
+EVIDENCE {"scenario":"T08","injectedAt":"factory_handoffs UPDATE (dispatch)","before":{"handoffs":1,"events":1,"receipts":1,"audits":1,"states":"PREPARED"},"after":{"handoffs":1,"events":1,"receipts":1,"audits":1,"states":"PREPARED"},"afterRetry":{"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"HANDED_OFF"}}
+PASS R30-T08 failure at factory_handoff_events INSERT (dispatch): sanitized 500 with correlation id
+PASS R30-T08 failure at factory_handoff_events INSERT (dispatch): no partial state, event, receipt or audit
+PASS R30-T08 failure at factory_handoff_events INSERT (dispatch): same-key retry commits exactly once
+EVIDENCE {"scenario":"T08","injectedAt":"factory_handoff_events INSERT (dispatch)","before":{"handoffs":1,"events":1,"receipts":1,"audits":1,"states":"PREPARED"},"after":{"handoffs":1,"events":1,"receipts":1,"audits":1,"states":"PREPARED"},"afterRetry":{"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"HANDED_OFF"}}
+PASS R30-T08 failure at handoff_receipts INSERT (acknowledge): sanitized 500 with correlation id
+PASS R30-T08 failure at handoff_receipts INSERT (acknowledge): no partial state, event, receipt or audit
+PASS R30-T08 failure at handoff_receipts INSERT (acknowledge): same-key retry commits exactly once
+EVIDENCE {"scenario":"T08","injectedAt":"handoff_receipts INSERT (acknowledge)","before":{"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"HANDED_OFF"},"after":{"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"HANDED_OFF"},"afterRetry":{"handoffs":1,"events":3,"receipts":3,"audits":3,"states":"ACKNOWLEDGED"}}
+PASS R30-T09 database triggers block package rewrite, illegal transition, history edit, receipt delete, forged ACK insert and signoff change
+PASS R30-T09 signoff API refuses changes frozen into a live handoff
+PASS R30-T09 package bytes tampered behind the triggers: serving fails closed (409), no fallback
+PASS R30-T09 upstream frozen release tampered: package serving, dispatch and new preparation all fail closed
+PASS R30-T10 only RELEASE_MANAGER/owners may prepare, dispatch or withdraw (6 roles × prepare, 4 roles × dispatch/withdraw denied)
+EVIDENCE {"scenario":"T10-matrix","unexpected":[]}
+PASS R30-T10 RELEASE_MANAGER, QC, engineering and operators cannot acknowledge factory receipt
+PASS R30-T10 the dispatcher (even an owner) cannot acknowledge their own dispatch
+PASS R30-T10 non-authority members (QC) may inspect the frozen package; OPERATOR stays on the guided surface (existing simple-role rule, 403)
+PASS R30-T10 foreign tenant cannot read or acknowledge by direct ids
+PASS R30-T10 a handoff id from another style is 404 on this style path (no cross-binding)
+PASS R30-T10 QC, factory supervisor and operator cannot create a technical Production Release
+PASS R30-T10 deactivated user with a valid cookie is refused before any handoff logic
+PASS R30-T10 acknowledger membership removed inside the commit window: 403 FORBIDDEN_ACTOR, nothing written
+EVIDENCE {"scenario":"T10-drift","drift":"acknowledger membership removed","code":"FORBIDDEN_ACTOR","before":{"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"HANDED_OFF"},"after":{"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"HANDED_OFF"}}
+PASS R30-T10 acknowledger downgraded to OPERATOR inside the commit window: 403 ROLE_NOT_PERMITTED, nothing written
+EVIDENCE {"scenario":"T10-drift","drift":"acknowledger downgraded to OPERATOR","code":"ROLE_NOT_PERMITTED","before":{"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"HANDED_OFF"},"after":{"handoffs":1,"events":2,"receipts":2,"audits":2,"states":"HANDED_OFF"}}
+PASS R30-T11 the acknowledging factory supervisor cannot author QC evidence or release the lot; QC cannot release the lot
+PASS R30-T11 acknowledgement created no signoff and exactly one ACKNOWLEDGE event
+PASS R30-T11 no lot before the factory acknowledgement is persisted (PREPARED and HANDED_OFF both refused)
+PASS R30-T12 fresh install reaches schema 23 with 3 tables, live-release unique index and 11 triggers
+PASS R30-T12 upgrade 22→23 keeps legacy releases, a RELEASED lot and signoffs byte-identical (lot handoff_id NULL)
+PASS R30-T12 raw repeat of 0021 fails at its ALTER without damaging data; legacy signoffs (no handoff) stay editable
+PASS R30-T12 a schema-23 Worker against a schema-22 database fails closed with 503 (migration-first deploy)
+PASS R30-T13 10 concurrent version creations: one 201, 9×409 VERSION_CONFLICT, no 500
+PASS R30-T13 every committed version has exactly one audit row (version + audit are atomic)
+EVIDENCE {"scenario":"T13-versions","statuses":{"201":1,"409":9}}
+PASS R30-T13 unexpected DB failure on a generic route: sanitized 500 + correlation id, and no orphan version row
