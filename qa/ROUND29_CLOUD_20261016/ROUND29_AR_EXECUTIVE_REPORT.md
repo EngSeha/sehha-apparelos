@@ -58,7 +58,12 @@
 - إعادة التحقق من نشاط المستخدم في باقي المسارات (غير الإصدار): مفتوحة P1.
 
 ## CI
-GITHUB_CI_RESULT_PLACEHOLDER
+| التشغيل | الـcommit | النتيجة |
+|---|---|---|
+| [38838696311](https://github.com/EngSeha/sehha-apparelos/actions/runs/38838696311) | `068c257` | **فشل** في R29-W5 على workerd D1: عيب حقيقي في سباق نفس المفتاح (R29-F13) |
+| [38839253855](https://github.com/EngSeha/sehha-apparelos/actions/runs/38839253855) | `5a51d4a` (الإصلاح) | **نجاح** على Node 24: check + 26 suite / 623 assertion + workerd D1 (17) |
+
+الـcommits اللاحقة تضيف ملفات أدلة فقط، ولا تغيّر الكود. يجب التحقق من حالة CI على آخر head في PR #3 نفسه.
 
 ## الخطوة التالية
 جعل Factory Handoff انتقالًا ذريًا idempotent بنفس النمط، وحسم سياسة الإصدارات القديمة. التفاصيل في `ROUND29_NEXT_BATCH.md`.

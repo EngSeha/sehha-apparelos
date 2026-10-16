@@ -21,7 +21,7 @@
 | Gate | Verdict | Note |
 |---|---|---|
 | Remote Cloudflare D1 / Worker | **BLOCKED_ENV** | no approved non-production remote D1; nothing remote created or migrated |
-| GitHub Actions on PR #3 | see `ROUND29_AR_EXECUTIVE_REPORT.md` (filled after the run finished) | Node 24 workflow runs check, test and the new workerd step |
+| GitHub Actions on PR #3 | **FAIL → PASS** | run 38838696311 on `068c257` failed at R29-W5 (real defect R29-F13); run 38839253855 on the fix `5a51d4a` = success (Node 24: check, 26/623, workerd D1 17/17) |
 | Browser | **PASS (local)** | local workerd + local D1 only; not a deployed preview |
 | HOLD / maintenance races | **BLOCKED_NO_HOLD_MODEL** | product has no such state |
 | Per-session revocation | **BLOCKED_NO_SESSION_STORE** | stateless HMAC sessions |
