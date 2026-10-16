@@ -29,4 +29,5 @@
 | HOLD model | **BLOCKED_NO_HOLD_MODEL** |
 | Per-cookie session revocation | **BLOCKED_NO_SESSION_STORE** |
 | PDF output | **BLOCKED_NO_PDF_ENGINE** |
-| GitHub Actions (Node 24) on the ROUND30 PR head | GITHUB_CI_PENDING |
+| GitHub Actions (Node 24.21.0) on PR #4 head `bf1024d` (merge ref onto `4e15623`) | **PASS** — run 38842606112: `npm ci`, check, `ALL_TESTS_PASS suites=27 assertions=705`, workerd R29 17/17 + R30 16/16 |
+| GitHub Actions on PR #3 head `4e15623` | **PASS** — run 38839414093 (unchanged by this round) |
