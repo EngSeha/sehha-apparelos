@@ -1,0 +1,18 @@
+id,severity,defect,file,status,evidence_or_reason
+R30-D01,P0,"Production Lot could be opened from any PRODUCTION release, including legacy ones without frozen evidence (owner policy B1)",src/worker.js production-lots POST,FIXED,"409 LEGACY_RELEASE_NOT_ELIGIBLE + ACKNOWLEDGED handoff required, guarded in batch (R30-T02, R30-T11, R30-W2)"
+R30-D02,P0,"No persisted Factory Handoff: dispatch/acknowledgement had no frozen package, state machine or evidence","src/factory_handoff.js, migrations/0021",FIXED,"R30-T01..T09, R30-W2..W6"
+R30-D03,P1,Release requester could sign their own release; one owner could sign all four roles,"src/worker.js signoffs POST, releaseHandoff",FIXED,"SELF_SIGNOFF_FORBIDDEN; independence required at prepare and in computed summary (batch07, R30-T01)"
+R30-D04,P1,Any workspace member could create a PRODUCTION release,src/production_release.js,FIXED,"PRODUCTION_RELEASE_CREATE capability, also in-transaction (R30-T10)"
+R30-D05,P1,Generic factory action RELEASE named like the technical release authority,src/worker.js requireFactoryAction,FIXED,renamed LOT_RELEASE; QC and acknowledging supervisor denied (R30-T11)
+R30-D06,P1,"requireAuth trusted signed cookies: deactivated users kept access, platformAdmin came from the cookie",src/worker.js requireAuth,FIXED,"DB re-read on every request → 401 ACCOUNT_DISABLED (R30-T10, R29-T09 updated)"
+R30-D07,P1,Concurrent Style Version creation returned raw 500; version insert and audit were separate writes,src/worker.js versions POST,FIXED,"atomic batch, 409 VERSION_CONFLICT (R30-T13)"
+R30-D08,P1,Global error handler returned raw exception text (SQL) on 500,src/worker.js default fetch,FIXED,"500 → INTERNAL_ERROR + correlationId, no internals (R30-T13); 4xx/503 messages unchanged"
+R30-D09,P1,Signoffs could change after the factory package was built,migrations/0021 triggers + signoff POST,FIXED,SIGNOFFS_FROZEN_BY_HANDOFF at API and DB (R30-T09)
+R30-D10,P1,No per-cookie session revocation store,src/worker.js sessions,BLOCKED_NO_SESSION_STORE,deactivation/membership/role are enforced at commit; per-cookie revocation needs a session epoch/store (NEXT_BATCH)
+R30-D11,P1,No tenant archive / maintenance / incident HOLD model,schema,BLOCKED_NO_HOLD_MODEL,package states operationalHoldCheck=BLOCKED_NO_HOLD_MODEL; no readiness claim relies on it
+R30-D12,P1,Factory supervisor guided (SUPERVISOR) surface has no acknowledge task; ACK by FACTORY_SUPERVISOR is API-only today,public/human_ui.js,OPEN,browser ACK proven with a second owner; supervisor task card proposed in NEXT_BATCH
+R30-D13,P2,No direct PDF of the handoff package,src/factory_handoff.js,BLOCKED_NO_PDF_ENGINE,immutable JSON + Arabic RTL HTML served with SHA-256/ETag; no PDF correctness claimed
+R30-D14,P2,Lot planning/execution routes outside creation are not atomic batches (pre-existing),src/worker.js lot routes,OPEN,out of this slice
+R30-D15,P2,ROUND29 IDEMPOTENCY_CONCURRENCY_MATRIX.csv uses CRLF line endings (flagged by git diff --check across PR #3),qa/ROUND29_CLOUD_20261016,OPEN,evidence file in PR #3 left untouched; ROUND30 CSVs use LF
+R30-D16,P2,Rollback of the Worker alone is impossible after migration (strict schema equality),src/worker.js ensureDatabaseReady,OPEN,documented deploy/rollback order; a compatible-range check is a design decision
+R29-F10,P2,"SAMPLE release from working snapshot not drift-guarded (pre-existing, kept)",src/production_release.js,OPEN,unchanged
