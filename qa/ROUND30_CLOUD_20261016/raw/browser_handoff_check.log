@@ -1,0 +1,11 @@
+PASS Empty state shown before any package is prepared
+PASS Double-click on “تجهيز حزمة تسليم” sends exactly one request and creates one package
+PASS Every handoff command carries an Idempotency-Key
+PASS Stale screen: withdrawing a package already dispatched elsewhere shows the Arabic 409 message
+PASS After the 409 the panel reloads the persisted state (HANDED_OFF), nothing was withdrawn
+PASS Dispatcher sees the acknowledge control (server will still refuse self-acknowledgement)
+PASS Self-acknowledgement is refused with an Arabic 403 message and no receipt is implied
+PASS Clicking “عرض” opens the frozen Arabic RTL package carrying its SHA-256
+PASS Page is RTL
+PASS A different authorized user acknowledges; success message appears only with the persisted ACK
+PASS Panel states that receipt is not a QC signoff or lot approval

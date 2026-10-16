@@ -4,6 +4,7 @@
 // A guarded INSERT ... SELECT that matches no row does not raise, so the receipt INSERT that follows references the new
 // release id through a scalar sub-select into a NOT NULL column: a failed guard therefore aborts the whole batch.
 import {frozenEngineeringReadiness,ENGINEERING_CAPTURE_CONTRACT} from './engineering.js';
+import {actorCapability,actorSql} from './authority.js';
 
 export const RELEASE_EVIDENCE_CONTRACT='FROZEN_READINESS/R29';
 const OPERATION='STYLE_RELEASE_CREATE';
@@ -24,6 +25,7 @@ const MESSAGES={
   IDEMPOTENCY_KEY_REUSED:'مفتاح العملية مستخدم لطلب مختلف / Idempotency-Key was already used for a different request',
   IDEMPOTENCY_KEY_INVALID:'مفتاح العملية غير صالح / Idempotency-Key must be 8–128 characters [A-Za-z0-9._:-]',
   FORBIDDEN_ACTOR:'لا تملك صلاحية تنفيذ هذا الإصدار / Actor is not authorized for this workspace',
+  ROLE_NOT_PERMITTED:'دورك لا يسمح بإصدار نسخة إنتاج / Your role may not create a production release',
   FEATURE_NOT_LICENSED:'ميزة الإصدارات غير مفعّلة لهذه المساحة / Releases feature is not licensed',
   RELEASE_COMMIT_FAILED:'تعذّر حفظ الإصدار؛ لم يتم حفظ أي تغيير / Release could not be committed; nothing was saved'
 };
@@ -38,13 +40,6 @@ export function releaseEvidenceStatus(row){
   return 'LEGACY_UNVERIFIED';
 }
 
-async function actorAccess(env,userId,orgId){
-  const u=await env.DB.prepare('SELECT active,is_platform_admin FROM users WHERE id=?').bind(userId).first();
-  if(!u||Number(u.active)!==1)return {ok:false,code:'FORBIDDEN_ACTOR'};
-  if(Number(u.is_platform_admin)===1)return {ok:true,role:'PLATFORM_ADMIN'};
-  const m=await env.DB.prepare('SELECT role FROM memberships WHERE user_id=? AND org_id=?').bind(userId,orgId).first();
-  return m?{ok:true,role:m.role}:{ok:false,code:'FORBIDDEN_ACTOR'};
-}
 async function licensed(env,orgId){if(env.LICENSE_MODE==='remote')return true;const x=await env.DB.prepare("SELECT enabled FROM entitlements WHERE org_id=? AND feature_key='RELEASES'").bind(orgId).first();return Number(x?.enabled)===1;}
 async function fingerprints(env,styleId){return env.DB.prepare(`SELECT ${REL_MAX} rel_max, ${VER_MAX} ver_max, ${SAMPLE_STAMP} sample_stamp, ${COST_STAMP} cost_stamp`).bind(styleId).first();}
 async function receiptFor(env,orgId,userId,key){return key?env.DB.prepare('SELECT * FROM release_receipts WHERE org_id=? AND actor_user_id=? AND operation=? AND idempotency_key=?').bind(orgId,userId,OPERATION,key).first():null;}
@@ -60,8 +55,10 @@ export async function createRelease(request,env,styleId,ctx){
   const style=await env.DB.prepare('SELECT * FROM styles WHERE id=?').bind(styleId).first();if(!style)return send({status:404,body:{error:'Style not found'}});
   const orgId=style.org_id;await requireOrg(env,sess,orgId);await requireFeature(env,orgId,'RELEASES');
   // Session claims are not authority: re-read the actor from the database (deactivation, membership removal, admin drift).
-  const access=await actorAccess(env,sess.userId,orgId);if(!access.ok)return send(fail(403,access.code));
   const type=String(b.releaseType||'SAMPLE').toUpperCase();if(!['SAMPLE','PRODUCTION'].includes(type))throw Object.assign(new Error('releaseType must be SAMPLE or PRODUCTION'),{status:400});
+  // ROUND30: PRODUCTION release is an action-level authority; SAMPLE keeps the existing any-member contract.
+  const capability=type==='PRODUCTION'?'PRODUCTION_RELEASE_CREATE':'HANDOFF_INSPECT';
+  const access=await actorCapability(env,sess.userId,orgId,capability);if(!access.ok)return send(fail(403,access.code));
   const key=request.headers.get('idempotency-key');if(key!=null&&!KEY_PATTERN.test(key))return send(fail(400,'IDEMPOTENCY_KEY_INVALID'));
   const requestedVersion=b.sourceVersionNo==null||b.sourceVersionNo===''?null:Number(b.sourceVersionNo);
   if(requestedVersion!=null&&!(Number.isInteger(requestedVersion)&&requestedVersion>0))throw Object.assign(new Error('sourceVersionNo must be a positive integer'),{status:400});
@@ -105,7 +102,7 @@ export async function createRelease(request,env,styleId,ctx){
     db.prepare(`INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,note,created_by,created_at,evidence_contract,candidate_sha256)
       SELECT ?2,?1,?3,?4,'RELEASED',?5,?6,?7,?8,?9,?10,?11,?12,?13,?14
       WHERE EXISTS(SELECT 1 FROM styles WHERE id=?1 AND org_id=?15)
-        AND EXISTS(SELECT 1 FROM users u WHERE u.id=?11 AND u.active=1 AND (u.is_platform_admin=1 OR EXISTS(SELECT 1 FROM memberships m WHERE m.user_id=u.id AND m.org_id=?15)))
+        AND ${actorSql(capability,'?11','?15')}
         AND (?16=1 OR EXISTS(SELECT 1 FROM entitlements WHERE org_id=?15 AND feature_key='RELEASES' AND enabled=1))
         AND ${REL_MAX}=?3-1 AND ${VER_MAX}=?17 AND ${SAMPLE_STAMP}=?18 AND ${COST_STAMP}=?19
         AND (?4<>'PRODUCTION' OR NOT EXISTS(SELECT 1 FROM style_releases WHERE style_id=?1 AND release_type='PRODUCTION' AND source_version_no=?5))
@@ -123,7 +120,7 @@ export async function createRelease(request,env,styleId,ctx){
     // A concurrent request with the same key may have won: answer with its receipt, never with a second release.
     const won=await receiptFor(env,orgId,sess.userId,key);if(won){const rp=replay(won,requestSha);return rp.replayed||send(rp.response);}
     if(/NOT NULL constraint failed: release_receipts\.release_id/.test(msg)){
-      const now2=await actorAccess(env,sess.userId,orgId);if(!now2.ok)return send(fail(403,now2.code));
+      const now2=await actorCapability(env,sess.userId,orgId,capability);if(!now2.ok)return send(fail(403,now2.code));
       if(!(await licensed(env,orgId)))return send(fail(403,'FEATURE_NOT_LICENSED'));
       if(type==='PRODUCTION'&&await env.DB.prepare("SELECT 1 x FROM style_releases WHERE style_id=? AND release_type='PRODUCTION' AND source_version_no=?").bind(styleId,sourceVersionNo).first())return send(fail(409,'PRODUCTION_ALREADY_RELEASED',{sourceVersionNo}));
       const fp2=await fingerprints(env,styleId);

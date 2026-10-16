@@ -1,7 +1,7 @@
-import {makeHarness,ok} from './test_helpers.mjs';
+import {makeHarness,ok,admitReleasesForLotFixtures} from './test_helpers.mjs';
 const {db,call,login}=makeHarness();await login();let x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
 x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'LOT-013',name:'Production Quality Test',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD'}});const id=x.data.id;
-const uid=db.prepare("SELECT id FROM users WHERE email='dev@sehha.local'").get().id,ts=new Date().toISOString();db.prepare("INSERT INTO style_releases(id,style_id,release_no,release_type,status,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)").run('rel_test',id,1,'PRODUCTION','RELEASED','mohsen_nexz_20p','{}','{}','{}',uid,ts);
+const uid=db.prepare("SELECT id FROM users WHERE email='dev@sehha.local'").get().id,ts=new Date().toISOString();db.prepare("INSERT INTO style_releases(id,style_id,release_no,release_type,status,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)").run('rel_test',id,1,'PRODUCTION','RELEASED','mohsen_nexz_20p','{}','{}','{}',uid,ts);admitReleasesForLotFixtures(db);
 x=await call(`/api/styles/${id}/production-lots`,{method:'POST',body:{releaseNo:1,lotCode:'LOT-A',plannedQty:500}});ok(x.r.status===201&&x.data.lot.status==='OPEN','production lot created only from production release');const lid=x.data.lot.id;
 x=await call(`/api/styles/${id}/production-lots/${lid}/release`,{method:'POST',body:{}});ok(x.r.status===409,'lot cannot release without QC evidence');
 x=await call(`/api/styles/${id}/production-lots/${lid}/checks`,{method:'POST',body:{checkType:'FINAL',sampleSize:32,defectCount:0,status:'PASS'}});ok(x.r.status===201&&x.data.gate.openChecks===0,'PASS QC check accepted');

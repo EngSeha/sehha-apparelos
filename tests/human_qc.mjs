@@ -1,5 +1,5 @@
 import {readFileSync} from 'node:fs';
-import {makeHarness,ok,root} from './test_helpers.mjs';
+import {makeHarness,ok,root,admitReleasesForLotFixtures} from './test_helpers.mjs';
 
 const {db,env,call,login}=makeHarness();await login();let x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN'),admin=db.prepare("SELECT * FROM users WHERE email='dev@sehha.local'").get(),ts=new Date().toISOString();
 db.prepare('INSERT INTO users(id,email,display_name,password_hash,password_salt,created_at) VALUES(?,?,?,?,?,?)').run('u_qc','qc@local.test','QC Inspector',admin.password_hash,admin.password_salt,ts);
@@ -7,7 +7,7 @@ db.prepare('INSERT INTO memberships(user_id,org_id,role) VALUES(?,?,?)').run('u_
 x=await call('/api/auth/login',{method:'POST',body:{email:'qc@local.test',password:env.DEV_BOOTSTRAP_PASSWORD},cookieOverride:''});const qcCookie=(x.r.headers.get('set-cookie')||'').split(';')[0];ok(x.r.status===200,'QC inspector demo login');
 x=await call('/api/styles',{method:'POST',body:{orgId:org.id,code:'QC-HUMAN-01',name:'Guided QC test style',garmentType:'JACKET',audience:'WOMEN',sizingMode:'STANDARD'}});const styleId=x.data.id;
 const frozen={style:{id:styleId,org_id:org.id,code:'QC-HUMAN-01',name:'Guided QC test style'},sizeBands:[],colorways:[],measurements:[],bom:[],operations:[],patternPieces:[],patternLinks:[],requirements:[],assets:[],dna:[],gradingRules:[],annotations:[],samples:[],costSheets:[]};
-db.prepare('INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run('qrel',styleId,1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}',JSON.stringify(frozen),admin.id,ts);
+db.prepare('INSERT INTO style_releases(id,style_id,release_no,release_type,status,source_version_no,template_key,gate_json,manifest_json,snapshot_json,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run('qrel',styleId,1,'PRODUCTION','RELEASED',1,'mohsen_nexz_20p','{}','{}',JSON.stringify(frozen),admin.id,ts);admitReleasesForLotFixtures(db);
 x=await call(`/api/styles/${styleId}/production-lots`,{method:'POST',body:{releaseNo:1,lotCode:'QC-HUMAN-LOT',plannedQty:20}});const lotId=x.data.lot.id;
 let y=await call(`/api/human/qc/queue?orgId=${org.id}`,{cookieOverride:qcCookie});ok(y.r.status===200&&y.data.items.length===0,'QC starts with empty truthful queue');
 y=await call('/api/human/qc/tasks',{method:'POST',body:{orgId:org.id,lotId,assigneeUserId:'u_qc'},cookieOverride:qcCookie});ok(y.r.status===403,'inspector cannot assign self');

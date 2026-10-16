@@ -217,8 +217,8 @@ npm run dev
 بعد migrations:
 
 ```text
-schemaVersion: "22"
-expectedSchemaVersion: "22"
+schemaVersion: "23"
+expectedSchemaVersion: "23"
 version: "0.21.0-cloudflare"
 ```
 

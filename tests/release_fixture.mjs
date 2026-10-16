@@ -16,3 +16,8 @@ export async function buildReleaseCandidate(call,org,code){let x;
 export const ENG_TABLES=['fabric_specifications','trim_specifications','pattern_piece_specs','marker_plans','routing_steps'];
 export function clearEngineering(db,id){for(const t of ENG_TABLES)db.prepare(`DELETE FROM ${t} WHERE style_id=?`).run(id);}
 export async function newVersion(call,id,label){const x=await call(`/api/styles/${id}/versions`,{method:'POST',body:{label}});if(x.r.status!==201)throw new Error('fixture: version not created');return x.data.versionNo;}
+// ROUND30: make a candidate handoff-complete before versioning (hero reference + approved core DNA). Values are explicit
+// fixture facts, never inferred; the 20P completeness rule only checks their presence.
+export function addHandoffEvidence(db,id){const ts=new Date().toISOString();
+  db.prepare("INSERT INTO assets(id,style_id,role,filename,stored_name,mime_type,created_at) VALUES(?,?,'HERO','hero.png','hero.png','image/png',?)").run('ast_hero_'+id,id,ts);
+  for(const [k,label,value] of [['fit','Fit','Regular fit — fixture approved'],['fabric','Fabric','Cotton twill — fixture approved']])db.prepare("INSERT INTO dna_items(id,style_id,field_key,field_label,value_text,provenance,state,created_at,updated_at) VALUES(?,?,?,?,?,'USER_CONFIRMED','APPROVED',?,?)").run(`dna_${k}_${id}`,id,k,label,value,ts,ts);}
