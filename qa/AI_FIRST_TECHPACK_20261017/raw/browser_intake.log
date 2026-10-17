@@ -1,0 +1,14 @@
+PASS Step 1 tells the owner live vision is not connected (BLOCKED_LIVE_VISION) instead of pretending
+PASS Upload: the picture appears in the intake list
+PASS Suggestion shown as JACKET with LOW confidence and an explicit MOCK label
+PASS No measurement questions before the owner confirms the type
+PASS Jacket questions shown (back width) and no trouser questions (hip)
+PASS After saving: values are not re-asked; flat/circumference and the fitted-waist measurement are asked next
+PASS Save-and-resume: answers persisted on the server
+PASS Draft R1 lists open items in Arabic
+PASS Pattern step lists its gaps in Arabic inside the panel
+PASS Approve button is disabled while required data is missing
+PASS Download button delivers a real PDF file (bytes start with %PDF-)
+PASS Preview opens the frozen Arabic RTL draft
+PASS Page is RTL and had no JavaScript errors
+BROWSER_INTAKE 13/13

@@ -1,0 +1,24 @@
+<string>:5: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+PASS JK-003 DRAFT: real PDF bytes (%PDF-) served as application/pdf {"bytes":344473}
+PASS JK-003 DRAFT: multi-page A4 {"pages":8}
+PASS JK-003 DRAFT: Noto Naskh Arabic + Noto Sans embedded (subset) {"fonts":["AAAAAA+NotoNaskhArabic-Bold","BAAAAA+NotoSans-Bold","CAAAAA+NotoSans-Regular","DAAAAA+NotoNaskhArabic-Regular","EAAAAA+LiberationSans","FAAAAA+LiberationSans-Bold"]}
+PASS JK-003 DRAFT: English labels extract as text (DRAFT, POM, BOM, Pattern Pending)
+PASS JK-003 DRAFT: owner M values and NO_TOLERANCE rendered
+PASS JK-003 DRAFT: no zipper invented in the BOM page
+PASS JK-003 DRAFT: footer page numbering on every page (1..N / N)
+PASS JK-003 DRAFT: no blank pages (ink coverage > 0.4% on every page) {"ink":[0.128,0.0457,0.0106,0.0305,0.0315,0.0272,0.0421,0.0231]}
+PASS JK-003 DRAFT: quantity matrix total 120 and material requirement honestly unavailable
+<string>:5: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+PASS LONG: 60 POM + 60 BOM + 60 operations paginate over many A4 pages {"pages":22}
+PASS LONG: table headers repeat on continuation pages (POM, BOM, operations) {"headerRepeats":6,"bomHeader":5,"opsHeader":4}
+PASS LONG: last rows of every table present (nothing clipped)
+PASS LONG: no blank pages {"ink":[0.0342,0.0326,0.0451,0.0349,0.0351,0.0352,0.0358,0.0337,0.0462,0.0446,0.0448,0.0451,0.0096,0.0427,0.0414,0.0419,0.0085,0.0481,0.0372,0.0375,0.0181,0.0232]}
+PASS SYNTH: approval renders and freezes the PDF (SHA-256 recorded) {"pages":8}
+<string>:5: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+PASS SYNTH: re-export returns byte-identical frozen PDF (same SHA-256 twice) {"sha":"84f5c0081e2f28206f4cea9332603560177d7fa2a2fd29b482f05a7bd20a657e"}
+PASS SYNTH: APPROVED label, A4, multi-page {"pages":8}
+PASS SYNTH: page count recorded by the app equals pdfinfo {"app":8,"pdfinfo":8}
+PASS SYNTH: repeated approve is idempotent (same frozen hash)
+<string>:5: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+PASS ABAYA: weight-band sizing, base WB-02 and concealed zipper in the PDF
+PDF_ACCEPTANCE 19/19

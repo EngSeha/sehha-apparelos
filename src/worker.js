@@ -1,8 +1,10 @@
 import {engineeringRoute} from './engineering.js';
+import {intakeRoute} from './garment_intake.js';
+import {techpackRoute} from './techpack_pdf.js';
 import {humanRoute,experienceForRole,isSimpleRole} from './human_experience.js';
 import {humanQcRoute} from './human_qc.js';
 import {humanStoreRoute} from './human_store.js';
-const SCHEMA_VERSION = '21';
+const SCHEMA_VERSION = '22';
 const PRODUCT = 'SEHHA ApparelOS';
 const VERSION = '0.21.0-cloudflare';
 
@@ -814,6 +816,8 @@ async function apiRoute(request,env){
       }
     }
   }
+  if(p==='/api/garment-categories'||/^\/api\/styles\/[^/]+\/intake/.test(p)){const r=await intakeRoute(request,env,{requireAuth,requireOrg,membershipRole,isSimpleRole,requestBody,requireFeature,json,now,randomId,audit,assetToDataUrl});if(r)return r;}
+  if(/^\/api\/styles\/[^/]+\/(techpack|pattern-status)/.test(p)){const r=await techpackRoute(request,env,{requireAuth,requireOrg,membershipRole,requireFeature,now,randomId,styleSnapshot,gradeMatrix});if(r)return r;}
   if(p.includes('/engineering')){const engineering=await engineeringRoute(request,env,{requireAuth,requireOrg,membershipRole,audit,requestBody});if(engineering)return engineering;}
   if(p==='/api/me'){const s=await requireAuth(request,env),u=await q1(env,'SELECT id,email,display_name,is_platform_admin FROM users WHERE id=?',s.userId);return json({user:u,workspaces:await memberships(env,s.userId)});}
   if(p==='/api/ai/providers'){await requireAuth(request,env);return json({providers:providers(env)});}

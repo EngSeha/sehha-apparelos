@@ -1,0 +1,245 @@
+{
+ "summary": {
+  "base": "http://127.0.0.1:8800",
+  "engine": "22",
+  "documents": {
+   "jk003": {
+    "status": 200,
+    "ct": "application/pdf",
+    "head": "%PDF-",
+    "sha": "a7138dd83d94bfb0e444c35b733ba172895ba5344742fc55065032fcea5d0eaf",
+    "hdrSha": "a7138dd83d94bfb0e444c35b733ba172895ba5344742fc55065032fcea5d0eaf",
+    "file": "/tmp/claude-0/-home-user-sehha-apparelos/33fb12eb-a400-5343-9d2c-d6e67997d81f/scratchpad/tp/pdf/JK003_R1_DRAFT.pdf",
+    "bytes": 344473,
+    "statusHdr": "DRAFT",
+    "pages": 8,
+    "fonts": [
+     "AAAAAA+NotoNaskhArabic-Bold",
+     "BAAAAA+NotoSans-Bold",
+     "CAAAAA+NotoSans-Regular",
+     "DAAAAA+NotoNaskhArabic-Regular",
+     "EAAAAA+LiberationSans",
+     "FAAAAA+LiberationSans-Bold"
+    ],
+    "ink": [
+     0.128,
+     0.0457,
+     0.0106,
+     0.0305,
+     0.0315,
+     0.0272,
+     0.0421,
+     0.0231
+    ]
+   },
+   "long": {
+    "status": 200,
+    "ct": "application/pdf",
+    "head": "%PDF-",
+    "sha": "ed918e7d3fdff0f8a991579ca6d4fb8884fc0a69342ae5ce26c5eefa13d3a13b",
+    "hdrSha": "ed918e7d3fdff0f8a991579ca6d4fb8884fc0a69342ae5ce26c5eefa13d3a13b",
+    "file": "/tmp/claude-0/-home-user-sehha-apparelos/33fb12eb-a400-5343-9d2c-d6e67997d81f/scratchpad/tp/pdf/LONG_R1_DRAFT.pdf",
+    "bytes": 1180254,
+    "statusHdr": "DRAFT",
+    "pages": 22,
+    "ink": [
+     0.0342,
+     0.0326,
+     0.0451,
+     0.0349,
+     0.0351,
+     0.0352,
+     0.0358,
+     0.0337,
+     0.0462,
+     0.0446,
+     0.0448,
+     0.0451,
+     0.0096,
+     0.0427,
+     0.0414,
+     0.0419,
+     0.0085,
+     0.0481,
+     0.0372,
+     0.0375,
+     0.0181,
+     0.0232
+    ]
+   },
+   "synthApproved": {
+    "status": 200,
+    "ct": "application/pdf",
+    "head": "%PDF-",
+    "sha": "84f5c0081e2f28206f4cea9332603560177d7fa2a2fd29b482f05a7bd20a657e",
+    "hdrSha": "84f5c0081e2f28206f4cea9332603560177d7fa2a2fd29b482f05a7bd20a657e",
+    "file": "/tmp/claude-0/-home-user-sehha-apparelos/33fb12eb-a400-5343-9d2c-d6e67997d81f/scratchpad/tp/pdf/SYNTH_R1_APPROVED.pdf",
+    "bytes": 283403,
+    "statusHdr": "APPROVED",
+    "pages": 8,
+    "frozenSha": "84f5c0081e2f28206f4cea9332603560177d7fa2a2fd29b482f05a7bd20a657e",
+    "ink": [
+     0.1183,
+     0.0367,
+     0.0037,
+     0.0263,
+     0.0212,
+     0.0222,
+     0.0354,
+     0.0154
+    ]
+   },
+   "abaya": {
+    "status": 200,
+    "ct": "application/pdf",
+    "head": "%PDF-",
+    "sha": "b7f66e477e003114649e0f6a98157f9badc9497158cd53e49d1e1d0b337a21f3",
+    "hdrSha": "b7f66e477e003114649e0f6a98157f9badc9497158cd53e49d1e1d0b337a21f3",
+    "file": "/tmp/claude-0/-home-user-sehha-apparelos/33fb12eb-a400-5343-9d2c-d6e67997d81f/scratchpad/tp/pdf/ABAYA_R1_DRAFT.pdf",
+    "bytes": 262250,
+    "statusHdr": "DRAFT",
+    "pages": 7,
+    "ink": [
+     0.0313,
+     0.0363,
+     0.0277,
+     0.0213,
+     0.0219,
+     0.0356,
+     0.0165
+    ]
+   }
+  }
+ },
+ "results": [
+  {
+   "check": "JK-003 DRAFT: real PDF bytes (%PDF-) served as application/pdf",
+   "result": "PASS",
+   "bytes": 344473
+  },
+  {
+   "check": "JK-003 DRAFT: multi-page A4",
+   "result": "PASS",
+   "pages": 8
+  },
+  {
+   "check": "JK-003 DRAFT: Noto Naskh Arabic + Noto Sans embedded (subset)",
+   "result": "PASS",
+   "fonts": [
+    "AAAAAA+NotoNaskhArabic-Bold",
+    "BAAAAA+NotoSans-Bold",
+    "CAAAAA+NotoSans-Regular",
+    "DAAAAA+NotoNaskhArabic-Regular",
+    "EAAAAA+LiberationSans",
+    "FAAAAA+LiberationSans-Bold"
+   ]
+  },
+  {
+   "check": "JK-003 DRAFT: English labels extract as text (DRAFT, POM, BOM, Pattern Pending)",
+   "result": "PASS"
+  },
+  {
+   "check": "JK-003 DRAFT: owner M values and NO_TOLERANCE rendered",
+   "result": "PASS"
+  },
+  {
+   "check": "JK-003 DRAFT: no zipper invented in the BOM page",
+   "result": "PASS"
+  },
+  {
+   "check": "JK-003 DRAFT: footer page numbering on every page (1..N / N)",
+   "result": "PASS"
+  },
+  {
+   "check": "JK-003 DRAFT: no blank pages (ink coverage > 0.4% on every page)",
+   "result": "PASS",
+   "ink": [
+    0.128,
+    0.0457,
+    0.0106,
+    0.0305,
+    0.0315,
+    0.0272,
+    0.0421,
+    0.0231
+   ]
+  },
+  {
+   "check": "JK-003 DRAFT: quantity matrix total 120 and material requirement honestly unavailable",
+   "result": "PASS"
+  },
+  {
+   "check": "LONG: 60 POM + 60 BOM + 60 operations paginate over many A4 pages",
+   "result": "PASS",
+   "pages": 22
+  },
+  {
+   "check": "LONG: table headers repeat on continuation pages (POM, BOM, operations)",
+   "result": "PASS",
+   "headerRepeats": 6,
+   "bomHeader": 5,
+   "opsHeader": 4
+  },
+  {
+   "check": "LONG: last rows of every table present (nothing clipped)",
+   "result": "PASS"
+  },
+  {
+   "check": "LONG: no blank pages",
+   "result": "PASS",
+   "ink": [
+    0.0342,
+    0.0326,
+    0.0451,
+    0.0349,
+    0.0351,
+    0.0352,
+    0.0358,
+    0.0337,
+    0.0462,
+    0.0446,
+    0.0448,
+    0.0451,
+    0.0096,
+    0.0427,
+    0.0414,
+    0.0419,
+    0.0085,
+    0.0481,
+    0.0372,
+    0.0375,
+    0.0181,
+    0.0232
+   ]
+  },
+  {
+   "check": "SYNTH: approval renders and freezes the PDF (SHA-256 recorded)",
+   "result": "PASS",
+   "pages": 8
+  },
+  {
+   "check": "SYNTH: re-export returns byte-identical frozen PDF (same SHA-256 twice)",
+   "result": "PASS",
+   "sha": "84f5c0081e2f28206f4cea9332603560177d7fa2a2fd29b482f05a7bd20a657e"
+  },
+  {
+   "check": "SYNTH: APPROVED label, A4, multi-page",
+   "result": "PASS",
+   "pages": 8
+  },
+  {
+   "check": "SYNTH: page count recorded by the app equals pdfinfo",
+   "result": "PASS",
+   "app": 8,
+   "pdfinfo": 8
+  },
+  {
+   "check": "SYNTH: repeated approve is idempotent (same frozen hash)",
+   "result": "PASS"
+  },
+  {
+   "check": "ABAYA: weight-band sizing, base WB-02 and concealed zipper in the PDF",
+   "result": "PASS"
+  }
+ ]
+}

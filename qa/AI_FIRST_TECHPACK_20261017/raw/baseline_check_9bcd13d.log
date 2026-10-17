@@ -1,0 +1,3 @@
+
+> sehha-apparelos-cloudflare-preview-21-0@0.21.0 check
+> node --check src/worker.js && node --check src/human_experience.js && node --check src/human_qc.js && node --check src/human_store.js && node --check src/engineering.js && node --check src/spreadsheet_adapter.js && node --check src/techpack_composer.js && node --check public/app.js && node --check public/human_ui.js && node --check public/human_language.js

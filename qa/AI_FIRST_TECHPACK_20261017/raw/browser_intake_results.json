@@ -1,0 +1,59 @@
+{
+ "base": "http://127.0.0.1:8800",
+ "styleId": "sty_d002dc9c3fd63411aefd9ab0",
+ "results": [
+  {
+   "check": "Step 1 tells the owner live vision is not connected (BLOCKED_LIVE_VISION) instead of pretending",
+   "result": "PASS"
+  },
+  {
+   "check": "Upload: the picture appears in the intake list",
+   "result": "PASS"
+  },
+  {
+   "check": "Suggestion shown as JACKET with LOW confidence and an explicit MOCK label",
+   "result": "PASS"
+  },
+  {
+   "check": "No measurement questions before the owner confirms the type",
+   "result": "PASS"
+  },
+  {
+   "check": "Jacket questions shown (back width) and no trouser questions (hip)",
+   "result": "PASS"
+  },
+  {
+   "check": "After saving: values are not re-asked; flat/circumference and the fitted-waist measurement are asked next",
+   "result": "PASS"
+  },
+  {
+   "check": "Save-and-resume: answers persisted on the server",
+   "result": "PASS"
+  },
+  {
+   "check": "Draft R1 lists open items in Arabic",
+   "result": "PASS"
+  },
+  {
+   "check": "Pattern step lists its gaps in Arabic inside the panel",
+   "result": "PASS"
+  },
+  {
+   "check": "Approve button is disabled while required data is missing",
+   "result": "PASS"
+  },
+  {
+   "check": "Download button delivers a real PDF file (bytes start with %PDF-)",
+   "result": "PASS"
+  },
+  {
+   "check": "Preview opens the frozen Arabic RTL draft",
+   "result": "PASS"
+  },
+  {
+   "check": "Page is RTL and had no JavaScript errors",
+   "result": "PASS"
+  }
+ ],
+ "errors": []
+}
