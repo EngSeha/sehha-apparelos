@@ -82,7 +82,7 @@ const INJ=[
 for(const [t,stmt,when] of INJ){const from={PREPARE:'RELEASED',DISPATCH:'PREPARED',ACKNOWLEDGE:'HANDED_OFF',WITHDRAW:'PREPARED',LOT_CREATE:'ACKNOWLEDGED'}[t],tg=await inState(from),key=`r30c-inj-${t}-${stmt.replace(/\W/g,'')}`;
   const go=()=>t==='PREPARE'?P(tg.s,U.rm,key):t==='LOT_CREATE'?req(`/api/styles/${tg.s.id}/production-lots`,{body:{releaseNo:tg.s.n,lotCode:'INJ',plannedQty:5},cookie:U.fs}):A(tg.s,tg.hid,t.toLowerCase(),{reason:'Injected withdrawal',note:'n'},t==='ACKNOWLEDGE'?U.fs:U.rm,key);
   const before=facts(tg.s.id);db.exec(`CREATE TRIGGER inj ${when} BEGIN SELECT RAISE(ABORT,'INJECTED_FAILURE'); END`);let res;try{res=await go()}finally{db.exec('DROP TRIGGER inj')}const after=facts(tg.s.id);
-  const code=t==='LOT_CREATE'?'INTERNAL_ERROR':'HANDOFF_COMMIT_FAILED';
+  const code=t==='LOT_CREATE'?'LOT_COMMIT_FAILED':'HANDOFF_COMMIT_FAILED';
   row(t,'failure injection',`abort at ${stmt}`,`500 ${code}; handoff/event/receipt/audit/lot rows byte-identical`,`${res.r.status} ${res.data.code} · rowsUnchanged=${same(before,after)}`,res.r.status===500&&res.data.code===code&&/^err_/.test(res.data.correlationId)&&sanitized(res.data)&&same(before,after));
   const retry=await go(),after2=facts(tg.s.id),okRetry=retry.r.status<300&&(t==='LOT_CREATE'?after2.lots.length===before.lots.length+1:after2.events.length===before.events.length+1&&after2.receipts.length===before.receipts.length+1);
   row(t,'failure injection',`retry after abort at ${stmt}`,'commits exactly once with complete evidence',`${retry.r.status}`,okRetry);
@@ -142,7 +142,9 @@ for(const [t,stmt,when] of INJ){const from={PREPARE:'RELEASED',DISPATCH:'PREPARE
  const newColsNull=after.style_releases.every(r=>r.evidence_contract===null&&r.candidate_sha256===null)&&after.production_lots.every(r=>r.handoff_id===null);
  row('MIGRATION','upgrade 21→22→23','historical rows (styles, versions, 3 releases incl. duplicate PRODUCTION version, signoffs, OPEN+RELEASED lots, audit)','identical in all pre-existing columns; new columns NULL',`schema 21→${mid22}→${old.prepare("SELECT value FROM app_meta WHERE key='schema_version'").get().value} · identical=${same(strip(after),before)} · newColsNull=${newColsNull}`,mid22==='22'&&same(strip(after),before)&&newColsNull);
  const integ=old.prepare('PRAGMA integrity_check').get(),fk=old.prepare('PRAGMA foreign_key_check').all();row('MIGRATION','upgrade 21→22→23','PRAGMA integrity_check / foreign_key_check','ok / none',`${Object.values(integ)[0]} / ${fk.length}`,Object.values(integ)[0]==='ok'&&fk.length===0);
- const fresh=new DatabaseSync(':memory:');for(const f of files)fresh.exec(sql(f));const ddl=d=>d.prepare("SELECT type,name,tbl_name,sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY type,name").all();
+ // P1 corrective: this block proves the 0020+0021 contract, so the fresh comparison installs through 0021; the
+ // 21→22→23→24 path is proven in tests/round30_p1_corrective.mjs.
+ const fresh=new DatabaseSync(':memory:');for(const f of files.filter(f=>f<'0022'))fresh.exec(sql(f));const ddl=d=>d.prepare("SELECT type,name,tbl_name,sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY type,name").all();
  const norm=r=>({...r,sql:String(r.sql||'').replace(/\s+/g,' ')});const dU=ddl(old).map(norm),dF=ddl(fresh).map(norm);
  row('MIGRATION','upgrade vs fresh','schema objects after upgrade vs fresh install','identical set of tables, indexes and triggers with identical DDL',`upgraded=${dU.length} fresh=${dF.length} identical=${same(dU,dF)}`,same(dU,dF));
  const trig=old.prepare("SELECT name FROM sqlite_master WHERE type='trigger' ORDER BY name").all().map(r=>r.name),r29=trig.filter(n=>/style_releases_contract|release_receipts|style_versions_snapshot/.test(n)),r30=trig.filter(n=>/factory_handoff|handoff_receipts|release_signoffs_frozen/.test(n));
@@ -150,5 +152,6 @@ for(const [t,stmt,when] of INJ){const from={PREPARE:'RELEASED',DISPATCH:'PREPARE
  let legacyEdits='';try{old.prepare("UPDATE style_releases SET note='historical note' WHERE id='r2'").run();old.prepare("UPDATE release_signoffs SET decision='REJECTED' WHERE id='g1'").run();old.prepare("UPDATE production_lots SET note='kept' WHERE id='l1'").run();legacyEdits='allowed'}catch(e){legacyEdits=e.message}
  row('MIGRATION','legacy behaviour','legacy release/signoff/lot rows remain maintainable (no contract, no live handoff)','allowed',legacyEdits,legacyEdits==='allowed');
  class D1{constructor(d){this.db=d}batch(l){this.db.exec('BEGIN');try{const o=l.map(x=>x.run());this.db.exec('COMMIT');return o}catch(e){this.db.exec('ROLLBACK');throw e}}prepare(q){const st=this.db.prepare(q);return{bind:(...a)=>{const v=a.map(z=>z===undefined?null:z);return{first:()=>st.get(...v)||null,all:()=>({results:st.all(...v)}),run:()=>{const r=st.run(...v);return{success:true,meta:{changes:Number(r.changes||0)}}}}}}}}
+ old.exec(sql('0022_handoff_authority_lot_receipts.sql'));
  const e2={...env,DB:new D1(old)},hist=await worker.fetch(new Request('http://local/api/health'),e2),hb=await hist.json();
- row('MIGRATION','runtime after upgrade','schema-23 Worker on the upgraded historical DB','health ok, schema 23',`${hist.status} ${hb.schemaVersion}`,hist.status===200&&hb.schemaVersion==='23');}
+ row('MIGRATION','runtime after upgrade','schema-24 Worker on the upgraded historical DB (then +0022)','health ok, schema 24',`${hist.status} ${hb.schemaVersion}`,hist.status===200&&hb.schemaVersion==='24');}

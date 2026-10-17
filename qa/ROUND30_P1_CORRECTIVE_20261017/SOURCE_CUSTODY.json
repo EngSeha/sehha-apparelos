@@ -1,0 +1,204 @@
+{
+ "repository": "EngSeha/sehha-apparelos",
+ "auditedSource": {
+  "pr": 4,
+  "branch": "claude/round30-factory-handoff",
+  "head": "5f928e2418729986ae38f1ae3b06c29cde22cbc6",
+  "verifiedBeforeWork": "origin/claude/round30-factory-handoff == 5f928e2418729986ae38f1ae3b06c29cde22cbc6 (git fetch + ls-remote, 2026-10-17); working tree clean; no drift"
+ },
+ "stack": [
+  {
+   "pr": 1,
+   "base": "main"
+  },
+  {
+   "pr": 2,
+   "branch": "claude/lucid-brahmagupta-qneojw",
+   "head": "c779d48555f3bb3a7c208ce86f5ce7feaf1ca73f"
+  },
+  {
+   "pr": 3,
+   "branch": "claude/round29-atomic-release",
+   "head": "4e156236e56c8cfec0a1f5bc258868c550adf5d3"
+  },
+  {
+   "pr": 4,
+   "branch": "claude/round30-factory-handoff",
+   "head": "5f928e2418729986ae38f1ae3b06c29cde22cbc6"
+  },
+  {
+   "pr": 5,
+   "branch": "claude/round30-p1-corrective",
+   "base": "claude/round30-factory-handoff",
+   "codeCommit": "2740a9dcab2b67489c4453814272db9bb24d3ee0",
+   "note": "evidence commit follows the code commit; its id is reported in PR #5 and the delivery message (a commit cannot contain its own id)"
+  }
+ ],
+ "untouched": [
+  "main",
+  "PR #2",
+  "PR #3",
+  "PR #4",
+  "production resources",
+  "remote D1"
+ ],
+ "schema": {
+  "before": "23 (migrations 0001..0021)",
+  "after": "24 (adds 0022_handoff_authority_lot_receipts.sql)"
+ },
+ "independentEvidence": {
+  "requested": "qa_independent/ROUND30_ADMISSION_20261017/",
+  "available": false,
+  "note": "Not present in the repository or this environment. The two P1 findings were reproduced with a fresh harness (repro_p1.mjs) against unmodified 5f928e2; see raw/repro_baseline_5f928e2.log."
+ },
+ "originalBaselineAt5f928e2": {
+  "npmTest": "PASS 28 suites / 836 assertions (raw/baseline_npm_test_5f928e2.log)",
+  "workerdD1": "PASS 55 (raw/baseline_workerd_5f928e2.log)",
+  "check": "PASS",
+  "P1-A": "REPRODUCED: prepare 201 PREPARED, dispatch 200, acknowledge 200, open lot 201 with QC signer active but role OPERATOR at commit",
+  "P1-B": "REPRODUCED: first 201, identical retry with same key 500 INTERNAL_ERROR, 1 lot + 1 audit"
+ },
+ "changedPaths": [
+  {
+   "status": "A",
+   "path": "migrations/0022_handoff_authority_lot_receipts.sql"
+  },
+  {
+   "status": "M",
+   "path": "package.json"
+  },
+  {
+   "status": "M",
+   "path": "public/app.js"
+  },
+  {
+   "status": "A",
+   "path": "qa/ROUND30_P1_CORRECTIVE_20261017/browser_lot_retry_check.mjs"
+  },
+  {
+   "status": "A",
+   "path": "qa/ROUND30_P1_CORRECTIVE_20261017/repro_p1.mjs"
+  },
+  {
+   "status": "M",
+   "path": "src/authority.js"
+  },
+  {
+   "status": "M",
+   "path": "src/factory_handoff.js"
+  },
+  {
+   "status": "M",
+   "path": "src/worker.js"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch04_integration.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch05_integration.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch06_integration.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch07_integration.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch08_integration.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch09_integration.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch10_integration.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch11_integration.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch14_metadata.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch15_metadata.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch16_metadata.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch17_metadata.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch18_metadata.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch19_metadata.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch20_metadata.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/batch21_metadata.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/round29_workerd_d1.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/round30_closure_matrix.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/round30_closure_workerd.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/round30_factory_handoff.mjs"
+  },
+  {
+   "status": "A",
+   "path": "tests/round30_p1_corrective.mjs"
+  },
+  {
+   "status": "A",
+   "path": "tests/round30_p1_workerd.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/round30_workerd_d1.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/run_all.mjs"
+  },
+  {
+   "status": "M",
+   "path": "tests/test_helpers.mjs"
+  }
+ ],
+ "environment": {
+  "node": [
+   "22.22.0",
+   "24.22.0"
+  ],
+  "sqlite": "node:sqlite (bundled)",
+  "workerd": "wrangler getPlatformProxy, local only",
+  "browser": "Chromium via Playwright against local wrangler dev"
+ }
+}

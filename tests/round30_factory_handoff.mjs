@@ -166,7 +166,9 @@ for(const [label,ddl,stage] of [['factory_handoffs INSERT',"CREATE TRIGGER inj B
 
 // T12 migrations: fresh install, upgrade 22 -> 23 preserving legacy frozen facts, failed raw repeat, old-schema Worker fails closed.
 {const files=readdirSync(resolve(root,'migrations')).filter(f=>f.endsWith('.sql')).sort(),m21=readFileSync(resolve(root,'migrations','0021_factory_handoff.sql'),'utf8');
- const fresh=new DatabaseSync(':memory:');for(const f of files)fresh.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
+ // P1 corrective: this block proves migration 0021's own contract, so it installs through 0021 (0022 is proven in
+ // tests/round30_p1_corrective.mjs).
+ const fresh=new DatabaseSync(':memory:');for(const f of files.filter(f=>f<'0022'))fresh.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
  const objs=fresh.prepare("SELECT type,name FROM sqlite_master WHERE name IN ('factory_handoffs','factory_handoff_events','handoff_receipts','uq_factory_handoffs_live_release') OR (type='trigger' AND (name LIKE 'trg_factory_handoff%' OR name LIKE 'trg_handoff_receipts%' OR name LIKE 'trg_release_signoffs_frozen%'))").all();
  ok(fresh.prepare("SELECT value FROM app_meta WHERE key='schema_version'").get().value==='23'&&objs.filter(o=>o.type==='table').length===3&&objs.filter(o=>o.type==='trigger').length===11&&objs.some(o=>o.name==='uq_factory_handoffs_live_release'),'R30-T12 fresh install reaches schema 23 with 3 tables, live-release unique index and 11 triggers');
  const old=new DatabaseSync(':memory:');for(const f of files.filter(f=>f<'0021'))old.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
@@ -180,7 +182,7 @@ for(const [label,ddl,stage] of [['factory_handoffs INSERT',"CREATE TRIGGER inj B
  let rep='';try{old.exec(m21)}catch(e){rep=e.message}ok(/duplicate column/i.test(rep)&&old.prepare('SELECT COUNT(*) n FROM style_releases').get().n===2&&old.prepare("SELECT value FROM app_meta WHERE key='schema_version'").get().value==='23','R30-T12 raw repeat of 0021 fails at its ALTER without damaging data; legacy signoffs (no handoff) stay editable');
  class D1Mock{constructor(d){this.db=d}batch(list){this.db.exec('BEGIN');try{const o=list.map(x=>x.run());this.db.exec('COMMIT');return o}catch(e){this.db.exec('ROLLBACK');throw e}}prepare(sql){const st=this.db.prepare(sql);return{bind:(...a)=>{const v=a.map(z=>z===undefined?null:z);return{first:()=>st.get(...v)||null,all:()=>({results:st.all(...v)}),run:()=>{const r=st.run(...v);return{success:true,meta:{changes:Number(r.changes||0)}}}}}}}}
  const s22=new DatabaseSync(':memory:');for(const f of files.filter(f=>f<'0021'))s22.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
- const r22=await worker.fetch(new Request('http://local/api/styles'),{...env,DB:new D1Mock(s22)}),b22=await r22.json();ok(r22.status===503&&/22/.test(b22.error)&&/23/.test(b22.error),'R30-T12 a schema-23 Worker against a schema-22 database fails closed with 503 (migration-first deploy)');}
+ const r22=await worker.fetch(new Request('http://local/api/styles'),{...env,DB:new D1Mock(s22)}),b22=await r22.json();ok(r22.status===503&&/22/.test(b22.error)&&/24/.test(b22.error),'R30-T12 a schema-24 Worker against a schema-22 database fails closed with 503 (migration-first deploy)');}
 
 // T13 adjacent P1s: concurrent version creation is 409 not 500; generic 500s never expose internals.
 {const id=await buildReleaseCandidate(call,org,`T13-${++seq}`);const rs=await withBarrier(10,()=>Promise.all(Array.from({length:10},(_,i)=>call(`/api/styles/${id}/versions`,{method:'POST',body:{label:`race ${i}`}}))));const st=rs.map(r=>r.r.status);

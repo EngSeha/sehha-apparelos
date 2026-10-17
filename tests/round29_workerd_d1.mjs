@@ -36,7 +36,7 @@ const env={DB,UPLOADS:{put:async()=>({}),get:async()=>null},STATIC:{fetch:async(
 let cookie='';
 async function call(path,{method='GET',body,headers={}}={}){const h={...headers};if(body!==undefined)h['content-type']='application/json';if(cookie)h.cookie=cookie;const r=await worker.fetch(new Request('http://local'+path,{method,headers:h,body:body===undefined?undefined:JSON.stringify(body)}),env);const ct=r.headers.get('content-type')||'';return {r,data:ct.includes('json')?await r.json():await r.text()};}
 const q1=(sql,...b)=>D1.prepare(sql).bind(...b).first(),run=(sql,...b)=>D1.prepare(sql).bind(...b).run();
-let x=await call('/api/health');ok(x.r.status===200&&x.data.schemaVersion==='23','R29-W2 worker on workerd D1 reports the current schema (23)');
+let x=await call('/api/health');ok(x.r.status===200&&x.data.schemaVersion==='24','R29-W2 worker on workerd D1 reports the current schema (24)');
 x=await call('/api/auth/login',{method:'POST',body:{email:'dev@sehha.local',password:env.DEV_BOOTSTRAP_PASSWORD}});cookie=(x.r.headers.get('set-cookie')||'').split(';')[0];
 x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
 const {buildReleaseCandidate}=await import('./release_fixture.mjs');

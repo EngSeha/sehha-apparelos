@@ -1,0 +1,138 @@
+
+> sehha-apparelos-cloudflare-preview-21-0@0.21.0 test:workerd-d1
+> node tests/round29_workerd_d1.mjs && node tests/round30_workerd_d1.mjs && node tests/round30_closure_workerd.mjs && node tests/round30_p1_workerd.mjs
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+PASS R29-W1 wrangler local upgrade 21→22 over historical duplicate PRODUCTION rows; rows unchanged; 7 objects present
+PASS R29-W1 re-running wrangler migrations is a no-op (applied migrations are recorded)
+PASS R29-W2 worker on workerd D1 reports the current schema (24)
+PASS R29-W3 production release commits release+receipt+status+audit on workerd D1
+PASS R29-W3 same-key replay on workerd D1 adds nothing
+PASS R29-W3 same key + different payload is 409 on workerd D1
+PASS R29-W3 immutability triggers fire on workerd D1
+EVIDENCE {"scenario":"W3","releases":1,"receipts":1,"audits":1,"status":"PRODUCTION_RELEASED"}
+PASS R29-W4 25 concurrent different-key requests on workerd D1: one commit, no 500
+EVIDENCE {"scenario":"W4","statuses":{"201":1,"409":24},"codes":{"PRODUCTION_ALREADY_RELEASED":24},"releases":1,"receipts":1,"audits":2,"status":"PRODUCTION_RELEASED"}
+PASS R29-W5 25 concurrent same-key requests on workerd D1: one release, identical responses
+EVIDENCE {"scenario":"W5","statuses":{"201":25},"replayed":24,"releases":1,"receipts":1,"audits":3,"status":"PRODUCTION_RELEASED"}
+PASS R29-W8 barrier race on workerd D1 (25/25 at commit): in-transaction guard admits exactly one, 24×409, no 500
+EVIDENCE {"scenario":"W8","arrivals":25,"statuses":{"201":1,"409":24},"codes":{"PRODUCTION_ALREADY_RELEASED":24},"releases":1,"receipts":1,"audits":4,"status":"PRODUCTION_RELEASED"}
+EVIDENCE {"scenario":"W9","a":201,"b":201,"bCode":null,"releases":1,"receipts":1,"audits":5,"status":"PRODUCTION_RELEASED"}
+PASS R29-W9 same-key request overtaken by the original before its pre-check replays the original on workerd D1
+PASS R29-W6 workerd D1 failure at style_releases INSERT: full rollback, sanitized 500
+EVIDENCE {"scenario":"W6","injectedAt":"style_releases INSERT","before":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"}}
+PASS R29-W6 workerd D1 failure at release_receipts INSERT: full rollback, sanitized 500
+EVIDENCE {"scenario":"W6","injectedAt":"release_receipts INSERT","before":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"}}
+PASS R29-W6 workerd D1 failure at styles UPDATE: full rollback, sanitized 500
+EVIDENCE {"scenario":"W6","injectedAt":"styles UPDATE","before":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"}}
+PASS R29-W6 workerd D1 failure at audit_log INSERT: full rollback, sanitized 500
+EVIDENCE {"scenario":"W6","injectedAt":"audit_log INSERT","before":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"}}
+PASS R29-W7 workerd D1 commit-window drift (new Style Version created): 409 STALE_CANDIDATE, nothing written
+EVIDENCE {"scenario":"W7","drift":"new Style Version created","code":"STALE_CANDIDATE","before":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"}}
+PASS R29-W7 workerd D1 commit-window drift (membership of actor removed): 403 FORBIDDEN_ACTOR, nothing written
+EVIDENCE {"scenario":"W7","drift":"membership of actor removed","code":"FORBIDDEN_ACTOR","before":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"},"after":{"releases":0,"receipts":0,"audits":5,"status":"DRAFT"}}
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+PASS R30-W1 worker on wrangler-migrated workerd D1 reports schema 24
+PASS R30-W2 prepare/dispatch/acknowledge with replays on workerd D1: 3 events, 3 receipts, 3 audits
+PASS R30-W2 frozen package served with ETag = stored SHA-256 on workerd D1
+PASS R30-W2 lot opened only after ACK, carrying handoff provenance
+PASS R30-W2 handoff immutability triggers fire on workerd D1
+EVIDENCE {"scenario":"W2","handoffs":1,"events":3,"receipts":3,"audits":3,"state":"ACKNOWLEDGED"}
+PASS R30-W3 20 concurrent prepares on workerd D1 (20/20 at commit): one package, 19×409, no 500
+EVIDENCE {"scenario":"W3-prepare","statuses":{"201":1,"409":19},"codes":{"HANDOFF_ALREADY_EXISTS":19},"handoffs":1,"events":1,"receipts":1,"audits":1,"state":"PREPARED"}
+PASS R30-W3 20 concurrent dispatches on workerd D1: one transition, 19×409, no 500
+EVIDENCE {"scenario":"W3-dispatch","statuses":{"200":1,"409":19},"codes":{"INVALID_STATE":19},"handoffs":1,"events":2,"receipts":2,"audits":2,"state":"HANDED_OFF"}
+PASS R30-W4 workerd D1 failure at factory_handoffs INSERT (prepare): full rollback, sanitized 500
+EVIDENCE {"scenario":"W4","injectedAt":"factory_handoffs INSERT","stage":"prepare","before":{"handoffs":0,"events":0,"receipts":0,"audits":0,"state":null},"after":{"handoffs":0,"events":0,"receipts":0,"audits":0,"state":null}}
+PASS R30-W4 workerd D1 failure at factory_handoff_events INSERT (prepare): full rollback, sanitized 500
+EVIDENCE {"scenario":"W4","injectedAt":"factory_handoff_events INSERT","stage":"prepare","before":{"handoffs":0,"events":0,"receipts":0,"audits":0,"state":null},"after":{"handoffs":0,"events":0,"receipts":0,"audits":0,"state":null}}
+PASS R30-W4 workerd D1 failure at handoff_receipts INSERT (dispatch): full rollback, sanitized 500
+EVIDENCE {"scenario":"W4","injectedAt":"handoff_receipts INSERT","stage":"dispatch","before":{"handoffs":1,"events":1,"receipts":1,"audits":1,"state":"PREPARED"},"after":{"handoffs":1,"events":1,"receipts":1,"audits":1,"state":"PREPARED"}}
+PASS R30-W4 workerd D1 failure at audit_log INSERT (dispatch): full rollback, sanitized 500
+EVIDENCE {"scenario":"W4","injectedAt":"audit_log INSERT","stage":"dispatch","before":{"handoffs":1,"events":1,"receipts":1,"audits":1,"state":"PREPARED"},"after":{"handoffs":1,"events":1,"receipts":1,"audits":1,"state":"PREPARED"}}
+PASS R30-W4 workerd D1 failure at factory_handoffs UPDATE (dispatch): full rollback, sanitized 500
+EVIDENCE {"scenario":"W4","injectedAt":"factory_handoffs UPDATE","stage":"dispatch","before":{"handoffs":1,"events":1,"receipts":1,"audits":1,"state":"PREPARED"},"after":{"handoffs":1,"events":1,"receipts":1,"audits":1,"state":"PREPARED"}}
+PASS R30-W5 membership removed inside the commit window on workerd D1: 403, nothing written
+EVIDENCE {"scenario":"W5","code":"FORBIDDEN_ACTOR","before":{"handoffs":1,"events":2,"receipts":2,"audits":2,"state":"HANDED_OFF"},"after":{"handoffs":1,"events":2,"receipts":2,"audits":2,"state":"HANDED_OFF"}}
+PASS R30-W6 schema-24 Worker against a wrangler-migrated schema-22 D1 fails closed (503)
+PASS R30-W6 wrangler upgrade 22→23 on workerd D1 keeps legacy releases and lots intact; 11 triggers present
+PASS R30-W6 re-running wrangler migrations is a no-op
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+PASS R30C-W1 worker on wrangler-migrated workerd D1 reports schema 24
+PASS R30C-W2 workerd D1 PREPARE abort at factory_handoffs INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"PREPARE","statement":"factory_handoffs INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"afterRetry":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0}}
+PASS R30C-W2 workerd D1 PREPARE abort at event INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"PREPARE","statement":"event INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"afterRetry":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0}}
+PASS R30C-W2 workerd D1 PREPARE abort at receipt INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"PREPARE","statement":"receipt INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"afterRetry":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0}}
+PASS R30C-W2 workerd D1 PREPARE abort at audit INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"PREPARE","statement":"audit INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":[],"ev":0,"rc":0,"au":0,"lots":0},"afterRetry":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0}}
+PASS R30C-W2 workerd D1 DISPATCH abort at factory_handoffs UPDATE: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"DISPATCH","statement":"factory_handoffs UPDATE","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+PASS R30C-W2 workerd D1 DISPATCH abort at event INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"DISPATCH","statement":"event INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+PASS R30C-W2 workerd D1 DISPATCH abort at receipt INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"DISPATCH","statement":"receipt INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+PASS R30C-W2 workerd D1 DISPATCH abort at audit INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"DISPATCH","statement":"audit INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+PASS R30C-W2 workerd D1 ACKNOWLEDGE abort at factory_handoffs UPDATE: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"ACKNOWLEDGE","statement":"factory_handoffs UPDATE","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0}}
+PASS R30C-W2 workerd D1 ACKNOWLEDGE abort at event INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"ACKNOWLEDGE","statement":"event INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0}}
+PASS R30C-W2 workerd D1 ACKNOWLEDGE abort at receipt INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"ACKNOWLEDGE","statement":"receipt INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0}}
+PASS R30C-W2 workerd D1 ACKNOWLEDGE abort at audit INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"ACKNOWLEDGE","statement":"audit INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["HANDED_OFF:2"],"ev":2,"rc":2,"au":2,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0}}
+PASS R30C-W2 workerd D1 WITHDRAW abort at factory_handoffs UPDATE: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"WITHDRAW","statement":"factory_handoffs UPDATE","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["WITHDRAWN:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+PASS R30C-W2 workerd D1 WITHDRAW abort at event INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"WITHDRAW","statement":"event INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["WITHDRAWN:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+PASS R30C-W2 workerd D1 WITHDRAW abort at receipt INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"WITHDRAW","statement":"receipt INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["WITHDRAWN:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+PASS R30C-W2 workerd D1 WITHDRAW abort at audit INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"WITHDRAW","statement":"audit INSERT","status":500,"code":"HANDOFF_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["PREPARED:1"],"ev":1,"rc":1,"au":1,"lots":0},"afterRetry":{"h":["WITHDRAWN:2"],"ev":2,"rc":2,"au":2,"lots":0}}
+PASS R30C-W2 workerd D1 LOT_CREATE abort at production_lots INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"LOT_CREATE","statement":"production_lots INSERT","status":500,"code":"LOT_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":4,"lots":1}}
+PASS R30C-W2 workerd D1 LOT_CREATE abort at audit INSERT: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once
+EVIDENCE {"scenario":"closure-injection-workerd","transition":"LOT_CREATE","statement":"audit INSERT","status":500,"code":"LOT_COMMIT_FAILED","rowsUnchanged":true,"before":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":3,"lots":0},"afterRetry":{"h":["ACKNOWLEDGED:3"],"ev":3,"rc":3,"au":4,"lots":1}}
+EVIDENCE {"scenario":"invariant-workerd","handoffs":18,"violations":[],"lotsBad":0}
+PASS R30C-W3 workerd D1 DB-wide invariant over 18 handoffs: events = version = receipts = audits; every handoff lot has one audit
+EVIDENCE {"scenario":"upgrade-workerd","applyStatus":0,"schema":"24","integrity":"not available: D1 refuses PRAGMA integrity_check (SQLITE_AUTH); integrity proven on node:sqlite (R30C matrix)","triggers":23,"identical":true}
+PASS R30C-W4 wrangler applies 0020+0021+0022 in one run over schema-21 historical data on workerd D1: schema 24, historical rows identical
+PASS R30C-W4 upgraded and fresh workerd D1 schemas identical (125 objects incl. 23 triggers)
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+PASS P1-W01 worker on wrangler-migrated workerd D1 (0001..0022) reports schema 24
+EVIDENCE {"scenario":"p1w-toctou-qc","status":409,"code":"SIGNOFF_SIGNER_INVALID","roleKey":"QC","rowsUnchanged":true}
+PASS P1-W02 workerd D1: QC signer active but role QC_MANAGER→OPERATOR in the PREPARE commit window → 409, zero package/event/receipt/audit
+PASS P1-W03 workerd D1: DESIGN signer role revoked in the window → 409 for DESIGN, zero writes
+PASS P1-W03 workerd D1: PRODUCTION signer role revoked in the window → 409 for PRODUCTION, zero writes
+PASS P1-W03 workerd D1: QC signer role revoked in the window → 409 for QC, zero writes
+PASS P1-W04 workerd D1: preparer RELEASE_MANAGER→OPERATOR in the window → 403, zero writes
+PASS P1-W04 workerd D1: preparer authority changed to another permitted role in the window → 409 AUTHORITY_CHANGED, zero writes
+PASS P1-W05 workerd D1: valid control → 201, one package/event/receipt/audit, signer authority frozen (column = package hash)
+PASS P1-W05 workerd D1: raw INSERT bypassing the Worker while QC signer is STORE_CLERK → RAISE HANDOFF_SIGNER_INELIGIBLE
+EVIDENCE {"scenario":"p1w-lot-replay","first":201,"retry":201,"replayed":"true","lots":1,"receipts":1,"audits":1}
+PASS P1-W06 workerd D1: lot 201, identical retry with the same key → 201 replay of the same lot; 1 lot/receipt/audit (no 500)
+PASS P1-W06 workerd D1: same key with a different plannedQty → 409 IDEMPOTENCY_KEY_REUSED, no write
+PASS P1-W07 workerd D1: 12 concurrent identical requests with one key → all 201, one lot id, 1 lot/receipt/audit
+EVIDENCE {"scenario":"p1w-lot-concurrency","sameKey":{"201":12},"differentKeys":{"201:":1,"409:LOT_CODE_EXISTS":11}}
+PASS P1-W07 workerd D1: 12 concurrent same-body requests with 12 keys → one 201, eleven 409 LOT_CODE_EXISTS, no 500
+EVIDENCE {"scenario":"p1w-lot-injection","statement":"production_lots INSERT","status":500,"code":"LOT_COMMIT_FAILED","rowsUnchanged":true,"retry":201,"lots":1,"receipts":1,"audits":1}
+PASS P1-W08 workerd D1: abort at production_lots INSERT → sanitized 500, lot/receipt/audit rows byte-identical; retry commits once
+EVIDENCE {"scenario":"p1w-lot-injection","statement":"lot_receipts INSERT","status":500,"code":"LOT_COMMIT_FAILED","rowsUnchanged":true,"retry":201,"lots":1,"receipts":1,"audits":1}
+PASS P1-W08 workerd D1: abort at lot_receipts INSERT → sanitized 500, lot/receipt/audit rows byte-identical; retry commits once
+EVIDENCE {"scenario":"p1w-lot-injection","statement":"audit_log INSERT","status":500,"code":"LOT_COMMIT_FAILED","rowsUnchanged":true,"retry":201,"lots":1,"receipts":1,"audits":1}
+PASS P1-W08 workerd D1: abort at audit_log INSERT → sanitized 500, lot/receipt/audit rows byte-identical; retry commits once
+EVIDENCE {"scenario":"p1w-upgrade","apply":0,"schema":"24","rowsIdentical":true,"nullAuthority":true,"dispatch":"D1_ERROR: HANDOFF_AUTHORITY_UNVERIFIED: SQLITE_CONSTRAINT (extended: SQLITE_CONS","withdraw":"allowed","ddlIdentical":true}
+PASS P1-W09 workerd D1: wrangler upgrade 23→24 keeps the schema-23 handoff byte-identical with NULL signer authority
+PASS P1-W09 workerd D1: that unproven handoff cannot be dispatched (RAISE HANDOFF_AUTHORITY_UNVERIFIED) but can be withdrawn
+PASS P1-W09 workerd D1: DDL after 21..23→24 upgrade is identical to a fresh 0001..0022 install
+PASS P1-W09 workerd D1: re-running wrangler migrations is a no-op

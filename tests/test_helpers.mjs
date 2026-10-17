@@ -1,4 +1,5 @@
 import { DatabaseSync } from 'node:sqlite';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -6,7 +7,7 @@ import worker from '../src/worker.js';
 const _consoleError=console.error;console.error=(...args)=>{if(process.env.VERBOSE_TEST==='1')_consoleError(...args)};
 export const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'..');
 export function makeHarness(){
- const migrations=['0001_init.sql','0002_ai_review_pattern.sql','0003_mohsen_master_bilingual.sql','0004_pattern_intelligence_grading.sql','0005_release_workflow.sql','0006_factory_collaboration.sql','0007_requirements_matrix.sql','0008_sample_fit_validation.sql','0009_costing_consumption.sql','0010_production_quality.sql','0011_production_planning.sql','0012_frozen_planning_basis.sql','0013_factory_operation_execution.sql','0014_reconciliation_concurrency.sql','0015_full_actual_cost.sql','0016_engineering_foundation.sql','0017_human_experience.sql','0018_human_qc.sql','0019_human_store.sql','0020_release_atomicity.sql','0021_factory_handoff.sql'];
+ const migrations=['0001_init.sql','0002_ai_review_pattern.sql','0003_mohsen_master_bilingual.sql','0004_pattern_intelligence_grading.sql','0005_release_workflow.sql','0006_factory_collaboration.sql','0007_requirements_matrix.sql','0008_sample_fit_validation.sql','0009_costing_consumption.sql','0010_production_quality.sql','0011_production_planning.sql','0012_frozen_planning_basis.sql','0013_factory_operation_execution.sql','0014_reconciliation_concurrency.sql','0015_full_actual_cost.sql','0016_engineering_foundation.sql','0017_human_experience.sql','0018_human_qc.sql','0019_human_store.sql','0020_release_atomicity.sql','0021_factory_handoff.sql','0022_handoff_authority_lot_receipts.sql'];
  const db=new DatabaseSync(':memory:'); for(const f of migrations) db.exec(readFileSync(resolve(root,'migrations',f),'utf8'));
  class D1Mock{constructor(db){this.db=db}batch(list){this.db.exec('BEGIN');try{const out=list.map(x=>x.run());this.db.exec('COMMIT');return out}catch(e){this.db.exec('ROLLBACK');throw e}}prepare(sql){const st=this.db.prepare(sql);return{bind:(...args)=>{const vals=args.map(v=>v===undefined?null:v);return{first:()=>st.get(...vals)||null,all:()=>({results:st.all(...vals)}),run:()=>{const r=st.run(...vals);return{success:true,meta:{changes:Number(r.changes||0)}}}}}}}}
  class R2Object{constructor(bytes,meta={}){this.bytes=bytes;this.meta=meta;this.httpEtag='test';this.body=bytes}async arrayBuffer(){return this.bytes.buffer.slice(this.bytes.byteOffset,this.bytes.byteOffset+this.bytes.byteLength)}writeHttpMetadata(h){if(this.meta?.httpMetadata?.contentType)h.set('content-type',this.meta.httpMetadata.contentType)}}
@@ -38,13 +39,31 @@ export function seedEngineeringReady(db,styleId,{skip=[]}={}){
 // ROUND30 fixture for legacy lot suites that insert PRODUCTION release rows directly (no release API). Owner policy now
 // requires frozen evidence + an ACKNOWLEDGED factory handoff before a lot can be opened, so this helper walks each such
 // release through the real database state machine (PREPARED -> HANDED_OFF -> ACKNOWLEDGED, distinct fixture actors).
-// It is a fixture shortcut only; the API path is proven end to end in tests/round30_factory_handoff.mjs.
+// ROUND30 P1 corrective: the handoff must also carry signer authority that the database re-proves at insert
+// (migration 0022), and lot opening re-verifies the frozen package/release hashes. So the fixture now creates four
+// independent, eligible fixture signers in the release's own tenant, records their APPROVED signoffs, seals the
+// release integrity fields once (allowed only while evidence_contract is NULL) and writes a real package + hashes.
+// It is a fixture shortcut only; the API path is proven end to end in tests/round30_factory_handoff.mjs and
+// tests/round30_p1_corrective.mjs.
+// Verbatim copy of worker.js stableComparable (fixture hashing). round30_p1_corrective.mjs proves both agree.
+export function stableComparable(v){if(v===undefined)return null;if(v===null||typeof v!=='object')return v;if(Array.isArray(v))return v.map(stableComparable);const out={};for(const k of Object.keys(v).sort())if(!['id','created_at','updated_at','created_by','versions','releases','variants','variantOf'].includes(k))out[k]=stableComparable(v[k]);return out;}
+export const sha256Hex=t=>createHash('sha256').update(String(t)).digest('hex');
+const FIXTURE_SIGNERS=[['DESIGN','DESIGN_PATTERN_MASTER','eng'],['PATTERN','DESIGN_PATTERN_MASTER','eng'],['PRODUCTION','FACTORY_SUPERVISOR','prod'],['QC','QC_MANAGER','qc']];
 export function admitReleasesForLotFixtures(db){
  const ts=new Date().toISOString();
- for(const r of db.prepare("SELECT r.id,r.style_id,r.release_no,s.org_id FROM style_releases r JOIN styles s ON s.id=r.style_id WHERE r.release_type='PRODUCTION' AND NOT EXISTS(SELECT 1 FROM factory_handoffs h WHERE h.release_id=r.id AND h.status<>'WITHDRAWN')").all()){
-  db.prepare("UPDATE style_releases SET evidence_contract='FROZEN_READINESS/R29' WHERE id=? AND evidence_contract IS NULL").run(r.id);
-  const id='hof_fixture_'+r.id;
-  db.prepare("INSERT INTO factory_handoffs(id,org_id,style_id,release_id,release_no,status,version,package_json,package_sha256,release_snapshot_sha256,signoffs_sha256,prepared_by,prepared_at,last_command_id,created_at,updated_at) VALUES(?,?,?,?,?,'PREPARED',1,'{}','fixture','fixture','fixture','fixture_release_manager',?,'cmd_fixture_1',?,?)").run(id,r.org_id,r.style_id,r.id,r.release_no,ts,ts,ts);
+ for(const r of db.prepare("SELECT r.*,s.org_id FROM style_releases r JOIN styles s ON s.id=r.style_id WHERE r.release_type='PRODUCTION' AND NOT EXISTS(SELECT 1 FROM factory_handoffs h WHERE h.release_id=r.id AND h.status<>'WITHDRAWN')").all()){
+  const snap=JSON.parse(r.snapshot_json||'null')||{fixture:true},snapshotSha=sha256Hex(JSON.stringify(stableComparable(snap))),candidate=r.candidate_sha256||sha256Hex('fixture-candidate|'+r.id);
+  if(r.evidence_contract==null){const manifest={...JSON.parse(r.manifest_json||'{}'),snapshotSha256:snapshotSha},gate=JSON.parse(r.gate_json||'{}');gate.engineering={...(gate.engineering||{}),candidateSha256:candidate};
+   db.prepare("UPDATE style_releases SET evidence_contract='FROZEN_READINESS/R29',candidate_sha256=?,manifest_json=?,gate_json=?,snapshot_json=? WHERE id=? AND evidence_contract IS NULL").run(candidate,JSON.stringify(manifest),JSON.stringify(gate),JSON.stringify(snap),r.id);}
+  const signers=[];
+  for(const [roleKey,memberRole,tag] of FIXTURE_SIGNERS){const uid=`fixture_${tag}_${r.org_id}`;
+   db.prepare("INSERT OR IGNORE INTO users(id,email,display_name,password_hash,password_salt,created_at) VALUES(?,?,?,'fixture-no-login','fixture',?)").run(uid,`${uid}@fixture.local`,uid,ts);
+   db.prepare('INSERT OR IGNORE INTO memberships(user_id,org_id,role) VALUES(?,?,?)').run(uid,r.org_id,memberRole);
+   db.prepare("INSERT INTO release_signoffs(id,style_id,release_no,role_key,decision,note,user_id,created_at) VALUES(?,?,?,?,'APPROVED','fixture',?,?) ON CONFLICT(style_id,release_no,role_key) DO UPDATE SET decision='APPROVED',user_id=excluded.user_id,created_at=excluded.created_at").run(`sig_fixture_${r.id}_${roleKey}`,r.style_id,r.release_no,roleKey,uid,ts);
+   signers.push({roleKey,userId:uid,signedAt:ts,signerRole:memberRole});}
+  const authoritySha=sha256Hex(JSON.stringify(signers)),id='hof_fixture_'+r.id;
+  const pkg=JSON.stringify({contract:'FACTORY_HANDOFF/R30',fixture:true,handoffId:id,release:{id:r.id,releaseNo:Number(r.release_no),snapshotSha256:snapshotSha,candidateSha256:candidate},signerAuthority:{contract:'SIGNER_AUTHORITY/R30.1',signers,sha256:authoritySha}});
+  db.prepare("INSERT INTO factory_handoffs(id,org_id,style_id,release_id,release_no,status,version,package_json,package_sha256,release_snapshot_sha256,signoffs_sha256,signer_authority_sha256,prepared_by,prepared_at,last_command_id,created_at,updated_at) VALUES(?,?,?,?,?,'PREPARED',1,?,?,?,?,?,'fixture_release_manager',?,'cmd_fixture_1',?,?)").run(id,r.org_id,r.style_id,r.id,r.release_no,pkg,sha256Hex(pkg),snapshotSha,sha256Hex(JSON.stringify(signers)),authoritySha,ts,ts,ts);
   db.prepare("UPDATE factory_handoffs SET status='HANDED_OFF',version=2,dispatched_by='fixture_release_manager',dispatched_at=?,last_command_id='cmd_fixture_2' WHERE id=?").run(ts,id);
   db.prepare("UPDATE factory_handoffs SET status='ACKNOWLEDGED',version=3,acknowledged_by='fixture_factory_supervisor',acknowledged_at=?,last_command_id='cmd_fixture_3' WHERE id=?").run(ts,id);
  }

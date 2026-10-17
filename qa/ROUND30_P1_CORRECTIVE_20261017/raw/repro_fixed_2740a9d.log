@@ -1,0 +1,3 @@
+REPRO {"id":"P1-A","qcSignerRoleAtCommit":"OPERATOR","qcSignerActive":1,"prepare":409,"prepareCode":"SIGNOFF_SIGNER_INVALID","dispatch":null,"acknowledge":null,"openLot":null,"handoffs":0,"lots":0,"lotAudits":0,"defectReproduced":false}
+REPRO {"id":"P1-B","first":201,"firstLotId":"lot_f0124b0bf851fdc6eebbb1c6","retry":201,"retryCode":null,"retryReplayed":"true","retryLotId":"lot_f0124b0bf851fdc6eebbb1c6","handoffs":1,"lots":1,"lotAudits":1,"defectReproduced":false}
+REPRO_SUMMARY [{"id":"P1-A","defectReproduced":false},{"id":"P1-B","defectReproduced":false}]

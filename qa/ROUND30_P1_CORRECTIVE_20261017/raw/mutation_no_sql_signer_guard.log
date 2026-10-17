@@ -1,0 +1,12 @@
+MATRIX {"matrix":"TOCTOU","id":"P1A-01","scenario":"QC signer active but role QC_MANAGER→OPERATOR between pre-checks and PREPARE batch","expected":"409 SIGNOFF_SIGNER_INVALID; zero package/event/receipt/audit; nothing to dispatch/ack/open","actual":"409 SIGNOFF_SIGNER_INVALID active=1 rowsUnchanged=true dispatch=n/a","verdict":"FAIL"}
+file:///home/user/sehha-apparelos/tests/test_helpers.mjs:21
+export function ok(c,m){if(!c)throw new Error('ASSERT: '+m);console.log('PASS',m)}
+                                    ^
+
+Error: ASSERT: P1A-01 QC signer active but role QC_MANAGER→OPERATOR between pre-checks and PREPARE batch
+    at ok (file:///home/user/sehha-apparelos/tests/test_helpers.mjs:21:37)
+    at row (file:///home/user/sehha-apparelos/tests/round30_p1_corrective.mjs:21:158)
+    at file:///home/user/sehha-apparelos/tests/round30_p1_corrective.mjs:57:2
+
+Node.js v22.22.0
+exit=1

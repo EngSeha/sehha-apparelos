@@ -1,0 +1,13 @@
+GitHub Actions CI — EngSeha/sehha-apparelos run 38993902960, job 117282038787 (regression), conclusion: success
+event: pull_request (#5) · head_sha 2740a9dcab2b67489c4453814272db9bb24d3ee0 · checked-out merge ref 5034e1d (Merge 2740a9d into 5f928e2)
+runner: ubuntu-24.04 · node v24.21.0 · npm 11.19.0
+steps: npm ci (found 0 vulnerabilities) ✓ · npm run check ✓ · npm test ✓ · npm run test:workerd-d1 ✓ (02:11:22 → 02:16:38 UTC)
+npm test: ALL_TESTS_PASS suites=29 assertions=925 (… test:round30: 81, test:round30-closure: 131, test:round30-p1: 89 …)
+workerd-d1: every row PASS — R29-W1..W9, R30-W1..W6, R30C-W1..W4 (lot injection code LOT_COMMIT_FAILED), P1-W01..P1-W09
+selected P1 evidence lines from the CI log:
+  EVIDENCE {"scenario":"p1w-toctou-qc","status":409,"code":"SIGNOFF_SIGNER_INVALID","roleKey":"QC","rowsUnchanged":true}
+  EVIDENCE {"scenario":"p1w-lot-replay","first":201,"retry":201,"replayed":"true","lots":1,"receipts":1,"audits":1}
+  EVIDENCE {"scenario":"p1w-lot-concurrency","sameKey":{"201":12},"differentKeys":{"201:":1,"409:LOT_CODE_EXISTS":11}}
+  EVIDENCE {"scenario":"p1w-upgrade","apply":0,"schema":"24","rowsIdentical":true,"nullAuthority":true,"withdraw":"allowed","ddlIdentical":true}
+  PASS R30C-W4 upgraded and fresh workerd D1 schemas identical (125 objects incl. 23 triggers)
+source: GitHub job log retrieved via the GitHub API; full log at https://github.com/EngSeha/sehha-apparelos/actions/runs/38993902960
