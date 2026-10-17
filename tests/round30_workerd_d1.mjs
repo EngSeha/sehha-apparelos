@@ -22,7 +22,7 @@ const env={DB,UPLOADS:{put:async()=>({}),get:async()=>null},STATIC:{fetch:async(
 let cookie='';
 async function call(path,{method='GET',body,headers={}}={}){const h={...headers};if(body!==undefined)h['content-type']='application/json';if(cookie)h.cookie=cookie;const r=await worker.fetch(new Request('http://local'+path,{method,headers:h,body:body===undefined?undefined:JSON.stringify(body)}),env);const ct=r.headers.get('content-type')||'';return {r,data:ct.includes('json')?await r.json():await r.text()};}
 const q1=(sql,...b)=>D1.prepare(sql).bind(...b).first(),run=(sql,...b)=>D1.prepare(sql).bind(...b).run();
-let x=await call('/api/health');ok(x.r.status===200&&x.data.schemaVersion==='23','R30-W1 worker on wrangler-migrated workerd D1 reports schema 23');
+let x=await call('/api/health');ok(x.r.status===200&&x.data.schemaVersion==='24','R30-W1 worker on wrangler-migrated workerd D1 reports schema 24');
 x=await call('/api/auth/login',{method:'POST',body:{email:'dev@sehha.local',password:env.DEV_BOOTSTRAP_PASSWORD}});cookie=(x.r.headers.get('set-cookie')||'').split(';')[0];
 x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
 const {buildReleaseCandidate}=await import('./release_fixture.mjs');
@@ -86,7 +86,7 @@ for(const [label,ddl,stage] of [['factory_handoffs INSERT',"CREATE TRIGGER inj B
  copyFileSync(resolve(root,'migrations','0021_factory_handoff.sql'),join(mig,'0021_factory_handoff.sql'));r=wranglerApply(c,pst);
  p=await getPlatformProxy({configPath:c,persist:{path:join(pst,'v3')}});const ra=(await p.env.DB.prepare('SELECT * FROM style_releases ORDER BY id').all()).results,la=(await p.env.DB.prepare('SELECT * FROM production_lots').all()).results;
  const schema=(await p.env.DB.prepare("SELECT value FROM app_meta WHERE key='schema_version'").first()).value,trg=(await p.env.DB.prepare("SELECT COUNT(*) n FROM sqlite_master WHERE type='trigger' AND (name LIKE 'trg_factory_handoff%' OR name LIKE 'trg_handoff_receipts%' OR name LIKE 'trg_release_signoffs_frozen%')").first()).n;
- ok(old.status===503&&/22/.test(ob.error),'R30-W6 schema-23 Worker against a wrangler-migrated schema-22 D1 fails closed (503)');
+ ok(old.status===503&&/22/.test(ob.error),'R30-W6 schema-24 Worker against a wrangler-migrated schema-22 D1 fails closed (503)');
  ok(r.status===0&&schema==='23'&&trg===11&&JSON.stringify(ra)===JSON.stringify(rb)&&JSON.stringify(la.map(({handoff_id,...x})=>x))===JSON.stringify(lb)&&la[0].handoff_id===null,'R30-W6 wrangler upgrade 22→23 on workerd D1 keeps legacy releases and lots intact; 11 triggers present');
  const again=wranglerApply(c,pst);ok(again.status===0&&/No migrations to apply/i.test(again.out),'R30-W6 re-running wrangler migrations is a no-op');await p.dispose();}
 await proxy.dispose();rmSync(work,{recursive:true,force:true});

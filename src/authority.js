@@ -13,10 +13,23 @@ export const CAPABILITIES={
   HANDOFF_ACKNOWLEDGE:[...OWNER_ROLES,'FACTORY_SUPERVISOR','PRODUCTION'],
   HANDOFF_INSPECT:null // any active member of the tenant
 };
+// Technical signoff eligibility per release signoff domain (single source; migration 0022 mirrors it in SQL and
+// tests/round30_p1_corrective.mjs proves the two agree for every role). Actor authority above is a separate concept.
+export const SIGNOFF_DOMAINS=['DESIGN','PATTERN','PRODUCTION','QC'];
+export const SIGNOFF_ELIGIBILITY={
+  DESIGN:[...OWNER_ROLES,'DESIGN','DESIGN_PATTERN_MASTER'],
+  PATTERN:[...OWNER_ROLES,'PATTERN','DESIGN_PATTERN_MASTER'],
+  PRODUCTION:[...OWNER_ROLES,'PRODUCTION','FACTORY_SUPERVISOR'],
+  QC:[...OWNER_ROLES,'QC','QC_MANAGER']
+};
+export function canSignRole(memberRole,roleKey){return !!SIGNOFF_ELIGIBILITY[roleKey]?.includes(String(memberRole||'').toUpperCase());}
 // SQL fragment: actor (?A) is active and holds one of the capability roles in org (?O). Platform admin comes from the DB.
 export function actorSql(capability,a='?A',o='?O'){const roles=CAPABILITIES[capability];
   const roleCond=roles?` AND UPPER(m.role) IN (${roles.map(r=>`'${r}'`).join(',')})`:'';
   return `EXISTS(SELECT 1 FROM users u WHERE u.id=${a} AND u.active=1 AND (u.is_platform_admin=1 OR EXISTS(SELECT 1 FROM memberships m WHERE m.user_id=u.id AND m.org_id=${o}${roleCond})))`;}
+// SQL fragment: actor (?A) still holds exactly the role (?L) that was authorized and frozen into the command evidence.
+export function actorRoleSql(a='?A',o='?O',l='?L'){
+  return `((${l}='PLATFORM_ADMIN' AND EXISTS(SELECT 1 FROM users u WHERE u.id=${a} AND u.active=1 AND u.is_platform_admin=1)) OR (${l}<>'PLATFORM_ADMIN' AND EXISTS(SELECT 1 FROM users u JOIN memberships m ON m.user_id=u.id WHERE u.id=${a} AND u.active=1 AND m.org_id=${o} AND UPPER(m.role)=${l})))`;}
 // Re-read the actor from the database; session claims are never authority.
 export async function actorCapability(env,userId,orgId,capability){
   const u=await env.DB.prepare('SELECT active,is_platform_admin FROM users WHERE id=?').bind(userId).first();

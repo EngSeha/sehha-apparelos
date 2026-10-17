@@ -24,7 +24,7 @@ const env={DB,UPLOADS:{put:async()=>({}),get:async()=>null},STATIC:{fetch:async(
 let cookie='';
 async function call(path,{method='GET',body,headers={}}={}){const h={...headers};if(body!==undefined)h['content-type']='application/json';if(cookie)h.cookie=cookie;const r=await worker.fetch(new Request('http://local'+path,{method,headers:h,body:body===undefined?undefined:JSON.stringify(body)}),env);const ct=r.headers.get('content-type')||'';return {r,data:ct.includes('json')?await r.json():await r.text()};}
 const q1=(sql,...b)=>D1.prepare(sql).bind(...b).first(),run=(sql,...b)=>D1.prepare(sql).bind(...b).run();
-let x=await call('/api/health');ok(x.r.status===200&&x.data.schemaVersion==='23','R30C-W1 worker on wrangler-migrated workerd D1 reports schema 23');
+let x=await call('/api/health');ok(x.r.status===200&&x.data.schemaVersion==='24','R30C-W1 worker on wrangler-migrated workerd D1 reports schema 24');
 x=await call('/api/auth/login',{method:'POST',body:{email:'dev@sehha.local',password:env.DEV_BOOTSTRAP_PASSWORD}});cookie=(x.r.headers.get('set-cookie')||'').split(';')[0];
 x=await call('/api/me');const org=x.data.workspaces.find(w=>w.code==='MOHSEN');
 const {buildReleaseCandidate}=await import('./release_fixture.mjs');
@@ -69,7 +69,7 @@ const INJ=[
 for(const [t,stmt,when] of INJ){const from={PREPARE:'RELEASED',DISPATCH:'PREPARED',ACKNOWLEDGE:'HANDED_OFF',WITHDRAW:'PREPARED',LOT_CREATE:'ACKNOWLEDGED'}[t],tg=await inState(from),key=`w30c-inj-${t}-${stmt.replace(/\W/g,'')}`;
   const go=()=>t==='PREPARE'?as(U.rm,`/api/styles/${tg.s.id}/releases/${tg.s.n}/handoffs`,{key}):t==='LOT_CREATE'?as(U.fs,`/api/styles/${tg.s.id}/production-lots`,{body:{releaseNo:tg.s.n,lotCode:'INJ',plannedQty:5}}):as(t==='ACKNOWLEDGE'?U.fs:U.rm,`/api/styles/${tg.s.id}/handoffs/${tg.hid}/${t.toLowerCase()}`,{body:{reason:'Injected withdrawal',note:'n'},key});
   const before=await facts(tg.s.id);await run(`CREATE TRIGGER inj ${when} BEGIN SELECT RAISE(ABORT,'INJECTED_FAILURE'); END`);let res;try{res=await go()}finally{await run('DROP TRIGGER inj')}const after=await facts(tg.s.id);
-  const code=t==='LOT_CREATE'?'INTERNAL_ERROR':'HANDOFF_COMMIT_FAILED',unchanged=JSON.stringify(before)===JSON.stringify(after);
+  const code=t==='LOT_CREATE'?'LOT_COMMIT_FAILED':'HANDOFF_COMMIT_FAILED',unchanged=JSON.stringify(before)===JSON.stringify(after);
   const retry=await go(),after2=await facts(tg.s.id);
   ok(res.r.status===500&&res.data.code===code&&!/INJECTED|SQLITE|D1_ERROR|constraint/i.test(JSON.stringify(res.data))&&unchanged&&retry.r.status<300,`R30C-W2 workerd D1 ${t} abort at ${stmt}: sanitized 500, all handoff/event/receipt/audit/lot rows byte-identical; retry commits once`);
   evidence('closure-injection-workerd',{transition:t,statement:stmt,status:res.r.status,code:res.data.code,rowsUnchanged:unchanged,before:{h:before.hs.map(r=>r.status+':'+r.version),ev:before.ev.length,rc:before.rc.length,au:before.au.length,lots:before.lots.length},afterRetry:{h:after2.hs.map(r=>r.status+':'+r.version),ev:after2.ev.length,rc:after2.rc.length,au:after2.au.length,lots:after2.lots.length}});}
@@ -87,12 +87,12 @@ for(const [t,stmt,when] of INJ){const from={PREPARE:'RELEASED',DISPATCH:'PREPARE
   "INSERT INTO production_lots(id,style_id,release_no,lot_code,planned_qty,status,planning_basis_json,planning_basis_sha256,created_by,created_at,updated_at) VALUES('l1','s1',2,'L1',10,'RELEASED','{}','x','u1',?1,?1)"];
  for(const q of seed)await P.prepare(q).bind(t).run();
  const tabs=['styles','style_versions','style_releases','release_signoffs','production_lots'],dump=async DB=>{const o={};for(const tb of tabs)o[tb]=(await DB.prepare(`SELECT * FROM ${tb} ORDER BY rowid`).all()).results;return o;},before=await dump(P);await p.dispose();
- for(const f of ['0020_release_atomicity.sql','0021_factory_handoff.sql'])copyFileSync(resolve(root,'migrations',f),join(mig,f));r=wranglerApply(c,pst);
+ for(const f of ['0020_release_atomicity.sql','0021_factory_handoff.sql','0022_handoff_authority_lot_receipts.sql'])copyFileSync(resolve(root,'migrations',f),join(mig,f));r=wranglerApply(c,pst);
  p=await getPlatformProxy({configPath:c,persist:{path:join(pst,'v3')}});const Q=p.env.DB,after=await dump(Q);
  const strip=o=>Object.fromEntries(Object.entries(o).map(([tb,rows])=>[tb,rows.map(x=>{const y={...x};if(tb==='style_releases'){delete y.evidence_contract;delete y.candidate_sha256;}if(tb==='production_lots')delete y.handoff_id;return y;})]));
  const schema=(await Q.prepare("SELECT value FROM app_meta WHERE key='schema_version'").first()).value,integ='not available: D1 refuses PRAGMA integrity_check (SQLITE_AUTH); integrity proven on node:sqlite (R30C matrix)',trg=(await Q.prepare("SELECT COUNT(*) n FROM sqlite_master WHERE type='trigger'").first()).n;
  evidence('upgrade-workerd',{applyStatus:r.status,schema,integrity:integ,triggers:trg,identical:JSON.stringify(strip(after))===JSON.stringify(before)});
- ok(r.status===0&&schema==='23'&&JSON.stringify(strip(after))===JSON.stringify(before),'R30C-W4 wrangler applies 0020+0021 in one run over schema-21 historical data on workerd D1: schema 23, historical rows identical');
+ ok(r.status===0&&schema==='24'&&JSON.stringify(strip(after))===JSON.stringify(before),'R30C-W4 wrangler applies 0020+0021+0022 in one run over schema-21 historical data on workerd D1: schema 24, historical rows identical');
  const fresh=(await D1.prepare("SELECT type,name,sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' ORDER BY type,name").all()).results,up=(await Q.prepare("SELECT type,name,sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' ORDER BY type,name").all()).results;
  const norm=a=>a.map(x=>({...x,sql:String(x.sql||'').replace(/\s+/g,' ')}));ok(JSON.stringify(norm(fresh))===JSON.stringify(norm(up)),`R30C-W4 upgraded and fresh workerd D1 schemas identical (${up.length} objects incl. ${trg} triggers)`);await p.dispose();}
 await proxy.dispose();rmSync(work,{recursive:true,force:true});
