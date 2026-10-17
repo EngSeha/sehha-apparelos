@@ -1,0 +1,30 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+PASS P1-W01 worker on wrangler-migrated workerd D1 (0001..0022) reports schema 24
+EVIDENCE {"scenario":"p1w-toctou-qc","status":409,"code":"SIGNOFF_SIGNER_INVALID","roleKey":"QC","rowsUnchanged":true}
+PASS P1-W02 workerd D1: QC signer active but role QC_MANAGER→OPERATOR in the PREPARE commit window → 409, zero package/event/receipt/audit
+PASS P1-W03 workerd D1: DESIGN signer role revoked in the window → 409 for DESIGN, zero writes
+PASS P1-W03 workerd D1: PRODUCTION signer role revoked in the window → 409 for PRODUCTION, zero writes
+PASS P1-W03 workerd D1: QC signer role revoked in the window → 409 for QC, zero writes
+PASS P1-W04 workerd D1: preparer RELEASE_MANAGER→OPERATOR in the window → 403, zero writes
+PASS P1-W04 workerd D1: preparer authority changed to another permitted role in the window → 409 AUTHORITY_CHANGED, zero writes
+PASS P1-W05 workerd D1: valid control → 201, one package/event/receipt/audit, signer authority frozen (column = package hash)
+PASS P1-W05 workerd D1: raw INSERT bypassing the Worker while QC signer is STORE_CLERK → RAISE HANDOFF_SIGNER_INELIGIBLE
+EVIDENCE {"scenario":"p1w-lot-replay","first":201,"retry":201,"replayed":"true","lots":1,"receipts":1,"audits":1}
+PASS P1-W06 workerd D1: lot 201, identical retry with the same key → 201 replay of the same lot; 1 lot/receipt/audit (no 500)
+PASS P1-W06 workerd D1: same key with a different plannedQty → 409 IDEMPOTENCY_KEY_REUSED, no write
+PASS P1-W07 workerd D1: 12 concurrent identical requests with one key → all 201, one lot id, 1 lot/receipt/audit
+EVIDENCE {"scenario":"p1w-lot-concurrency","sameKey":{"201":12},"differentKeys":{"201:":1,"409:LOT_CODE_EXISTS":11}}
+PASS P1-W07 workerd D1: 12 concurrent same-body requests with 12 keys → one 201, eleven 409 LOT_CODE_EXISTS, no 500
+EVIDENCE {"scenario":"p1w-lot-injection","statement":"production_lots INSERT","status":500,"code":"LOT_COMMIT_FAILED","rowsUnchanged":true,"retry":201,"lots":1,"receipts":1,"audits":1}
+PASS P1-W08 workerd D1: abort at production_lots INSERT → sanitized 500, lot/receipt/audit rows byte-identical; retry commits once
+EVIDENCE {"scenario":"p1w-lot-injection","statement":"lot_receipts INSERT","status":500,"code":"LOT_COMMIT_FAILED","rowsUnchanged":true,"retry":201,"lots":1,"receipts":1,"audits":1}
+PASS P1-W08 workerd D1: abort at lot_receipts INSERT → sanitized 500, lot/receipt/audit rows byte-identical; retry commits once
+EVIDENCE {"scenario":"p1w-lot-injection","statement":"audit_log INSERT","status":500,"code":"LOT_COMMIT_FAILED","rowsUnchanged":true,"retry":201,"lots":1,"receipts":1,"audits":1}
+PASS P1-W08 workerd D1: abort at audit_log INSERT → sanitized 500, lot/receipt/audit rows byte-identical; retry commits once
+EVIDENCE {"scenario":"p1w-upgrade","apply":0,"schema":"24","rowsIdentical":true,"nullAuthority":true,"dispatch":"D1_ERROR: HANDOFF_AUTHORITY_UNVERIFIED: SQLITE_CONSTRAINT (extended: SQLITE_CONS","withdraw":"allowed","ddlIdentical":true}
+PASS P1-W09 workerd D1: wrangler upgrade 23→24 keeps the schema-23 handoff byte-identical with NULL signer authority
+PASS P1-W09 workerd D1: that unproven handoff cannot be dispatched (RAISE HANDOFF_AUTHORITY_UNVERIFIED) but can be withdrawn
+PASS P1-W09 workerd D1: DDL after 21..23→24 upgrade is identical to a fresh 0001..0022 install
+PASS P1-W09 workerd D1: re-running wrangler migrations is a no-op

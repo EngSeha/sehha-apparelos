@@ -1,0 +1,7 @@
+PASS First click: the server committed the lot (201) but the response was lost; the UI says the outcome is unconfirmed and that retrying will not duplicate
+PASS Second click (same intent): success message, still exactly one lot
+PASS Both clicks carried the same Idempotency-Key (one intent)
+PASS The retry was answered by the server replay (idempotency-replayed: true), not by a second insert
+PASS Exactly one durable lot receipt exists for the style
+PASS A new intent with an existing lot code gets a new key and the Arabic 409 message; nothing is written
+PASS Page is RTL

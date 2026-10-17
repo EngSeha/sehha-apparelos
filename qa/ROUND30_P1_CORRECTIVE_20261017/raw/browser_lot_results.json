@@ -1,0 +1,57 @@
+{
+ "base": "http://127.0.0.1:8798",
+ "styleId": "sty_cc7353843d45e1ad3a56b6b1",
+ "releaseNo": 1,
+ "handoffId": "hof_54352c184bb51462a9b1f165",
+ "posts": [
+  {
+   "key": "44bc72e7-6435-49cc-af5c-6058700ebb10"
+  },
+  {
+   "key": "44bc72e7-6435-49cc-af5c-6058700ebb10"
+  },
+  {
+   "key": "0573626f-05e3-4af1-8541-2a6ec8bedc1d"
+  }
+ ],
+ "responses": [
+  {
+   "status": 201,
+   "replayed": "true"
+  },
+  {
+   "status": 409,
+   "replayed": null
+  }
+ ],
+ "results": [
+  {
+   "check": "First click: the server committed the lot (201) but the response was lost; the UI says the outcome is unconfirmed and that retrying will not duplicate",
+   "result": "PASS"
+  },
+  {
+   "check": "Second click (same intent): success message, still exactly one lot",
+   "result": "PASS"
+  },
+  {
+   "check": "Both clicks carried the same Idempotency-Key (one intent)",
+   "result": "PASS"
+  },
+  {
+   "check": "The retry was answered by the server replay (idempotency-replayed: true), not by a second insert",
+   "result": "PASS"
+  },
+  {
+   "check": "Exactly one durable lot receipt exists for the style",
+   "result": "PASS"
+  },
+  {
+   "check": "A new intent with an existing lot code gets a new key and the Arabic 409 message; nothing is written",
+   "result": "PASS"
+  },
+  {
+   "check": "Page is RTL",
+   "result": "PASS"
+  }
+ ]
+}

@@ -1,0 +1,111 @@
+MATRIX {"matrix":"TOCTOU","id":"P1A-01","scenario":"QC signer active but role QC_MANAGER→OPERATOR between pre-checks and PREPARE batch","expected":"409 SIGNOFF_SIGNER_INVALID; zero package/event/receipt/audit; nothing to dispatch/ack/open","actual":"409 SIGNOFF_SIGNER_INVALID active=1 rowsUnchanged=true dispatch=n/a","verdict":"PASS"}
+PASS P1A-01 QC signer active but role QC_MANAGER→OPERATOR between pre-checks and PREPARE batch
+MATRIX {"matrix":"TOCTOU","id":"P1A-01b","scenario":"same Idempotency-Key retried after the QC role is restored","expected":"201 PREPARED once (the aborted attempt left no receipt)","actual":"201 PREPARED handoffs=1","verdict":"PASS"}
+PASS P1A-01b same Idempotency-Key retried after the QC role is restored
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-DESIGN-role→OPERATOR","scenario":"DESIGN signer role→OPERATOR (still member) in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID DESIGN rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-DESIGN-role→OPERATOR DESIGN signer role→OPERATOR (still member) in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-DESIGN-membership","scenario":"DESIGN signer membership removed in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID DESIGN rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-DESIGN-membership DESIGN signer membership removed in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-DESIGN-user","scenario":"DESIGN signer user disabled in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID DESIGN rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-DESIGN-user DESIGN signer user disabled in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-DESIGN-membership","scenario":"DESIGN signer membership moved to another tenant in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID DESIGN rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-DESIGN-membership DESIGN signer membership moved to another tenant in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-PATTERN-role→OPERATOR","scenario":"PATTERN signer role→OPERATOR (still member) in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID PATTERN rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-PATTERN-role→OPERATOR PATTERN signer role→OPERATOR (still member) in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-PATTERN-membership","scenario":"PATTERN signer membership removed in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID PATTERN rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-PATTERN-membership PATTERN signer membership removed in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-PATTERN-user","scenario":"PATTERN signer user disabled in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID PATTERN rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-PATTERN-user PATTERN signer user disabled in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-PATTERN-membership","scenario":"PATTERN signer membership moved to another tenant in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID PATTERN rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-PATTERN-membership PATTERN signer membership moved to another tenant in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-PRODUCTION-role→OPERATOR","scenario":"PRODUCTION signer role→OPERATOR (still member) in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID PRODUCTION rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-PRODUCTION-role→OPERATOR PRODUCTION signer role→OPERATOR (still member) in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-PRODUCTION-membership","scenario":"PRODUCTION signer membership removed in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID PRODUCTION rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-PRODUCTION-membership PRODUCTION signer membership removed in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-PRODUCTION-user","scenario":"PRODUCTION signer user disabled in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID PRODUCTION rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-PRODUCTION-user PRODUCTION signer user disabled in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-PRODUCTION-membership","scenario":"PRODUCTION signer membership moved to another tenant in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID PRODUCTION rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-PRODUCTION-membership PRODUCTION signer membership moved to another tenant in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-QC-role→OPERATOR","scenario":"QC signer role→OPERATOR (still member) in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID QC rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-QC-role→OPERATOR QC signer role→OPERATOR (still member) in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-QC-membership","scenario":"QC signer membership removed in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID QC rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-QC-membership QC signer membership removed in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-QC-user","scenario":"QC signer user disabled in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID QC rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-QC-user QC signer user disabled in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-02-QC-membership","scenario":"QC signer membership moved to another tenant in the commit window","expected":"409 SIGNOFF_SIGNER_INVALID for that domain; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID QC rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-02-QC-membership QC signer membership moved to another tenant in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-03","scenario":"QC signer QC_MANAGER→QC (still eligible) between read and commit","expected":"409 SIGNOFF_SIGNER_INVALID; zero writes (frozen role must equal committed role)","actual":"409 SIGNOFF_SIGNER_INVALID rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-03 QC signer QC_MANAGER→QC (still eligible) between read and commit
+MATRIX {"matrix":"TOCTOU","id":"P1A-03b","scenario":"new attempt after the legitimate role change","expected":"201; package freezes signerRole=QC for the QC domain","actual":"201 QC","verdict":"PASS"}
+PASS P1A-03b new attempt after the legitimate role change
+MATRIX {"matrix":"TOCTOU","id":"P1A-04","scenario":"QC signoff re-signed by a different eligible QC_MANAGER between read and commit","expected":"409; zero writes (frozen signer identity no longer matches)","actual":"409 SIGNOFF_SIGNER_INVALID rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-04 QC signoff re-signed by a different eligible QC_MANAGER between read and commit
+MATRIX {"matrix":"TOCTOU","id":"P1A-05","scenario":"PRODUCTION signoff flipped to REJECTED in the window","expected":"409; zero writes","actual":"409 SIGNOFF_SIGNER_INVALID rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-05 PRODUCTION signoff flipped to REJECTED in the window
+MATRIX {"matrix":"TOCTOU","id":"P1A-06-ROLE_NOT_PERMITTED","scenario":"actor role RELEASE_MANAGER→OPERATOR in the PREPARE commit window","expected":"403 ROLE_NOT_PERMITTED; zero writes","actual":"403 ROLE_NOT_PERMITTED rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-06-ROLE_NOT_PERMITTED actor role RELEASE_MANAGER→OPERATOR in the PREPARE commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-06-FORBIDDEN_ACTOR","scenario":"actor disabled in the PREPARE commit window","expected":"403 FORBIDDEN_ACTOR; zero writes","actual":"403 FORBIDDEN_ACTOR rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-06-FORBIDDEN_ACTOR actor disabled in the PREPARE commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-06-FORBIDDEN_ACTOR","scenario":"actor membership removed in the PREPARE commit window","expected":"403 FORBIDDEN_ACTOR; zero writes","actual":"403 FORBIDDEN_ACTOR rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-06-FORBIDDEN_ACTOR actor membership removed in the PREPARE commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-06-AUTHORITY_CHANGED","scenario":"actor role RELEASE_MANAGER→WORKSPACE_OWNER (still permitted, different authority) in the PREPARE commit window","expected":"409 AUTHORITY_CHANGED; zero writes","actual":"409 AUTHORITY_CHANGED rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-06-AUTHORITY_CHANGED actor role RELEASE_MANAGER→WORKSPACE_OWNER (still permitted, different authority) in the PREPARE commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-07","scenario":"style transferred to another tenant in the window","expected":"409, zero writes","actual":"409 HANDOFF_NOT_READY rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-07 style transferred to another tenant in the window
+MATRIX {"matrix":"TOCTOU","id":"P1A-08","scenario":"a newer PRODUCTION release committed in the window (source superseded)","expected":"409 RELEASE_SUPERSEDED, zero writes","actual":"409 RELEASE_SUPERSEDED rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-08 a newer PRODUCTION release committed in the window (source superseded)
+MATRIX {"matrix":"TOCTOU","id":"P1A-09","scenario":"tenant archived / maintenance or incident HOLD in the window","expected":"fail closed","actual":"BLOCKED_NO_TENANT_ARCHIVE_MODEL / BLOCKED_NO_HOLD_MODEL (no such state exists in the schema)","verdict":"BLOCKED"}
+MATRIX {"matrix":"TOCTOU","id":"P1A-10","scenario":"role change commits AFTER the PREPARE batch (legitimate later change)","expected":"201; dispatch 200; ack 200; package bytes + hashes unchanged","actual":"201/200/200 bytesSame=true shaOk=true","verdict":"PASS"}
+PASS P1A-10 role change commits AFTER the PREPARE batch (legitimate later change)
+MATRIX {"matrix":"TOCTOU","id":"P1A-11","scenario":"8 concurrent PREPAREs; QC role revoked by a competing write just before the first batch","expected":"0 x 201, no 500, zero writes","actual":"statuses=409,409,409,409,409,409,409,409 rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-11 8 concurrent PREPAREs; QC role revoked by a competing write just before the first batch
+MATRIX {"matrix":"TOCTOU","id":"P1A-12","scenario":"valid control: 4 independent eligible signers, eligible actor","expected":"201; 1 package/event/receipt/audit; signer authority frozen and re-hashable","actual":"201 {\"handoffs\":1,\"events\":1,\"receipts\":1,\"handoffAudits\":1,\"lots\":0,\"lotReceipts\":0,\"lotAudits\":0} signers=DESIGN:DESIGN_PATTERN_MASTER|PATTERN:DESIGN_PATTERN_MASTER|PRODUCTION:FACTORY_SUPERVISOR|QC:QC_MANAGER","verdict":"PASS"}
+PASS P1A-12 valid control: 4 independent eligible signers, eligible actor
+MATRIX {"matrix":"TOCTOU","id":"P1A-12b","scenario":"rewrite frozen signer_authority_sha256 by SQL","expected":"RAISE HANDOFF_PACKAGE_IMMUTABLE","actual":"HANDOFF_PACKAGE_IMMUTABLE","verdict":"PASS"}
+PASS P1A-12b rewrite frozen signer_authority_sha256 by SQL
+MATRIX {"matrix":"TOCTOU","id":"P1A-12c","scenario":"Arabic package page shows signer authority","expected":"RTL page lists domain + committed signer role","actual":"200","verdict":"PASS"}
+PASS P1A-12c Arabic package page shows signer authority
+MATRIX {"matrix":"TOCTOU","id":"P1A-13a","scenario":"raw INSERT without signer authority evidence","expected":"RAISE HANDOFF_SIGNER_AUTHORITY_REQUIRED","actual":"HANDOFF_SIGNER_AUTHORITY_REQUIRED","verdict":"PASS"}
+PASS P1A-13a raw INSERT without signer authority evidence
+MATRIX {"matrix":"TOCTOU","id":"P1A-13b","scenario":"raw INSERT while the QC signer holds STORE_CLERK","expected":"RAISE HANDOFF_SIGNER_INELIGIBLE","actual":"HANDOFF_SIGNER_INELIGIBLE","verdict":"PASS"}
+PASS P1A-13b raw INSERT while the QC signer holds STORE_CLERK
+MATRIX {"matrix":"TOCTOU","id":"P1A-13c","scenario":"raw INSERT where the release requester signed DESIGN","expected":"RAISE HANDOFF_SIGNER_NOT_INDEPENDENT","actual":"HANDOFF_SIGNER_NOT_INDEPENDENT","verdict":"PASS"}
+PASS P1A-13c raw INSERT where the release requester signed DESIGN
+MATRIX {"matrix":"TOCTOU","id":"P1A-13d","scenario":"raw INSERT where one owner signed both PRODUCTION and QC","expected":"RAISE HANDOFF_SIGNER_NOT_INDEPENDENT","actual":"HANDOFF_SIGNER_NOT_INDEPENDENT","verdict":"PASS"}
+PASS P1A-13d raw INSERT where one owner signed both PRODUCTION and QC
+MATRIX {"matrix":"TOCTOU","id":"P1A-13e","scenario":"raw INSERT with all four signers eligible and independent (control)","expected":"inserted","actual":"inserted","verdict":"PASS"}
+PASS P1A-13e raw INSERT with all four signers eligible and independent (control)
+MATRIX {"matrix":"TOCTOU","id":"P1A-14","scenario":"signoff eligibility parity: src/authority.js SIGNOFF_ELIGIBILITY vs migration 0022 trigger","expected":"identical decision for 4x15 role/domain cases","actual":"cases=60 mismatches=0 ","verdict":"PASS"}
+PASS P1A-14 signoff eligibility parity: src/authority.js SIGNOFF_ELIGIBILITY vs migration 0022 trigger
+MATRIX {"matrix":"TOCTOU","id":"P1A-14b","scenario":"eligibility table content","expected":"owners sign any domain; DPM signs DESIGN/PATTERN; FACTORY_SUPERVISOR signs PRODUCTION; QC_MANAGER signs QC","actual":"{\"DESIGN\":[\"PLATFORM_ADMIN\",\"PLATFORM_OWNER\",\"WORKSPACE_OWNER\",\"DESIGN\",\"DESIGN_PATTERN_MASTER\"],\"PATTERN\":[\"PLATFORM_ADMIN\",\"PLATFORM_OWNER\",\"WORKSPACE_OWNER\",\"PATTERN\",\"DESIGN_PATTERN_MASTER\"],\"PRODUCTION\":[\"PLATFORM_ADMIN\",\"PLATFORM_OWNER\",\"WORKSPACE_OWNER\",\"PRODUCTION\",\"FACTORY_SUPERVISOR\"],\"QC\":[\"PLATFORM_ADMIN\",\"PLATFORM_OWNER\",\"WORKSPACE_OWNER\",\"QC\",\"QC_MANAGER\"]}","verdict":"PASS"}
+PASS P1A-14b eligibility table content
+MATRIX {"matrix":"TOCTOU","id":"P1A-15a","scenario":"dispatch a pre-schema-24 PREPARED handoff (authority never proved)","expected":"409 HANDOFF_AUTHORITY_UNVERIFIED; zero writes","actual":"409 HANDOFF_AUTHORITY_UNVERIFIED rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-15a dispatch a pre-schema-24 PREPARED handoff (authority never proved)
+MATRIX {"matrix":"TOCTOU","id":"P1A-15b","scenario":"raw SQL dispatch of that handoff","expected":"RAISE HANDOFF_AUTHORITY_UNVERIFIED","actual":"HANDOFF_AUTHORITY_UNVERIFIED","verdict":"PASS"}
+PASS P1A-15b raw SQL dispatch of that handoff
+MATRIX {"matrix":"TOCTOU","id":"P1A-15c","scenario":"withdraw it, then prepare again","expected":"withdraw 200; new PREPARE 201 with proved signer authority","actual":"200/201 authority=true","verdict":"PASS"}
+PASS P1A-15c withdraw it, then prepare again
+MATRIX {"matrix":"TOCTOU","id":"P1A-15d","scenario":"open a lot from a pre-schema-24 ACKNOWLEDGED handoff","expected":"409 HANDOFF_AUTHORITY_UNVERIFIED; no lot/receipt/audit","actual":"409 HANDOFF_AUTHORITY_UNVERIFIED rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-15d open a lot from a pre-schema-24 ACKNOWLEDGED handoff
+MATRIX {"matrix":"TOCTOU","id":"P1A-15e","scenario":"raw SQL lot INSERT referencing that handoff","expected":"RAISE LOT_HANDOFF_NOT_ELIGIBLE","actual":"LOT_HANDOFF_NOT_ELIGIBLE","verdict":"PASS"}
+PASS P1A-15e raw SQL lot INSERT referencing that handoff
+MATRIX {"matrix":"TOCTOU","id":"P1A-15f","scenario":"historical handoff remains readable and is flagged","expected":"200; authorityVerified=false; row not rewritten","actual":"200 authorityVerified=false","verdict":"PASS"}
+PASS P1A-15f historical handoff remains readable and is flagged
+MATRIX {"matrix":"TOCTOU","id":"P1A-16-dispatch","scenario":"dispatch: actor capability revoked in the commit window","expected":"403; zero writes","actual":"403 ROLE_NOT_PERMITTED rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-16-dispatch dispatch: actor capability revoked in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-16-acknowledge","scenario":"acknowledge: actor capability revoked in the commit window","expected":"403; zero writes","actual":"403 ROLE_NOT_PERMITTED rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-16-acknowledge acknowledge: actor capability revoked in the commit window
+MATRIX {"matrix":"TOCTOU","id":"P1A-16-withdraw","scenario":"withdraw: actor capability revoked in the commit window","expected":"403; zero writes","actual":"403 ROLE_NOT_PERMITTED rowsUnchanged=true","verdict":"PASS"}
+PASS P1A-16-withdraw withdraw: actor capability revoked in the commit window
+MATRIX {"matrix":"LOT_IDEMPOTENCY","id":"P1B-01","scenario":"same key + same body retried after a lost 201","expected":"201 replay of the original (same lot id, row_version 1, handoff, basis hash); 1 lot/receipt/audit; no 500","actual":"201/409 replayed=null {\"handoffs\":1,\"events\":3,\"receipts\":3,\"handoffAudits\":3,\"lots\":1,\"lotReceipts\":1,\"lotAudits\":1}","verdict":"FAIL"}
+file:///home/user/sehha-apparelos/tests/test_helpers.mjs:21
+export function ok(c,m){if(!c)throw new Error('ASSERT: '+m);console.log('PASS',m)}
+                                    ^
+
+Error: ASSERT: P1B-01 same key + same body retried after a lost 201
+    at ok (file:///home/user/sehha-apparelos/tests/test_helpers.mjs:21:37)
+    at row (file:///home/user/sehha-apparelos/tests/round30_p1_corrective.mjs:21:158)
+    at file:///home/user/sehha-apparelos/tests/round30_p1_corrective.mjs:163:2
+
+Node.js v22.22.0
+exit=1
