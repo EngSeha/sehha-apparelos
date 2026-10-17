@@ -7,7 +7,21 @@ import {imageDimensions,checkDimensions,IMAGE_LIMITS,ImageRejected} from './imag
 
 // ---------- Category registry ----------
 const BASIS={FLAT:'FLAT',CIRC:'CIRCUMFERENCE',LEN:'LENGTH'};
-const pom=(code,nameAr,nameEn,basis,whyAr,whyEn,o={})=>({code,nameAr,nameEn,basisOptions:basis,whyAr,whyEn,critical:o.critical!==false,criticalWhen:o.criticalWhen||null,range:o.range||null});
+// Landmark definitions say WHERE a point of measure starts and ends (a definition, never a value). Shared by code;
+// the owner can still add a style-specific landmark note per measurement.
+const LM={BODY_LENGTH:['أعلى نقطة الكتف (HPS) ← حافة الذيل الأمامي','HPS → front hem edge'],CHEST:['نقطة الإبط ← نقطة الإبط المقابلة (حدّد أي إزاحة تحت الإبط)','Underarm point → opposite underarm point (state any offset below the armhole)'],
+  BACK_WIDTH:['خياطة الإبط ← خياطة الإبط المقابلة عبر الظهر (حدّد المستوى)','Armhole seam → armhole seam across the back (state the level)'],SLEEVE_LENGTH:['نقطة الكتف/رأس الكم ← حافة الكم','Shoulder point / sleeve head → sleeve hem'],
+  SLEEVE_WIDTH:['نقطة الإبط، عموديًا على خط طي الكم','Underarm point, perpendicular to the sleeve fold'],SLEEVE_OPENING:['عبر حافة فتحة الكم','Across the sleeve hem edge'],WAIST:['أضيق نقطة في التشكيل، جنب ← جنب (حدّد بعدها من HPS)','Narrowest point of the shaping, side → side (state its distance from HPS)'],
+  SHOULDER:['نقطة الكتف ← نقطة الكتف المقابلة','Shoulder point → opposite shoulder point'],ARMHOLE:['على طول خط الإبط (منحنى) أو عمقه — حدّد الطريقة','Along the armhole seam (curve) or its depth — state which'],NECK_WIDTH:['HPS ← HPS المقابل','HPS → opposite HPS'],
+  BACK_LENGTH:['منتصف الرقبة الخلفي ← حافة الذيل الخلفي','Centre-back neck → back hem edge'],BUTTON_START:['HPS ← مركز أول زر (ولكل زر بعده إن كان الغلق مائلًا)','HPS → centre of the first button (and each following one for an angled closure)'],
+  HIP:['أعرض نقطة، جنب ← جنب (حدّد بعدها من الوسط)','Widest point, side → side (state its distance from the waist)'],FRONT_RISE:['الحافة العليا للحزام الأمامي ← نقطة التقاء الحجر','Front waist top edge → crotch junction'],BACK_RISE:['الحافة العليا للحزام الخلفي ← نقطة التقاء الحجر','Back waist top edge → crotch junction'],
+  THIGH:['عند مستوى الحجر، عموديًا على خط الرجل','At crotch level, perpendicular to the leg grain'],INSEAM:['نقطة الحجر ← حافة الذيل','Crotch point → hem edge'],OUTSEAM:['الحافة العليا للحزام ← الذيل على خط الجنب','Waist top edge → hem along the side seam'],LEG_OPENING:['عبر حافة فتحة الرجل','Across the leg hem edge'],
+  KNEE:['عند مستوى الركبة (حدّد بعده من الحجر)','At knee level (state its distance from the crotch)'],WAISTBAND_HEIGHT:['عرض الحزام النهائي','Finished waistband height'],COLLAR:['منتصف الزر ← نهاية العروة','Button centre → buttonhole end'],CUFF:['منتصف الزر ← نهاية العروة على الأسورة','Button centre → buttonhole end on the cuff'],
+  WAIST_POSITION:['HPS ← خط الخصر','HPS → waistline'],LENGTH:['أعلى نقطة (الكتف/الرأس حسب التصميم) ← حافة الذيل','Top point (shoulder/crown as designed) → hem edge'],WIDTH:['جنب ← جنب عند المستوى المحدد','Side → side at the stated level'],
+  OPENING:['بداية الفتحة ← نهايتها (يحدد طول السوستة)','Top of the opening → bottom (drives zipper length)'],HEM_WIDTH:['عبر الذيل، جنب ← جنب','Across the hem, side → side'],FACE_OPENING:['محيط فتحة الوجه','Around the face opening']};
+// requiredFor: APPROVAL gates the Tech Pack; PATTERN gates parametric drafting readiness (never approval).
+const pom=(code,nameAr,nameEn,basis,whyAr,whyEn,o={})=>({code,nameAr,nameEn,basisOptions:basis,whyAr,whyEn,critical:o.patternOnly?false:o.critical!==false,criticalWhen:o.criticalWhen||null,range:o.range||null,
+  requiredFor:o.patternOnly?['PATTERN']:o.critical===false&&!o.criticalWhen?(o.pattern?['PATTERN']:[]):['APPROVAL','PATTERN'],landmark:LM[code]?{ar:LM[code][0],en:LM[code][1]}:null,stretchSensitive:!!o.stretch});
 const spec=(key,labelAr,labelEn,whyAr,options,o={})=>({key,labelAr,labelEn,whyAr,options:options||null,critical:o.critical!==false,type:options?'choice':(o.type||'text')});
 const opt=(value,ar,en)=>({value,ar,en});
 const APPAREL_SIZES=['XS','S','M','L','XL','XXL'];
@@ -21,7 +35,12 @@ export const GARMENT_CATEGORIES={
       pom('SLEEVE_LENGTH','طول الكم','Sleeve length',[BASIS.LEN],'مطلوب لرسم الكم وكميات القماش','Needed to draft sleeves and estimate fabric',{range:[20,90]}),
       pom('SLEEVE_WIDTH','عرض الكم تحت الإبط','Sleeve width at underarm',[BASIS.FLAT,BASIS.CIRC],'يحدد راحة الكم وتوافقه مع الإبط','Sleeve ease and armhole match',{range:[12,60]}),
       pom('SLEEVE_OPENING','فتحة الكم','Sleeve opening',[BASIS.FLAT,BASIS.CIRC],'يحدد شكل نهاية الكم','Defines the sleeve hem',{range:[8,50]}),
-      pom('WAIST','عرض الخصر','Waist',[BASIS.FLAT,BASIS.CIRC],'ضروري للقصة المحددة على الخصر','Required for a fitted waist',{critical:false,criticalWhen:{spec:'fit',equals:'FITTED'},range:[25,150]})],
+      pom('WAIST','عرض الخصر','Waist',[BASIS.FLAT,BASIS.CIRC],'ضروري للقصة المحددة على الخصر','Required for a fitted waist',{critical:false,criticalWhen:{spec:'fit',equals:'FITTED'},range:[25,150]}),
+      pom('SHOULDER','عرض الكتف','Shoulder width',[BASIS.FLAT],'لازم لرسم خط الكتف في الباترون','Needed to draft the shoulder line',{patternOnly:true,range:[30,60]}),
+      pom('ARMHOLE','الإبط','Armhole',[BASIS.CIRC,BASIS.LEN],'لازم لمطابقة الكم مع الإبط','Needed to match sleeve cap to armhole',{patternOnly:true,range:[15,70]}),
+      pom('NECK_WIDTH','عرض الرقبة','Neck width',[BASIS.FLAT],'لازم لرسم خط الرقبة والياقة','Needed to draft neckline and collar',{patternOnly:true,range:[10,30]}),
+      pom('BACK_LENGTH','طول الظهر','Back length',[BASIS.LEN],'الظهر غير ظاهر في الصورة؛ يجب قياسه','The back is not visible; it must be measured',{patternOnly:true,range:[35,120]}),
+      pom('BUTTON_START','موضع أول زر','First button position',[BASIS.LEN],'يحدد بداية خط الأزرار، خاصة في الغلق المائل','Sets the start of the button line, essential for angled closures',{patternOnly:true,range:[5,80]})],
     specs:[spec('fit','القصة','Fit','تحدد الراحة وأسلوب الرسم',[opt('FITTED','محددة','Fitted'),opt('REGULAR','عادية','Regular'),opt('BOXY','واسعة/بوكسي','Boxy')]),
       spec('closure','نوع الغلق','Closure','يحدد وسائل الغلق في قائمة الخامات والعمليات',[opt('BUTTONS','أزرار','Buttons'),opt('ZIP','سوستة','Zip'),opt('HOOKS','كبسون/خطاف','Hooks'),opt('OPEN','مفتوح بدون غلق','Open front'),opt('OTHER','أخرى','Other')]),
       spec('closure_detail','تفاصيل الغلق','Closure detail','مثل: غلق مائل غير متماثل، عدد الأزرار وأماكنها',null,{critical:false}),
@@ -35,7 +54,8 @@ export const GARMENT_CATEGORIES={
     pom:[pom('WAIST','الوسط','Waist',[BASIS.FLAT,BASIS.CIRC],'أساس مقاس البنطلون','Primary trouser size dimension',{range:[25,160]}),pom('HIP','الأرداف','Hip',[BASIS.FLAT,BASIS.CIRC],'يحدد الراحة في منطقة الأرداف','Hip ease',{range:[30,170]}),
       pom('FRONT_RISE','الطول الأمامي للحجر','Front rise',[BASIS.LEN],'يحدد ارتفاع الوسط وراحة الجلوس','Waist height and sitting comfort',{range:[15,45]}),pom('BACK_RISE','الطول الخلفي للحجر','Back rise',[BASIS.LEN],'مطلوب لتوازن الخلف','Back balance',{range:[20,55]}),
       pom('THIGH','الفخذ','Thigh',[BASIS.FLAT,BASIS.CIRC],'يحدد اتساع الرجل العلوي','Upper leg width',{range:[15,90]}),pom('INSEAM','طول الرجل الداخلي','Inseam',[BASIS.LEN],'يحدد طول البنطلون','Leg length',{range:[40,100]}),
-      pom('OUTSEAM','الطول الخارجي','Outseam',[BASIS.LEN],'يتحقق من طول البنطلون مع الحزام','Overall length incl. waistband',{critical:false,range:[60,130]}),pom('LEG_OPENING','فتحة الرجل','Leg opening',[BASIS.FLAT,BASIS.CIRC],'يحدد شكل نهاية الرجل','Leg hem shape',{range:[10,60]})],
+      pom('OUTSEAM','الطول الخارجي','Outseam',[BASIS.LEN],'يتحقق من طول البنطلون مع الحزام','Overall length incl. waistband',{critical:false,pattern:true,range:[60,130]}),pom('LEG_OPENING','فتحة الرجل','Leg opening',[BASIS.FLAT,BASIS.CIRC],'يحدد شكل نهاية الرجل','Leg hem shape',{range:[10,60]}),
+      pom('KNEE','الركبة','Knee',[BASIS.FLAT,BASIS.CIRC],'لازم لرسم خط الرجل','Needed to draft the leg line',{patternOnly:true,stretch:true,range:[12,60]}),pom('WAISTBAND_HEIGHT','عرض الحزام','Waistband height',[BASIS.LEN],'لازم لرسم الحزام','Needed to draft the waistband',{patternOnly:true,range:[1,10]})],
     specs:[spec('closure','نوع الغلق','Closure','يحدد السحاب أو الزرار أو الأستك',[opt('ZIP_FLY','سحاب أمامي','Zip fly'),opt('BUTTON_FLY','أزرار أمامية','Button fly'),opt('ELASTIC','أستك','Elastic waist'),opt('OTHER','أخرى','Other')]),
       spec('waistband','نوع الحزام','Waistband','يحدد قطع الحزام والحشو',null,{critical:false}),spec('pockets','الجيوب','Pockets','عدد ونوع الجيوب',null,{critical:false})],
     checks:[{a:'LEG_OPENING',lte:'THIGH',msgAr:'فتحة الرجل أكبر من الفخذ؛ تأكد من القياس'}],
@@ -45,7 +65,8 @@ export const GARMENT_CATEGORIES={
     components:[['أمام','Fronts'],['ظهر','Back'],['كتفية','Yoke'],['أكمام','Sleeves'],['ياقة وقاعدة','Collar and stand'],['أساور','Cuffs']],
     pom:[pom('BODY_LENGTH','طول القميص','Body length',[BASIS.LEN],'يحدد طول القميص','Shirt length',{range:[45,110]}),pom('CHEST','عرض الصدر','Chest',[BASIS.FLAT,BASIS.CIRC],'أساس المقاس','Primary size dimension',{range:[35,160]}),
       pom('SHOULDER','عرض الكتف','Shoulder',[BASIS.FLAT],'يحدد سقوط الكتف','Shoulder fit',{range:[30,60]}),pom('SLEEVE_LENGTH','طول الكم','Sleeve length',[BASIS.LEN],'يحدد طول الكم','Sleeve length',{range:[15,90]}),
-      pom('COLLAR','محيط الياقة','Collar',[BASIS.CIRC,BASIS.FLAT],'يحدد مقاس الرقبة','Neck size',{range:[25,55]}),pom('CUFF','الأسورة','Cuff',[BASIS.CIRC,BASIS.FLAT],'يحدد اتساع المعصم','Wrist size',{critical:false,range:[12,35]})],
+      pom('COLLAR','محيط الياقة','Collar',[BASIS.CIRC,BASIS.FLAT],'يحدد مقاس الرقبة','Neck size',{range:[25,55]}),pom('CUFF','الأسورة','Cuff',[BASIS.CIRC,BASIS.FLAT],'يحدد اتساع المعصم','Wrist size',{critical:false,pattern:true,range:[12,35]}),
+      pom('ARMHOLE','الإبط','Armhole',[BASIS.CIRC,BASIS.LEN],'لازم لمطابقة الكم مع الإبط','Needed to match sleeve cap to armhole',{patternOnly:true,range:[15,70]}),pom('NECK_WIDTH','عرض الرقبة','Neck width',[BASIS.FLAT],'لازم لرسم خط الرقبة','Needed to draft the neckline',{patternOnly:true,range:[10,30]})],
     specs:[spec('collar','نوع الياقة','Collar style','يحدد قطع الياقة',[opt('CLASSIC','كلاسيك','Classic'),opt('BUTTON_DOWN','بزراير','Button-down'),opt('MANDARIN','ماندارين','Mandarin'),opt('OTHER','أخرى','Other')]),
       spec('button_count','عدد أزرار المرد','Placket buttons','لحساب الخامات',null,{critical:false,type:'number'}),spec('cuff','نوع الأسورة','Cuff style','',null,{critical:false})],
     checks:[],bom:[['SHELL','قماش أساسي','Shell fabric'],['INTERFACING','حشو ياقة وأساور','Collar/cuff interfacing'],['BUTTONS','أزرار','Buttons'],['THREAD','خيط خياطة','Sewing thread']],
@@ -54,7 +75,8 @@ export const GARMENT_CATEGORIES={
     components:[['صدر أمامي','Front bodice'],['صدر خلفي','Back bodice'],['جيبة','Skirt'],['أكمام (إن وجدت)','Sleeves (if any)']],
     pom:[pom('BODY_LENGTH','الطول الكلي','Total length',[BASIS.LEN],'يحدد طول الفستان','Dress length',{range:[60,170]}),pom('CHEST','الصدر','Bust',[BASIS.FLAT,BASIS.CIRC],'أساس المقاس','Primary size',{range:[35,160]}),
       pom('WAIST','الخصر','Waist',[BASIS.FLAT,BASIS.CIRC],'يحدد خط الخصر','Waistline',{range:[25,150]}),pom('HIP','الأرداف','Hip',[BASIS.FLAT,BASIS.CIRC],'يحدد راحة الجيبة','Skirt ease',{range:[30,180]}),
-      pom('SHOULDER','الكتف','Shoulder',[BASIS.FLAT],'سقوط الكتف','Shoulder fit',{critical:false,range:[25,55]}),pom('SLEEVE_LENGTH','طول الكم','Sleeve length',[BASIS.LEN],'إن وجد كم','If sleeved',{critical:false,range:[5,90]})],
+      pom('SHOULDER','الكتف','Shoulder',[BASIS.FLAT],'سقوط الكتف','Shoulder fit',{critical:false,pattern:true,range:[25,55]}),pom('SLEEVE_LENGTH','طول الكم','Sleeve length',[BASIS.LEN],'إن وجد كم','If sleeved',{critical:false,range:[5,90]}),
+      pom('WAIST_POSITION','موضع الخصر','Waist position',[BASIS.LEN],'لازم لتحديد خط الخصر في الباترون','Needed to place the waistline',{patternOnly:true,range:[25,60]}),pom('ARMHOLE','الإبط','Armhole',[BASIS.CIRC,BASIS.LEN],'لازم لمطابقة الكم/الحردة','Needed for armhole shaping',{patternOnly:true,range:[15,70]})],
     specs:[spec('closure','نوع الغلق','Closure','',[opt('BACK_ZIP','سوستة خلفية','Back zip'),opt('SIDE_ZIP','سوستة جانبية','Side zip'),opt('BUTTONS','أزرار','Buttons'),opt('NONE','بدون','None')]),spec('lining','البطانة','Lining','',[opt('FULL','كاملة','Full'),opt('NONE','بدون','None')])],
     checks:[],bom:[['SHELL','قماش أساسي','Shell fabric'],['THREAD','خيط خياطة','Sewing thread'],['LABEL','ليبل','Label']],
     ops:[['قص القطع','Cut panels'],['تجميع الصدر','Assemble bodice'],['تجميع الجيبة','Assemble skirt'],['توصيل الصدر بالجيبة','Join bodice and skirt'],['تركيب الغلق','Insert closure'],['تنظيف الذيل','Hem'],['كي وفحص','Press and inspect']]},
@@ -63,9 +85,12 @@ export const GARMENT_CATEGORIES={
     components:[['جسم أمامي','Front body'],['جسم خلفي','Back body'],['أكمام','Sleeves'],['قطعة الرأس / الخمار','Head piece / khimar'],['تلبيسة الفتحة','Opening facing']],
     pom:[pom('LENGTH','الطول الكلي','Total length',[BASIS.LEN],'يحدد طول العباية للفئة الوزنية','Total length for the weight band',{range:[80,170]}),pom('WIDTH','العرض','Width',[BASIS.FLAT,BASIS.CIRC],'يحدد الاتساع والراحة','Width and ease',{range:[40,200]}),
       pom('SHOULDER','الكتف','Shoulder',[BASIS.FLAT],'سقوط الكتف','Shoulder fall',{critical:false,range:[30,70]}),pom('SLEEVE_LENGTH','طول الكم','Sleeve length',[BASIS.LEN],'يحدد طول الكم','Sleeve length',{range:[30,90]}),
-      pom('OPENING','طول الفتحة الأمامية','Front opening length',[BASIS.LEN],'يحدد طول السوستة المخفية','Determines concealed zipper length',{range:[10,120]}),pom('HEM_WIDTH','عرض الذيل','Hem width',[BASIS.FLAT,BASIS.CIRC],'يحدد اتساع الذيل وكمية القماش','Hem sweep and fabric',{critical:false,range:[40,300]})],
+      pom('OPENING','طول الفتحة الأمامية','Front opening length',[BASIS.LEN],'يحدد طول السوستة المخفية','Determines concealed zipper length',{range:[10,120]}),pom('HEM_WIDTH','عرض الذيل','Hem width',[BASIS.FLAT,BASIS.CIRC],'يحدد اتساع الذيل وكمية القماش','Hem sweep and fabric',{critical:false,pattern:true,range:[40,300]}),
+      pom('ARMHOLE','الإبط','Armhole',[BASIS.CIRC,BASIS.LEN],'لازم لمطابقة الكم','Needed to match the sleeve',{patternOnly:true,range:[15,90]}),pom('FACE_OPENING','فتحة الوجه','Face opening',[BASIS.CIRC],'لازم لرسم قطعة الرأس في الخمار','Needed to draft the khimar head piece',{patternOnly:true,range:[30,90]})],
     specs:[spec('closure','نوع الغلق','Closure','يحدد نوع السوستة أو الكبسون',[opt('CONCEALED_ZIP','سوستة مخفية أمامية','Concealed front zip'),opt('SNAPS','كبسون','Snaps'),opt('OPEN','مفتوحة','Open'),opt('NONE','بدون','None')]),
-      spec('weight_band','فئة الوزن الأساسية','Base weight band','أساس التدريج لهذا الموديل',null,{type:'text'})],
+      spec('weight_band','فئة الوزن الأساسية','Base weight band','أساس التدريج لهذا الموديل',null,{type:'text'}),
+      spec('head_piece','قطعة الرأس','Head piece','تحدد قطع الخمار والتطريز حول الوجه',[opt('ATTACHED','متصلة بالجسم','Attached'),opt('SEPARATE','منفصلة','Separate'),opt('NONE','بدون','None')],{critical:false}),
+      spec('embroidery','التطريز','Embroidery','مكانه وألوانه؛ ألوان الخيط تُعتمد من عينة',null,{critical:false})],
     checks:[{a:'OPENING',lte:'LENGTH',msgAr:'طول الفتحة أكبر من الطول الكلي؛ تأكد من القياس'}],
     bom:[['SHELL','قماش أساسي','Shell fabric'],['ZIP','سوستة (حسب نوع الغلق)','Zipper (per closure)'],['THREAD','خيط خياطة','Sewing thread']],
     ops:[['قص القطع','Cut panels'],['تجهيز الفتحة والسوستة المخفية','Prepare opening and concealed zip'],['تجميع الكتف والجنب','Join shoulders and sides'],['تركيب الأكمام','Set sleeves'],['تنظيف الذيل والأطراف','Finish hems and edges'],['كي وفحص','Press and inspect']]},
@@ -185,13 +210,15 @@ export function questionPlan(intake){
     else if(p.range&&a.unit&&(cm<p.range[0]||cm>p.range[1]))flags.push({code:p.code,kind:'OUT_OF_TYPICAL_RANGE',msgAr:`قيمة ${p.nameAr} (${val} ${a.unit}) خارج المدى المعتاد لهذه الفئة؛ أكّد الرقم أو وحدته`});}
   for(const c of cat.checks||[]){const x=num(m[c.a]?.value),y=num(m[c.lte]?.value);if(x!=null&&y!=null&&x>y&&(m[c.a]?.basis||'')===(m[c.lte]?.basis||''))flags.push({code:c.a,kind:'CONTRADICTION',msgAr:c.msgAr});}
   const contradicted=new Set((a.confirmedFlags||[]));const openFlags=flags.filter(f=>!contradicted.has(`${f.code}:${f.kind}`));
-  for(let i=0;i<missing.length;i+=4)groups.push({id:`pom_${i/4+1}`,titleAr:'قياسات أساسية ناقصة',titleEn:'Missing key measurements',questions:missing.slice(i,i+4).map(p=>({id:`pom:${p.code}`,kind:'pom',code:p.code,labelAr:p.nameAr,labelEn:p.nameEn,whyAr:p.whyAr,basisOptions:p.basisOptions}))});
+  for(let i=0;i<missing.length;i+=4)groups.push({id:`pom_${i/4+1}`,titleAr:'قياسات أساسية ناقصة',titleEn:'Missing key measurements',questions:missing.slice(i,i+4).map(p=>({id:`pom:${p.code}`,kind:'pom',code:p.code,labelAr:p.nameAr,labelEn:p.nameEn,whyAr:p.whyAr,basisOptions:p.basisOptions,landmark:p.landmark}))});
   if(missing.length)blockers.push('CRITICAL_POM_MISSING');
   if(basisMissing.length){groups.push({id:'pom_basis',titleAr:'أساس كل قياس (مسطح أم محيط)',titleEn:'Flat width or circumference',questions:basisMissing.map(p=>({id:`basis:${p.code}`,kind:'pom_basis',code:p.code,labelAr:`${p.nameAr}: مسطح أم محيط؟`,labelEn:`${p.nameEn}: flat or circumference?`,whyAr:'الفرق بينهما الضعف تقريبًا؛ الخطأ هنا يفسد الباترون',options:p.basisOptions.map(b=>({value:b,ar:b===BASIS.FLAT?'عرض مسطح':b===BASIS.CIRC?'محيط كامل':'طول',en:b}))}))});blockers.push('POM_BASIS_MISSING');}
   const specMissing=cat.specs.filter(s=>s.critical&&(a.specs?.[s.key]==null||a.specs[s.key]===''));
   if(specMissing.length){groups.push({id:'specs',titleAr:'مواصفات أساسية',titleEn:'Key specifications',questions:specMissing.map(s=>({id:`spec:${s.key}`,kind:'spec',key:s.key,labelAr:s.labelAr,labelEn:s.labelEn,whyAr:s.whyAr,options:s.options,type:s.type}))});blockers.push('CRITICAL_SPEC_MISSING');}
   if(openFlags.length){groups.push({id:'flags',titleAr:'أرقام تحتاج تأكيد',titleEn:'Values to confirm',questions:openFlags.map(f=>({id:`flag:${f.code}:${f.kind}`,kind:'confirm_flag',code:f.code,labelAr:f.msgAr,labelEn:`${f.code}: ${f.kind}`,whyAr:'لن يُعتمد Tech Pack قبل تأكيد أو تصحيح هذا الرقم'}))});blockers.push('VALUES_NEED_CONFIRMATION');}
-  return {groups,blockers:[...new Set(blockers)],flags,complete:blockers.length===0,readyForApproval:blockers.length===0};
+  // Pattern-only measurements are a separate, optional list: they never become approval questions or blockers.
+  const patternQuestions=cat.pom.filter(p=>p.requiredFor.includes('PATTERN')&&!isCritical(p,a)&&(!m[p.code]||num(m[p.code].value)==null)).map(p=>({id:`pom:${p.code}`,kind:'pom',code:p.code,labelAr:p.nameAr,labelEn:p.nameEn,whyAr:p.whyAr,basisOptions:p.basisOptions,landmark:p.landmark,optional:true}));
+  return {groups,blockers:[...new Set(blockers)],flags,complete:blockers.length===0,readyForApproval:blockers.length===0,patternQuestions};
 }
 
 // ---------- Answers: validation + application ----------
@@ -207,15 +234,69 @@ export function mergeAnswers(cat,prev,b){
     const p=cat.pom.find(x=>x.code===code),basis=v?.basis==null||v.basis===''?(p.basisOptions.length===1?p.basisOptions[0]:a.measurements[code]?.basis||null):String(v.basis).toUpperCase();
     if(basis&&!p.basisOptions.includes(basis))throw Object.assign(new Error(`${code} basis must be ${p.basisOptions.join('|')}`),{status:400});
     const prevV=a.measurements[code];const changed=!prevV||num(prevV.value)!==value||prevV.basis!==basis;
-    a.measurements[code]={value,basis,landmark:v?.landmark!=null?String(v.landmark).slice(0,200):prevV?.landmark||null,source:value==null?null:(v?.source==='MEASURED'?'MEASURED':'OWNER_SUPPLIED'),updatedAt:changed?new Date().toISOString():prevV?.updatedAt||null};
+    const tol=k=>{const x=v?.[k];if(x===undefined)return prevV?.[k]??null;if(x===''||x===null)return null;const n=Number(x);if(!Number.isFinite(n)||n<0||n>20)throw Object.assign(new Error(`${code} ${k} must be a number between 0 and 20`),{status:400});return n;};
+    a.measurements[code]={value,basis,landmark:v?.landmark!=null?String(v.landmark).slice(0,200):prevV?.landmark||null,tolPlus:tol('tolPlus'),tolMinus:tol('tolMinus'),source:value==null?null:(v?.source==='MEASURED'?'MEASURED':'OWNER_SUPPLIED'),updatedAt:changed?new Date().toISOString():prevV?.updatedAt||null};
     if(changed)a.confirmedFlags=(a.confirmedFlags||[]).filter(f=>!f.startsWith(code+':'));}
   for(const [k,v] of Object.entries(b.specs||{})){if(!KEYRX.test(k))throw Object.assign(new Error('Invalid spec key'),{status:400});const s=(cat?.specs||[]).find(x=>x.key===k);
     if(s?.options&&v!=null&&v!==''&&!s.options.some(o=>o.value===v))throw Object.assign(new Error(`${k} must be one of ${s.options.map(o=>o.value).join('|')}`),{status:400});a.specs[k]=v===''?null:(typeof v==='string'?v.slice(0,300):v);}
   if(Array.isArray(b.confirmFlags))a.confirmedFlags=[...new Set([...(a.confirmedFlags||[]),...b.confirmFlags.map(String).filter(x=>/^[A-Z_]+:[A-Z_]+$/.test(x))])];
   if(b.notes!=null)a.notes=String(b.notes).slice(0,2000);
+  if(b.description!=null)a.description=validateDescription(b.description,a.description);
+  if(b.patternInputs!=null)a.patternInputs=validatePatternInputs(cat,b.patternInputs,a.patternInputs);
   if(b.quantityMatrix!=null)a.quantityMatrix=validateQuantityMatrix(b.quantityMatrix);
   return a;
 }
+// Owner-authored technical description (AR/EN). It is the owner's assertion and outranks the recognition text in the
+// Tech Pack; the AI description stays visible separately as a hypothesis.
+export function validateDescription(d,prev){if(d===null)return null;if(typeof d!=='object')throw Object.assign(new Error('description must be an object {ar,en}'),{status:400});
+  const t=(x,k)=>{if(x==null)return prev?.[k]??null;if(typeof x!=='string')throw Object.assign(new Error(`description.${k} must be text`),{status:400});return x.replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g,' ').trim().slice(0,3000)||null;};
+  const ar=t(d.ar,'ar'),en=t(d.en,'en');return ar||en?{ar,en,source:'OWNER_ASSERTION',updatedAt:new Date().toISOString()}:null;}
+// Inputs that a pattern engineer needs before parametric drafting. All explicit; nothing is defaulted.
+const SEAM_KEYS=['MAIN','HEM','EDGE','NECK','ARMHOLE'];
+export function validatePatternInputs(cat,pi,prev){if(pi===null)return null;if(typeof pi!=='object'||Array.isArray(pi))throw Object.assign(new Error('patternInputs must be an object'),{status:400});
+  const out={...(prev||{})},bad=m=>{throw Object.assign(new Error(m),{status:400});};
+  if(pi.seamAllowanceMm!==undefined){const sa={...(out.seamAllowanceMm||{})};for(const [k,v] of Object.entries(pi.seamAllowanceMm||{})){if(!SEAM_KEYS.includes(k))bad(`seam allowance key must be ${SEAM_KEYS.join('|')}`);if(v===''||v==null){delete sa[k];continue;}const n=Number(v);if(!Number.isFinite(n)||n<0||n>60)bad(`seam allowance ${k} must be 0–60 mm`);sa[k]=n;}out.seamAllowanceMm=sa;}
+  if(pi.ease!==undefined){const codes=new Set((cat?.pom||[]).map(p=>p.code)),e={...(out.ease||{})};for(const [k,v] of Object.entries(pi.ease||{})){if(!codes.has(k))bad(`Unknown measurement ${k} for ease`);if(v===''||v==null){delete e[k];continue;}const n=Number(v);if(!Number.isFinite(n)||Math.abs(n)>100)bad(`ease ${k} must be a number`);e[k]=n;}out.ease=e;}
+  if(pi.baseBlock!==undefined)out.baseBlock=pi.baseBlock==null||pi.baseBlock===''?null:String(pi.baseBlock).trim().slice(0,120);
+  if(pi.grainConfirmed!==undefined)out.grainConfirmed=pi.grainConfirmed===true;
+  if(pi.backDescription!==undefined)out.backDescription=pi.backDescription==null||pi.backDescription===''?null:String(pi.backDescription).trim().slice(0,1000);
+  return out;}
+// Component provenance: VISIBLE (seen in an image), GEOMETRIC_RULE (structurally implied by the confirmed category),
+// OWNER_ASSERTION (owner said so), ENGINEERING_PROPOSAL (category template, plausible but unconfirmed), UNVERIFIED.
+const roleView=r=>{const x=String(r||'').toUpperCase();return /BACK/.test(x)?'BACK':/FRONT/.test(x)?'FRONT':x;};
+export const COMPONENT_PROVENANCE=['VISIBLE','GEOMETRIC_RULE','OWNER_ASSERTION','ENGINEERING_PROPOSAL','UNVERIFIED'];
+export function componentProvenance(cat,classification={},specs={},assetRoles=[]){
+  const views=new Set([...(classification.views||[]).map(v=>v.view),...assetRoles.map(roleView)]),det=new Map((classification.details||[]).map(d=>[d.key,d.evidence]));
+  const hasFront=views.has('FRONT'),hasBack=views.has('BACK');
+  const byDetail=k=>det.get(k)==='OBSERVED'?'VISIBLE':det.get(k)==='INFERRED'?'ENGINEERING_PROPOSAL':'UNVERIFIED';
+  return (cat?.components||[]).map(([ar,en])=>{let source='ENGINEERING_PROPOSAL',note=null;
+    if(/^Front/i.test(en)){source=hasFront?'VISIBLE':'GEOMETRIC_RULE';}
+    else if(/^Back/i.test(en)){source=hasBack?'VISIBLE':'GEOMETRIC_RULE';if(!hasBack)note='BACK_UNOBSERVED_SHAPE_REQUIRES_REVIEW';}
+    else if(/Lining/i.test(en)){source=['FULL','HALF'].includes(specs.lining)?'OWNER_ASSERTION':specs.lining==='NONE'?'NOT_APPLICABLE':byDetail('lining_visible');}
+    else if(/Collar/i.test(en))source=specs.collar?'OWNER_ASSERTION':byDetail('collar');
+    else if(/Sleeve/i.test(en))source=byDetail('sleeves')==='UNVERIFIED'?'GEOMETRIC_RULE':byDetail('sleeves');
+    else if(/Pocket/i.test(en))source=specs.pockets?'OWNER_ASSERTION':byDetail('pockets');
+    else if(/Fly|Zip/i.test(en))source=specs.closure?'OWNER_ASSERTION':byDetail('zipper_visible');
+    else if(/Head piece|khimar/i.test(en))source=specs.head_piece&&specs.head_piece!=='NONE'?'OWNER_ASSERTION':specs.head_piece==='NONE'?'NOT_APPLICABLE':'ENGINEERING_PROPOSAL';
+    const pair=/\(L\/R\)|^Sleeves|^Fronts|^Backs|^Cuffs/i.test(en);
+    return {ar,en,source,note,cutQty:pair?2:null,cutQtySource:pair?'GEOMETRIC_RULE':'PENDING',mirrored:pair,fabric:/Lining/i.test(en)?'LINING':'SHELL',grain:'TBC',geometry:null};}).filter(c=>c.source!=='NOT_APPLICABLE');}
+// Pattern readiness: are the INPUTS a pattern engineer needs present? Never a cut-ready claim; geometry for real
+// garments needs a validated drafting engine (AI-TP-W02) plus a physical sample.
+export function patternReadiness(cat,a={},plan={blockers:[]},{classification={},assetRoles=[]}={}){const missing=[];
+  if(!cat){return {status:'PATTERN_PENDING',readiness:'BLOCKED_PATTERN_INPUTS',gaps:['CATEGORY_NOT_CONFIRMED','PARAMETRIC_DRAFTING_ENGINE_NOT_VALIDATED'],manifest:[],cutReady:false};}
+  if(plan.blockers?.length)missing.push(...plan.blockers);
+  const m=a.measurements||{};for(const p of cat.pom.filter(x=>x.requiredFor.includes('PATTERN')||isCritical(x,a))){const v=m[p.code];if(!v||v.value==null)missing.push(`PATTERN_POM_MISSING:${p.code}`);else if(p.basisOptions.length>1&&!v.basis)missing.push(`POM_BASIS_MISSING:${p.code}`);}
+  const pi=a.patternInputs||{};
+  if(a.garmentBasis==='BODY'){const need=cat.pom.filter(p=>isCritical(p,a)&&p.basisOptions.some(b=>b!==BASIS.LEN));if(need.some(p=>pi.ease?.[p.code]==null))missing.push('EASE_RULES_NOT_DEFINED');}
+  else if(a.garmentBasis!=='FINISHED_GARMENT')missing.push('EASE_RULES_NOT_DEFINED');
+  if(!(pi.seamAllowanceMm&&pi.seamAllowanceMm.MAIN!=null&&pi.seamAllowanceMm.HEM!=null))missing.push('SEAM_ALLOWANCES_NOT_CONFIRMED');
+  if(!pi.baseBlock)missing.push('BASE_BLOCK_NOT_SELECTED');
+  if(pi.grainConfirmed!==true)missing.push('GRAINLINE_NOT_CONFIRMED');
+  const views=new Set([...(classification.views||[]).map(v=>v.view),...assetRoles.map(roleView)]);
+  if(!views.has('BACK')&&!pi.backDescription)missing.push('BACK_VIEW_UNOBSERVED');
+  const gaps=[...new Set([...missing,'PARAMETRIC_DRAFTING_ENGINE_NOT_VALIDATED'])];
+  return {status:'PATTERN_PENDING',readiness:missing.length?'BLOCKED_PATTERN_INPUTS':'INPUTS_COMPLETE__DRAFTING_ENGINE_PENDING',gaps,missingInputs:[...new Set(missing)],manifest:componentProvenance(cat,classification,a.specs||{},assetRoles),cutReady:false,
+    note:'Readiness of drafting INPUTS only. No pattern geometry is generated from photographs; cut-ready requires a validated drafting engine, verified measurements and a physical sample.'};}
 // Size x colour planned quantities (demand, not production actuals). Empty cells are allowed; totals are exact sums.
 export function validateQuantityMatrix(qm){if(qm===null)return null;if(typeof qm!=='object')throw Object.assign(new Error('quantityMatrix must be an object'),{status:400});
   const sizes=(qm.sizes||[]).map(s=>String(s).trim().slice(0,20)).filter(Boolean),colors=(qm.colors||[]).map(c=>String(c).trim().slice(0,40)).filter(Boolean);
@@ -228,16 +309,16 @@ export function quantityTotals(qm){if(!qm)return null;const bySize={},byColor={}
 const KEY=/^[A-Za-z0-9._:-]{8,128}$/;
 async function sha256Hex(bytes){return [...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(x=>x.toString(16).padStart(2,'0')).join('');}
 function publicIntake(row){if(!row)return null;const answers=JSON.parse(row.answers_json||'{}'),classification=JSON.parse(row.classification_json||'{}');const intake={id:row.id,styleId:row.style_id,category:row.category,category_source:row.category_source,classification,visionMode:row.vision_mode,visionRunId:row.vision_run_id,answers,rowVersion:Number(row.row_version),updatedAt:row.updated_at};return {...intake,plan:questionPlan({...intake}),categoryDef:categoryDef(row.category)?publicCategory(categoryDef(row.category)):null};}
-export function publicCategory(c){return {key:c.key,labelAr:c.labelAr,labelEn:c.labelEn,sizing:c.sizing,sizes:c.sizes,sizingNoteAr:c.sizingNoteAr||null,components:c.components,pom:c.pom.map(p=>({code:p.code,nameAr:p.nameAr,nameEn:p.nameEn,basisOptions:p.basisOptions,whyAr:p.whyAr,critical:p.critical,criticalWhen:p.criticalWhen})),specs:c.specs.map(s=>({key:s.key,labelAr:s.labelAr,labelEn:s.labelEn,whyAr:s.whyAr,options:s.options,critical:s.critical,type:s.type}))};}
+export function publicCategory(c){return {key:c.key,labelAr:c.labelAr,labelEn:c.labelEn,sizing:c.sizing,sizes:c.sizes,sizingNoteAr:c.sizingNoteAr||null,components:c.components,pom:c.pom.map(p=>({code:p.code,nameAr:p.nameAr,nameEn:p.nameEn,basisOptions:p.basisOptions,whyAr:p.whyAr,critical:p.critical,criticalWhen:p.criticalWhen,requiredFor:p.requiredFor,landmark:p.landmark,stretchSensitive:p.stretchSensitive})),specs:c.specs.map(s=>({key:s.key,labelAr:s.labelAr,labelEn:s.labelEn,whyAr:s.whyAr,options:s.options,critical:s.critical,type:s.type}))};}
 async function loadIntake(env,styleId){return env.DB.prepare('SELECT * FROM garment_intakes WHERE style_id=?').bind(styleId).first();}
 async function ensureIntake(env,ctx,style,userId){let row=await loadIntake(env,style.id);if(row)return row;const ts=ctx.now();
   await env.DB.prepare('INSERT OR IGNORE INTO garment_intakes(id,org_id,style_id,created_by,updated_by,created_at,updated_at) VALUES(?,?,?,?,?,?,?)').bind(ctx.randomId('gin_'),style.org_id,style.id,userId,userId,ts,ts).run();return loadIntake(env,style.id);}
 // Owner measurements are written to the existing POM table as OWNER_SUPPLIED / DRAFT; LOCKED or APPROVED rows are never overwritten.
 async function syncMeasurements(env,ctx,style,cat,answers){const unit=answers.unit||'cm';let i=0;
   for(const p of cat.pom){i++;const v=answers.measurements?.[p.code];if(!v||v.value==null)continue;const method=[v.basis,answers.garmentBasis,v.landmark].filter(Boolean).join(' · ');
-    await env.DB.prepare(`INSERT INTO measurements(id,style_id,code,name,name_en,value,unit,method,method_en,provenance,state,sort_order) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
-      ON CONFLICT(style_id,code) DO UPDATE SET value=excluded.value,unit=excluded.unit,method=excluded.method,method_en=excluded.method_en,provenance=excluded.provenance,name=excluded.name,name_en=excluded.name_en,state=CASE WHEN measurements.state IN ('AI_DRAFT','TBC') THEN 'DRAFT' ELSE measurements.state END
-      WHERE measurements.state NOT IN ('LOCKED','APPROVED')`).bind(ctx.randomId('pom_'),style.id,p.code,p.nameAr,p.nameEn,v.value,unit,method||null,method||null,v.source||'OWNER_SUPPLIED','DRAFT',i*10).run();}}
+    await env.DB.prepare(`INSERT INTO measurements(id,style_id,code,name,name_en,value,unit,method,method_en,tolerance_plus,tolerance_minus,provenance,state,sort_order) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      ON CONFLICT(style_id,code) DO UPDATE SET value=excluded.value,unit=excluded.unit,method=excluded.method,method_en=excluded.method_en,tolerance_plus=excluded.tolerance_plus,tolerance_minus=excluded.tolerance_minus,provenance=excluded.provenance,name=excluded.name,name_en=excluded.name_en,state=CASE WHEN measurements.state IN ('AI_DRAFT','TBC') THEN 'DRAFT' ELSE measurements.state END
+      WHERE measurements.state NOT IN ('LOCKED','APPROVED')`).bind(ctx.randomId('pom_'),style.id,p.code,p.nameAr,p.nameEn,v.value,unit,method||null,method||null,v.tolPlus??null,v.tolMinus??null,v.source||'OWNER_SUPPLIED','DRAFT',i*10).run();}}
 export async function intakeRoute(request,env,ctx){
   const url=new URL(request.url),m=url.pathname.match(/^\/api\/styles\/([^/]+)\/intake(?:\/(analyze|answers|category))?$/);
   if(url.pathname==='/api/garment-categories'&&request.method==='GET'){await ctx.requireAuth(request,env);return ctx.json({items:CATEGORY_KEYS.map(k=>publicCategory(GARMENT_CATEGORIES[k])),vision:visionStatus(env)});}
@@ -314,7 +395,7 @@ export async function intakeRoute(request,env,ctx){
     if(!(r.meta?.changes>0))return ctx.json({error:'Intake changed; refresh',code:'STALE_VERSION'},409);
     await syncMeasurements(env,ctx,style,cat,answers);
     if(answers.baseSize)await env.DB.prepare('UPDATE styles SET base_size=?,sizing_mode=?,updated_at=? WHERE id=?').bind(answers.baseSize,cat.sizing==='WEIGHT_BANDS'?'WEIGHT_BANDS':'STANDARD',ctx.now(),style.id).run();
-    await ctx.audit(env,style.org_id,sess.userId,'GARMENT_INTAKE',style.id,'ANSWERS',{codes:Object.keys(b.measurements||{}),specs:Object.keys(b.specs||{}),unit:answers.unit,garmentBasis:answers.garmentBasis});
+    await ctx.audit(env,style.org_id,sess.userId,'GARMENT_INTAKE',style.id,'ANSWERS',{codes:Object.keys(b.measurements||{}),specs:Object.keys(b.specs||{}),unit:answers.unit,garmentBasis:answers.garmentBasis,description:b.description!=null,patternInputs:b.patternInputs!=null?Object.keys(b.patternInputs):undefined});
     return ctx.json({intake:publicIntake(await loadIntake(env,style.id))});}
   return ctx.json({error:'Method not allowed'},405);
 }
