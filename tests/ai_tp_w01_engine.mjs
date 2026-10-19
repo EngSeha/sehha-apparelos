@@ -115,6 +115,10 @@ const prefix=id=>[...env.UPLOADS.map.keys()].filter(k=>k.startsWith(`techpack/${
  let leak;try{leak=await call(`/api/styles/${synId}/techpack/storage-check`);}finally{env.UPLOADS.list=list;}
  row(C,'E-C13','unexpected internal error in a Tech Pack route is sanitized','500 INTERNAL_ERROR with a ref; no SQL/path text in the body',`${leak.r.status} ${leak.data.code} ${leak.data.ref?'ref':''}`,leak.r.status===500&&leak.data.code==='INTERNAL_ERROR'&&!!leak.data.ref&&!JSON.stringify(leak.data).includes('secret_internal'));}
 
+{env.BROWSER={fetch:async()=>{throw new Error('BrowserStartupError: Failed to launch the browser process (simulated)');}};let r;
+ try{r=await call(`/api/styles/${jkId}/techpack/revisions/${jkRev}/pdf`);}finally{delete env.BROWSER;}
+ row(C,'E-C14','browser binding present but the browser cannot start','503 PDF_ENGINE_UNAVAILABLE (not a generic 500); no launch text leaked',`${r.r.status} ${r.data.code}`,r.r.status===503&&r.data.code==='PDF_ENGINE_UNAVAILABLE'&&!JSON.stringify(r.data).includes('BrowserStartupError'));}
+
 // ---------- W01-D pattern readiness ----------
 {const ps=await call(`/api/styles/${jkId}/pattern-status`),miss=ps.data.missingInputs||[];
  row(D,'E-D01','JK-003 pattern readiness is BLOCKED_PATTERN_INPUTS with the exact missing inputs','BLOCKED; includes BACK_VIEW_UNOBSERVED, SEAM_ALLOWANCES_NOT_CONFIRMED, EASE_RULES_NOT_DEFINED, PATTERN_POM_MISSING:BUTTON_START, GRAINLINE_NOT_CONFIRMED; cutReady false; no DXF/SVG',
