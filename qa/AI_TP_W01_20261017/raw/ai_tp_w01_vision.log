@@ -1,0 +1,86 @@
+MATRIX {"area":"VISION_W01","id":"W-V01","scenario":"vision status with a Workers AI binding","expected":"preferred workers_ai; exact model id","actual":"workers_ai @cf/meta/llama-3.2-11b-vision-instruct","verdict":"PASS"}
+PASS W-V01 vision status with a Workers AI binding
+MATRIX {"area":"VISION_W01","id":"W-V02","scenario":"request payload sent to the binding","expected":"model exact; keys prompt,image,max_tokens,temperature only; prompt == BLIND_PROMPT","actual":"@cf/meta/llama-3.2-11b-vision-instruct image,max_tokens,prompt,temperature","verdict":"PASS"}
+PASS W-V02 request payload sent to the binding
+MATRIX {"area":"VISION_W01","id":"W-V03","scenario":"prompt contamination check (blind evaluation)","expected":"no owner text, style code, filename or measurements in the request","actual":"none","verdict":"PASS"}
+PASS W-V03 prompt contamination check (blind evaluation)
+MATRIX {"area":"VISION_W01","id":"W-V04","scenario":"pixels actually sent","expected":"SHA-256 of bytes received by the model == SHA-256 returned at upload == stored R2 object","actual":"d703d139f0de vs d703d139f0de","verdict":"PASS"}
+PASS W-V04 pixels actually sent
+MATRIX {"area":"VISION_W01","id":"W-V05","scenario":"validated live result stored as hypothesis","expected":"JACKET/HIGH; subtype, colours, cues, uncertainty kept; numeric probability discarded; LIVE_MODEL evidence class; AI_HYPOTHESIS","actual":"JACKET/HIGH p=null LIVE_MODEL AI_HYPOTHESIS","verdict":"PASS"}
+PASS W-V05 validated live result stored as hypothesis
+MATRIX {"area":"VISION_W01","id":"W-V06","scenario":"no category questions skipped: owner still confirms","expected":"plan = single category question","actual":"category","verdict":"PASS"}
+PASS W-V06 no category questions skipped: owner still confirms
+MATRIX {"area":"VISION_W01","id":"W-V07","scenario":"misleading owner text vs image (controlled fixture)","expected":"result follows the image (TROUSERS); conflict flagged OWNER_TEXT_CONFLICTS_WITH_IMAGE; owner still decides","actual":"TROUSERS conflict={\"ownerTextSuggests\":\"JACKET\",\"imageSuggests\":\"TROUSERS\"}","verdict":"PASS"}
+PASS W-V07 misleading owner text vs image (controlled fixture)
+MATRIX {"area":"VISION_W01","id":"W-V08","scenario":"two images disagree on category","expected":"CONFLICTING, confidence LOW, the other category offered as alternative, 2 model calls","actual":"CONFLICTING LOW alt=DRESS","verdict":"PASS"}
+PASS W-V08 two images disagree on category
+MATRIX {"area":"VISION_W01","id":"W-V09-BLOCKED_META_OWNER_CONSENT-licence","scenario":"provider failure: licence not accepted (5016)","expected":"503 BLOCKED_META_OWNER_CONSENT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"503 BLOCKED_META_OWNER_CONSENT run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-BLOCKED_META_OWNER_CONSENT-licence provider failure: licence not accepted (5016)
+MATRIX {"area":"VISION_W01","id":"W-V09-BLOCKED_BUDGET-daily","scenario":"provider failure: daily free allocation exceeded (3036)","expected":"429 BLOCKED_BUDGET; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"429 BLOCKED_BUDGET run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-BLOCKED_BUDGET-daily provider failure: daily free allocation exceeded (3036)
+MATRIX {"area":"VISION_W01","id":"W-V09-BLOCKED_BUDGET-HTTP","scenario":"provider failure: HTTP 429 rate limit","expected":"429 BLOCKED_BUDGET; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"429 BLOCKED_BUDGET run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-BLOCKED_BUDGET-HTTP provider failure: HTTP 429 rate limit
+MATRIX {"area":"VISION_W01","id":"W-V09-VISION_MODEL_UNAVAILABLE-model","scenario":"provider failure: model unavailable (5007)","expected":"503 VISION_MODEL_UNAVAILABLE; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"503 VISION_MODEL_UNAVAILABLE run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-VISION_MODEL_UNAVAILABLE-model provider failure: model unavailable (5007)
+MATRIX {"area":"VISION_W01","id":"W-V09-VISION_PROVIDER_ERROR-provider","scenario":"provider failure: provider 500","expected":"502 VISION_PROVIDER_ERROR; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"502 VISION_PROVIDER_ERROR run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-VISION_PROVIDER_ERROR-provider provider failure: provider 500
+MATRIX {"area":"VISION_W01","id":"W-V09-VISION_AUTH_FAILED-403","scenario":"provider failure: 403 forbidden","expected":"503 VISION_AUTH_FAILED; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"503 VISION_AUTH_FAILED run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-VISION_AUTH_FAILED-403 provider failure: 403 forbidden
+MATRIX {"area":"VISION_W01","id":"W-V09-VISION_TIMEOUT-timeout","scenario":"provider failure: timeout","expected":"504 VISION_TIMEOUT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"504 VISION_TIMEOUT run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-VISION_TIMEOUT-timeout provider failure: timeout
+MATRIX {"area":"VISION_W01","id":"W-V09-VISION_SCHEMA_DRIFT-prose","scenario":"provider failure: prose instead of JSON","expected":"502 VISION_SCHEMA_DRIFT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"502 VISION_SCHEMA_DRIFT run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-VISION_SCHEMA_DRIFT-prose provider failure: prose instead of JSON
+MATRIX {"area":"VISION_W01","id":"W-V09-VISION_SCHEMA_DRIFT-partial","scenario":"provider failure: partial / truncated JSON","expected":"502 VISION_SCHEMA_DRIFT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"502 VISION_SCHEMA_DRIFT run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-VISION_SCHEMA_DRIFT-partial provider failure: partial / truncated JSON
+MATRIX {"area":"VISION_W01","id":"W-V09-VISION_SCHEMA_DRIFT-schema","scenario":"provider failure: schema drift (unknown category)","expected":"502 VISION_SCHEMA_DRIFT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"502 VISION_SCHEMA_DRIFT run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-VISION_SCHEMA_DRIFT-schema provider failure: schema drift (unknown category)
+MATRIX {"area":"VISION_W01","id":"W-V09-VISION_SCHEMA_DRIFT-injected","scenario":"provider failure: injected extra field","expected":"502 VISION_SCHEMA_DRIFT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text","actual":"502 VISION_SCHEMA_DRIFT run=FAILED intake=null","verdict":"PASS"}
+PASS W-V09-VISION_SCHEMA_DRIFT-injected provider failure: injected extra field
+MATRIX {"area":"VISION_W01","id":"W-V10","scenario":"unknown provider error class","expected":"VISION_PROVIDER_ERROR 502 (never success)","actual":"{\"code\":\"VISION_PROVIDER_ERROR\",\"status\":502,\"retryable\":true}","verdict":"PASS"}
+PASS W-V10 unknown provider error class
+MATRIX {"area":"VISION_W01","id":"W-V11","scenario":"same Idempotency-Key repeated","expected":"one model call; second response replayed with the same run id","actual":"calls=1 replayed=true sameRun=true","verdict":"PASS"}
+PASS W-V11 same Idempotency-Key repeated
+MATRIX {"area":"VISION_W01","id":"W-V12","scenario":"same key, different images","expected":"409 IDEMPOTENCY_KEY_REUSED; no model call","actual":"409 IDEMPOTENCY_KEY_REUSED calls=1","verdict":"PASS"}
+PASS W-V12 same key, different images
+MATRIX {"area":"VISION_W01","id":"W-V13","scenario":"same key while the first call is still running (concurrent retry)","expected":"409 (no second paid call)","actual":"409 IDEMPOTENCY_KEY_REUSED","verdict":"PASS"}
+PASS W-V13 same key while the first call is still running (concurrent retry)
+MATRIX {"area":"VISION_W01","id":"W-V14","scenario":"malformed Idempotency-Key","expected":"400","actual":"400","verdict":"PASS"}
+PASS W-V14 malformed Idempotency-Key
+MATRIX {"area":"VISION_W01","id":"W-V15","scenario":"per-tenant daily vision quota reached","expected":"429 VISION_QUOTA_EXCEEDED; explicit MOCK still allowed and labelled","actual":"429 VISION_QUOTA_EXCEEDED mock=200/MOCK","verdict":"PASS"}
+PASS W-V15 per-tenant daily vision quota reached
+MATRIX {"area":"VISION_W01","id":"W-V16","scenario":"throttle: repeat live analysis within the interval","expected":"second call 429 VISION_THROTTLED","actual":"200/429 VISION_THROTTLED","verdict":"PASS"}
+PASS W-V16 throttle: repeat live analysis within the interval
+MATRIX {"area":"VISION_W01","id":"W-V17","scenario":"more images than the per-run limit (2)","expected":"400 TOO_MANY_IMAGES; no model call","actual":"400 TOO_MANY_IMAGES","verdict":"PASS"}
+PASS W-V17 more images than the per-run limit (2)
+MATRIX {"area":"VISION_W01","id":"W-V18","scenario":"URL passed instead of an asset id (SSRF attempt)","expected":"404 ASSET_NOT_FOUND; the model only ever receives stored bytes","actual":"404 ASSET_NOT_FOUND","verdict":"PASS"}
+PASS W-V18 URL passed instead of an asset id (SSRF attempt)
+MATRIX {"area":"VISION_W01","id":"W-V19","scenario":"live analysis without any image","expected":"400 IMAGE_REQUIRED (no text-only \"vision\")","actual":"400 IMAGE_REQUIRED","verdict":"PASS"}
+PASS W-V19 live analysis without any image
+MATRIX {"area":"VISION_W01","id":"W-V20","scenario":"1×1 image sent for vision","expected":"upload allowed (generic) but analysis 422 IMAGE_TOO_SMALL","actual":"201 / 422 IMAGE_TOO_SMALL","verdict":"PASS"}
+PASS W-V20 1×1 image sent for vision
+MATRIX {"area":"VISION_W01","id":"W-V21","scenario":"other-tenant owner analyses our image","expected":"403","actual":"403","verdict":"PASS"}
+PASS W-V21 other-tenant owner analyses our image
+MATRIX {"area":"VISION_W01","id":"W-V22","scenario":"our user analyses another tenant style with our asset id","expected":"403 (workspace), asset never sent","actual":"403","verdict":"PASS"}
+PASS W-V22 our user analyses another tenant style with our asset id
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U01","scenario":"PNG header claims 20000×20000 (resolution bomb)","expected":"413 IMAGE_TOO_LARGE_RESOLUTION; nothing stored","actual":"413 IMAGE_TOO_LARGE_RESOLUTION","verdict":"PASS"}
+PASS W-U01 PNG header claims 20000×20000 (resolution bomb)
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U02","scenario":"spoofed magic bytes (JPEG bytes labelled PNG)","expected":"415","actual":"415","verdict":"PASS"}
+PASS W-U02 spoofed magic bytes (JPEG bytes labelled PNG)
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U03","scenario":"invalid base64","expected":"400","actual":"400","verdict":"PASS"}
+PASS W-U03 invalid base64
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U04","scenario":"JPEG with EXIF/GPS metadata","expected":"stored copy has no APP1/GPS bytes; dimensions 160×200 parsed; sha256 of the stored bytes returned","actual":"201 removed=1 gpsLeft=false 160x200","verdict":"PASS"}
+PASS W-U04 JPEG with EXIF/GPS metadata
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U05","scenario":"same image uploaded again to the same style","expected":"409 DUPLICATE_IMAGE pointing to the first asset","actual":"409 DUPLICATE_IMAGE","verdict":"PASS"}
+PASS W-U05 same image uploaded again to the same style
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U06","scenario":"WebP VP8X header parsing","expected":"1200×800","actual":"1200x800","verdict":"PASS"}
+PASS W-U06 WebP VP8X header parsing
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U07","scenario":"metadata strip on non-JPEG input","expected":"bytes unchanged, nothing removed","actual":"0","verdict":"PASS"}
+PASS W-U07 metadata strip on non-JPEG input
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U10","scenario":"PNG eXIf / tEXt metadata (GPS, device serial) stripped on upload","expected":"201; 2 segments removed; stored bytes contain no GPS/serial and equal the original image chunks; dimensions intact","actual":"201 removed=2 120×150","verdict":"PASS"}
+PASS W-U10 PNG eXIf / tEXt metadata (GPS, device serial) stripped on upload
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U11","scenario":"WebP EXIF / XMP chunks stripped; RIFF size and VP8X flags rewritten","expected":"2 removed; no GPS text; RIFF size = file-8; EXIF/XMP flags cleared; 200×100 kept","actual":"removed=2 riff=36/36 flags=0 200×100","verdict":"PASS"}
+PASS W-U11 WebP EXIF / XMP chunks stripped; RIFF size and VP8X flags rewritten
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U08","scenario":"private object fetched without a session (guessing the key)","expected":"401; objects are only served through the authenticated route","actual":"401","verdict":"PASS"}
+PASS W-U08 private object fetched without a session (guessing the key)
+MATRIX {"area":"UPLOAD_GUARD","id":"W-U09","scenario":"other-tenant user fetches our private image by key","expected":"403","actual":"403","verdict":"PASS"}
+PASS W-U09 other-tenant user fetches our private image by key

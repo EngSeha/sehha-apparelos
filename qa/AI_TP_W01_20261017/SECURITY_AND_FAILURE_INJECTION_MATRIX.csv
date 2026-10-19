@@ -1,0 +1,108 @@
+suite,area,id,scenario,expected,actual,verdict
+ai_tp_w01_vision,VISION_W01,W-V01,vision status with a Workers AI binding,preferred workers_ai; exact model id,workers_ai @cf/meta/llama-3.2-11b-vision-instruct,PASS
+ai_tp_w01_vision,VISION_W01,W-V02,request payload sent to the binding,"model exact; keys prompt,image,max_tokens,temperature only; prompt == BLIND_PROMPT","@cf/meta/llama-3.2-11b-vision-instruct image,max_tokens,prompt,temperature",PASS
+ai_tp_w01_vision,VISION_W01,W-V03,prompt contamination check (blind evaluation),"no owner text, style code, filename or measurements in the request",none,PASS
+ai_tp_w01_vision,VISION_W01,W-V04,pixels actually sent,SHA-256 of bytes received by the model == SHA-256 returned at upload == stored R2 object,d703d139f0de vs d703d139f0de,PASS
+ai_tp_w01_vision,VISION_W01,W-V05,validated live result stored as hypothesis,"JACKET/HIGH; subtype, colours, cues, uncertainty kept; numeric probability discarded; LIVE_MODEL evidence class; AI_HYPOTHESIS",JACKET/HIGH p=null LIVE_MODEL AI_HYPOTHESIS,PASS
+ai_tp_w01_vision,VISION_W01,W-V06,no category questions skipped: owner still confirms,plan = single category question,category,PASS
+ai_tp_w01_vision,VISION_W01,W-V07,misleading owner text vs image (controlled fixture),result follows the image (TROUSERS); conflict flagged OWNER_TEXT_CONFLICTS_WITH_IMAGE; owner still decides,"TROUSERS conflict={""ownerTextSuggests"":""JACKET"",""imageSuggests"":""TROUSERS""}",PASS
+ai_tp_w01_vision,VISION_W01,W-V08,two images disagree on category,"CONFLICTING, confidence LOW, the other category offered as alternative, 2 model calls",CONFLICTING LOW alt=DRESS,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-BLOCKED_META_OWNER_CONSENT-licence,provider failure: licence not accepted (5016),503 BLOCKED_META_OWNER_CONSENT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,503 BLOCKED_META_OWNER_CONSENT run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-BLOCKED_BUDGET-daily,provider failure: daily free allocation exceeded (3036),429 BLOCKED_BUDGET; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,429 BLOCKED_BUDGET run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-BLOCKED_BUDGET-HTTP,provider failure: HTTP 429 rate limit,429 BLOCKED_BUDGET; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,429 BLOCKED_BUDGET run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-VISION_MODEL_UNAVAILABLE-model,provider failure: model unavailable (5007),503 VISION_MODEL_UNAVAILABLE; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,503 VISION_MODEL_UNAVAILABLE run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-VISION_PROVIDER_ERROR-provider,provider failure: provider 500,502 VISION_PROVIDER_ERROR; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,502 VISION_PROVIDER_ERROR run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-VISION_AUTH_FAILED-403,provider failure: 403 forbidden,503 VISION_AUTH_FAILED; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,503 VISION_AUTH_FAILED run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-VISION_TIMEOUT-timeout,provider failure: timeout,504 VISION_TIMEOUT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,504 VISION_TIMEOUT run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-VISION_SCHEMA_DRIFT-prose,provider failure: prose instead of JSON,502 VISION_SCHEMA_DRIFT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,502 VISION_SCHEMA_DRIFT run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-VISION_SCHEMA_DRIFT-partial,provider failure: partial / truncated JSON,502 VISION_SCHEMA_DRIFT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,502 VISION_SCHEMA_DRIFT run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-VISION_SCHEMA_DRIFT-schema,provider failure: schema drift (unknown category),502 VISION_SCHEMA_DRIFT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,502 VISION_SCHEMA_DRIFT run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V09-VISION_SCHEMA_DRIFT-injected,provider failure: injected extra field,502 VISION_SCHEMA_DRIFT; ai_run FAILED; intake untouched; mockUsed false; no raw provider text,502 VISION_SCHEMA_DRIFT run=FAILED intake=null,PASS
+ai_tp_w01_vision,VISION_W01,W-V10,unknown provider error class,VISION_PROVIDER_ERROR 502 (never success),"{""code"":""VISION_PROVIDER_ERROR"",""status"":502,""retryable"":true}",PASS
+ai_tp_w01_vision,VISION_W01,W-V11,same Idempotency-Key repeated,one model call; second response replayed with the same run id,calls=1 replayed=true sameRun=true,PASS
+ai_tp_w01_vision,VISION_W01,W-V12,"same key, different images",409 IDEMPOTENCY_KEY_REUSED; no model call,409 IDEMPOTENCY_KEY_REUSED calls=1,PASS
+ai_tp_w01_vision,VISION_W01,W-V13,same key while the first call is still running (concurrent retry),409 (no second paid call),409 IDEMPOTENCY_KEY_REUSED,PASS
+ai_tp_w01_vision,VISION_W01,W-V14,malformed Idempotency-Key,400,400,PASS
+ai_tp_w01_vision,VISION_W01,W-V15,per-tenant daily vision quota reached,429 VISION_QUOTA_EXCEEDED; explicit MOCK still allowed and labelled,429 VISION_QUOTA_EXCEEDED mock=200/MOCK,PASS
+ai_tp_w01_vision,VISION_W01,W-V16,throttle: repeat live analysis within the interval,second call 429 VISION_THROTTLED,200/429 VISION_THROTTLED,PASS
+ai_tp_w01_vision,VISION_W01,W-V17,more images than the per-run limit (2),400 TOO_MANY_IMAGES; no model call,400 TOO_MANY_IMAGES,PASS
+ai_tp_w01_vision,VISION_W01,W-V18,URL passed instead of an asset id (SSRF attempt),404 ASSET_NOT_FOUND; the model only ever receives stored bytes,404 ASSET_NOT_FOUND,PASS
+ai_tp_w01_vision,VISION_W01,W-V19,live analysis without any image,"400 IMAGE_REQUIRED (no text-only ""vision"")",400 IMAGE_REQUIRED,PASS
+ai_tp_w01_vision,VISION_W01,W-V20,1×1 image sent for vision,upload allowed (generic) but analysis 422 IMAGE_TOO_SMALL,201 / 422 IMAGE_TOO_SMALL,PASS
+ai_tp_w01_vision,VISION_W01,W-V21,other-tenant owner analyses our image,403,403,PASS
+ai_tp_w01_vision,VISION_W01,W-V22,our user analyses another tenant style with our asset id,"403 (workspace), asset never sent",403,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U01,PNG header claims 20000×20000 (resolution bomb),413 IMAGE_TOO_LARGE_RESOLUTION; nothing stored,413 IMAGE_TOO_LARGE_RESOLUTION,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U02,spoofed magic bytes (JPEG bytes labelled PNG),415,415,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U03,invalid base64,400,400,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U04,JPEG with EXIF/GPS metadata,stored copy has no APP1/GPS bytes; dimensions 160×200 parsed; sha256 of the stored bytes returned,201 removed=1 gpsLeft=false 160x200,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U05,same image uploaded again to the same style,409 DUPLICATE_IMAGE pointing to the first asset,409 DUPLICATE_IMAGE,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U06,WebP VP8X header parsing,1200×800,1200x800,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U07,metadata strip on non-JPEG input,"bytes unchanged, nothing removed",0,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U10,"PNG eXIf / tEXt metadata (GPS, device serial) stripped on upload",201; 2 segments removed; stored bytes contain no GPS/serial and equal the original image chunks; dimensions intact,201 removed=2 120×150,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U11,WebP EXIF / XMP chunks stripped; RIFF size and VP8X flags rewritten,2 removed; no GPS text; RIFF size = file-8; EXIF/XMP flags cleared; 200×100 kept,removed=2 riff=36/36 flags=0 200×100,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U08,private object fetched without a session (guessing the key),401; objects are only served through the authenticated route,401,PASS
+ai_tp_w01_vision,UPLOAD_GUARD,W-U09,other-tenant user fetches our private image by key,403,403,PASS
+ai_tp_w01_engine,ENGINE,E-B01,every point of measure carries a start→end landmark definition (AR+EN),0 POM without a definition,"48 POM, 0 without: ",PASS
+ai_tp_w01_engine,ENGINE,E-B02,pattern-only POM are not approval-critical,"JACKET pattern-only = SHOULDER,ARMHOLE,NECK_WIDTH,BACK_LENGTH,BUTTON_START; none critical","SHOULDER,ARMHOLE,NECK_WIDTH,BACK_LENGTH,BUTTON_START",PASS
+ai_tp_w01_engine,ENGINE,E-B03,complete approval data: pattern measurements are offered separately and never block,"0 approval groups; patternQuestions = WAIST (fit not FITTED, still needed to draft) + the 5 pattern-only POM","0 groups · WAIST,SHOULDER,ARMHOLE,NECK_WIDTH,BACK_LENGTH,BUTTON_START",PASS
+ai_tp_w01_engine,ENGINE,E-B04,explicit tolerance is stored; missing tolerance stays empty (NO_TOLERANCE),CHEST ±1; BACK_WIDTH null/null,200 CHEST 1/1 BACK_WIDTH null/null,PASS
+ai_tp_w01_engine,ENGINE,E-B05,implausible tolerance rejected,400,400 CHEST tolPlus must be a number between 0 and 20,PASS
+ai_tp_w01_engine,ENGINE,E-B06,owner edits the bilingual technical description,stored as OWNER_ASSERTION with AR and EN,200 OWNER_ASSERTION true true,PASS
+ai_tp_w01_engine,ENGINE,E-B07,non-text description rejected,400,400,PASS
+ai_tp_w01_engine,ENGINE,E-B08,JK-003 component provenance from a single REFERENCE photo + owner facts,"Fronts GEOMETRIC_RULE (no tagged front view), Back GEOMETRIC_RULE + BACK_UNOBSERVED note, Lining OWNER_ASSERTION, Collar OWNER_ASSERTION, sleeves pair",Fronts (L/R):GEOMETRIC_RULE | Back:GEOMETRIC_RULE(BACK_UNOBSERVED_SHAPE_REQUIRES_REVIEW) | Sleeves:GEOMETRIC_RULE | Collar:OWNER_ASSERTION | Facing:ENGINEERING_PROPOSAL | Lining (if any):OWNER_ASSERTION,PASS
+ai_tp_w01_engine,ENGINE,E-B09,live classification evidence maps to VISIBLE / ENGINEERING_PROPOSAL; unseen lining stays UNVERIFIED,"Fronts VISIBLE, Collar VISIBLE, Lining UNVERIFIED, Back GEOMETRIC_RULE","{""Fronts (L/R)"":""VISIBLE"",""Back"":""GEOMETRIC_RULE"",""Sleeves"":""GEOMETRIC_RULE"",""Collar"":""VISIBLE"",""Facing"":""ENGINEERING_PROPOSAL"",""Lining (if any)"":""UNVERIFIED""}",PASS
+ai_tp_w01_engine,ENGINE,E-B10,"snapshot POM rows carry definition, requiredFor and explicit tolerance",CHEST definition + ±1; BUTTON_START is a pattern input with no value,true 1/1 PATTERN null,PASS
+ai_tp_w01_engine,ENGINE,E-B11,"0004 owner text suggests abaya/khimar (mock, LOW)",ABAYA_KHIMAR LOW MOCK,ABAYA_KHIMAR LOW MOCK,PASS
+ai_tp_w01_engine,ENGINE,E-B12,0004 asks a weight band (not S/M/L) and the opening length that drives the concealed zip,baseSize without S/M/L options; pom:OPENING asked; FACE_OPENING offered for the pattern,"Base weight band of the entered values options=0 · LENGTH,WIDTH,SLEEVE_LENGTH,OPENING · pattern HEM_WIDTH,ARMHOLE,FACE_OPENING",PASS
+ai_tp_w01_engine,ENGINE,E-B13,"0004 Tech Pack: concealed zip length tied to the opening, embroidery kept as owner text, head piece OWNER_ASSERTION, no consumption invented",P-ZP concealed; material CONSUMPTION_NOT_CONFIRMED; quantity total 100; sizing WEIGHT_BANDS,"Concealed zipper · Length from the opening measurement · head OWNER_ASSERTION · CONSUMPTION_NOT_CONFIRMED,CONSUMPTION_NOT_CONFIRMED,CONSUMPTION_NOT_CONFIRMED,CONSUMPTION_NOT_CONFIRMED · total 100 · WEIGHT_BANDS",PASS
+ai_tp_w01_engine,ENGINE,E-B14,separation of duties: author cannot approve their own revision when enabled; another approver can,"default 503 (engine step); enabled: author 409 SELF_APPROVAL_FORBIDDEN, other approver reaches the PDF step (503)",503 · 409 SELF_APPROVAL_FORBIDDEN · 503 PDF_ENGINE_UNAVAILABLE,PASS
+ai_tp_w01_engine,TECHPACK,E-C01,"rendered HTML carries its own CSP (no network, no script) in addition to the response header",meta CSP default-src none; header present,true true,PASS
+ai_tp_w01_engine,TECHPACK,E-C02,"no back photo: the back is shown as UNOBSERVABLE / REQUIRES_REVIEW, never drawn",back box present,true,PASS
+ai_tp_w01_engine,TECHPACK,E-C03,"manual sign-off table for DESIGN / PATTERN / PRODUCTION / QC, stated as not a digital signature",4 roles + disclaimer,"DESIGN,PATTERN,PRODUCTION,QC",PASS
+ai_tp_w01_engine,TECHPACK,E-C04,owner description is printed before (and separate from) the recognition hypothesis,owner block first,7295 < 8050,PASS
+ai_tp_w01_engine,TECHPACK,E-C05,with a TECHNICAL_BACK photo the back reference shows the image and Back becomes VISIBLE,no UNOBSERVABLE box; Back VISIBLE; views.back true,false VISIBLE true,PASS
+ai_tp_w01_engine,TECHPACK,E-C06,R2 put fails during approval,503 PDF_STORAGE_FAILED; revision stays DRAFT; no object,503 PDF_STORAGE_FAILED DRAFT objects=0,PASS
+ai_tp_w01_engine,TECHPACK,E-C07,D1 write fails after the PDF was stored,503 APPROVAL_WRITE_FAILED; stored object removed; still DRAFT,503 APPROVAL_WRITE_FAILED DRAFT objects=0,PASS
+ai_tp_w01_engine,TECHPACK,E-C08,approval succeeds once; a concurrent loser (stale DRAFT read) loses the compare-and-set and its object is deleted,winner APPROVED with 2 pages; loser replayed; exactly one object = winner key; one APPROVE audit,200 APPROVED pages=2 · loser 200 replayed=true · objects 1,PASS
+ai_tp_w01_engine,TECHPACK,E-C09,approved PDF is served from the frozen R2 bytes (no re-render),"200 APPROVED, x-pdf-sha256 = stored hash",200 APPROVED,PASS
+ai_tp_w01_engine,TECHPACK,E-C10,storage reconciliation on a consistent style,"consistent, 1 approved, 0 orphans","{""c"":true,""a"":1,""o"":[]}",PASS
+ai_tp_w01_engine,TECHPACK,E-C11,reconciliation reports an orphan object and hash drift,"1 orphan, 1 drift, consistent=false",1 orphan 1 drift,PASS
+ai_tp_w01_engine,TECHPACK,E-C12,"orphan cleanup is approver-only, audited, and never touches the approved object",FACTORY_SUPERVISOR 403; cleanup deletes 1; then consistent,403 · deleted 1 · true,PASS
+ai_tp_w01_engine,TECHPACK,E-C13,unexpected internal error in a Tech Pack route is sanitized,500 INTERNAL_ERROR with a ref; no SQL/path text in the body,500 INTERNAL_ERROR ref,PASS
+ai_tp_w01_engine,TECHPACK,E-C14,browser binding present but the browser cannot start,503 PDF_ENGINE_UNAVAILABLE (not a generic 500); no launch text leaked,503 PDF_ENGINE_UNAVAILABLE,PASS
+ai_tp_w01_engine,PATTERN,E-D01,JK-003 pattern readiness is BLOCKED_PATTERN_INPUTS with the exact missing inputs,"BLOCKED; includes BACK_VIEW_UNOBSERVED, SEAM_ALLOWANCES_NOT_CONFIRMED, EASE_RULES_NOT_DEFINED, PATTERN_POM_MISSING:BUTTON_START, GRAINLINE_NOT_CONFIRMED; cutReady false; no DXF/SVG","BLOCKED_PATTERN_INPUTS · MEASUREMENT_BASIS_MISSING,CRITICAL_POM_MISSING,POM_BASIS_MISSING,POM_BASIS_MISSING:CHEST,POM_BASIS_MISSING:SLEEVE_WIDTH,POM_BASIS_MISSING:SLEEVE_OPENING,PATTERN_POM_MISSING:WAIST,PATTERN_POM_MISSING:SHOULDER,PATTERN_POM_MISSING:ARMHOLE,PATTERN_POM_MISSING:NECK_WIDTH,PATTERN_POM_MISSING:BACK_LENGTH,PATTERN_POM_MISSING:BUTTON_START,EASE_RULES_NOT_DEFINED,SEAM_ALLOWANCES_NOT_CONFIRMED,BASE_BLOCK_NOT_SELECTED,GRAINLINE_NOT_CONFIRMED,BACK_VIEW_UNOBSERVED · cutReady=false dxf=null",PASS
+ai_tp_w01_engine,PATTERN,E-D02,"piece manifest: mirrored pairs from structure, grain TBC, no geometry",Fronts/Sleeves cutQty 2 GEOMETRIC_RULE; every grain TBC; geometry null,"Fronts (L/R):2,Back:-,Sleeves:2,Collar:-,Facing:-,Lining (if any):-",PASS
+ai_tp_w01_engine,PATTERN,E-D03,invalid pattern inputs rejected,seam 100 mm 400; ease for a non-jacket POM 400; unknown seam class 400,400 400 400,PASS
+ai_tp_w01_engine,PATTERN,E-D04,complete synthetic inputs: only the back view blocks until a back photo exists; then inputs complete but still not cut-ready,"before: [BACK_VIEW_UNOBSERVED]; after: INPUTS_COMPLETE__DRAFTING_ENGINE_PENDING, cutReady false",BACK_VIEW_UNOBSERVED → INPUTS_COMPLETE__DRAFTING_ENGINE_PENDING cutReady=false,PASS
+ai_tp_w01_engine,PATTERN,E-D05,body-basis measurements require explicit ease (never defaulted),EASE_RULES_NOT_DEFINED present,EASE_RULES_NOT_DEFINED,PASS
+ai_tp_w01_engine,GEOMETRY,E-G01,geometry writer refuses anything but explicit synthetic geometry,5 rejections; OWNER_PHOTO → GEOMETRY_SOURCE_NOT_ALLOWED,OWNER_PHOTO source:GEOMETRY_SOURCE_NOT_ALLOWED | cm unit:GEOMETRY_UNIT_INVALID | self-intersecting outline:GEOMETRY_SPEC_INVALID | missing allowance:GEOMETRY_SPEC_INVALID | no grainline:GEOMETRY_SPEC_INVALID,PASS
+ai_tp_w01_engine,GEOMETRY,E-G02,outward offset of a 100×50 mm rectangle by 10 mm,"120×70 mm, corners at (-10,-10)","120×70 [-10,-10]",PASS
+ai_tp_w01_engine,GEOMETRY,E-G03,per-edge allowance (25 mm hem) on the synthetic pocket and body,pocket cut 220×215; body cut height 735,220×215 · body 735,PASS
+ai_tp_w01_engine,GEOMETRY,E-G04,SVG is 1:1 millimetres,width/height in mm equal the viewBox; 3 CUT + 3 SEW paths; cut-ready false,1717.346mm×765mm vb 1717.346×765,PASS
+ai_tp_w01_engine,GEOMETRY,E-G05,"DXF (R12) parsed independently: mm units, closed outlines, exact vertices",$INSUNITS 4; 3 closed CUT + 3 closed SEW; pocket CUT bbox 220×215,units=4 CUT=3 SEW=3 pocket 220×215,PASS
+ai_tp_w01_engine,GEOMETRY,E-G06,geometry manifest never claims cut-ready,cutReady false; source SYNTHETIC_FULLY_SPECIFIED,false SYNTHETIC_FULLY_SPECIFIED,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B01,"D1 vision state shown as BLOCKED_LIVE_VISION (no provider bound), never presented as live",PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B02,D2 uploaded picture is listed with its role,PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B03,D3 re-uploading the same picture is refused (duplicate guard) — still one asset,PASS,"{""toast"":""""}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B04,"D4 suggestion labelled MOCK (text only), not live vision",PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B05,D5 measurement questions show the start→end landmark definition,PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B06,D6 tolerance saved only where the owner typed it (CHEST ±1; others stay NO_TOLERANCE),PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B07,D7 owner description editor saves AR+EN as OWNER_ASSERTION,PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B08,D8 pattern panel: BLOCKED_PATTERN_INPUTS with back-view and seam-allowance gaps in Arabic,PASS,"{""ready"":""BLOCKED_PATTERN_INPUTS""}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B09,D9 an implausible seam allowance (100 mm) is rejected by the server and not stored,PASS,"{""toast"":""""}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B10,"D10 preview: back marked UNOBSERVABLE / REQUIRES_REVIEW, owner description, sign-off table",PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B11,D11 PDF download in this container answers 503 PDF_ENGINE_UNAVAILABLE (local Chrome cannot start as root) — no HTML passed off as PDF,PASS,"{""status"":503,""code"":""PDF_ENGINE_UNAVAILABLE""}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B12,D12 no JavaScript errors on the desktop journey,PASS,"{""errors"":[]}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B13,M1 khimar asks a weight band and the opening length (zip driver); no S/M/L list,PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B14,M2 no horizontal page overflow at 390 px,PASS,"{""overflowPx"":0}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B15,M3 no JavaScript errors on the mobile journey,PASS,"{""errors"":[]}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B16,"P1 JK003_R1_DRAFT: A4 (595×842 pt), multi-page",PASS,"{""pages"":9}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B17,P2 JK003_R1_DRAFT: Arabic + Latin fonts embedded,PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B18,P3 JK003_R1_DRAFT: no blank page (ink coverage per page),PASS,"{""ink"":[13.32,3.67,1.64,4.26,1.57,2.28,2.55,4.67,3.16]}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B19,"P4 JK003_R1_DRAFT: back-review box, sign-off roles and DRAFT marking present in the PDF text",PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B20,"P5 JK003_R1_DRAFT: no zipper invented in the BOM, NO_TOLERANCE where unknown, pattern BLOCKED_PATTERN_INPUTS",PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B21,"P1 KHIMAR0004_R1_DRAFT: A4 (595×842 pt), multi-page",PASS,"{""pages"":8}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B22,P2 KHIMAR0004_R1_DRAFT: Arabic + Latin fonts embedded,PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B23,P3 KHIMAR0004_R1_DRAFT: no blank page (ink coverage per page),PASS,"{""ink"":[12.71,3.92,1.34,4.11,1.9,1.96,4.51,3.12]}",PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B24,"P4 KHIMAR0004_R1_DRAFT: back-review box, sign-off roles and DRAFT marking present in the PDF text",PASS,,PASS
+w01_browser_and_pdf (local wrangler dev),BROWSER_PDF,B25,"P5 KHIMAR0004_R1_DRAFT: weight bands, concealed zipper, no invented consumption or GSM",PASS,,PASS
