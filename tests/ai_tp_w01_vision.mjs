@@ -6,7 +6,8 @@ import {createHash} from 'node:crypto';
 import {makeHarness,ok} from './test_helpers.mjs';
 import {syntheticGarmentPng} from './techpack_fixtures.mjs';
 import {BLIND_PROMPT,WORKERS_AI_VISION_MODEL,mapVisionError} from '../src/garment_intake.js';
-import {imageDimensions,stripJpegMetadata} from '../src/image_guard.js';
+import {imageDimensions,stripJpegMetadata,stripWebpMetadata} from '../src/image_guard.js';
+import {crc32} from 'node:zlib';
 const h=makeHarness(),{call,db,env}=h;await h.login();
 const org=(await call('/api/me')).data.workspaces.find(w=>w.code==='MOHSEN'),ts0=new Date().toISOString();
 const row=(area,id,scenario,expected,actual,pass)=>{console.log('MATRIX '+JSON.stringify({area,id,scenario,expected,actual,verdict:pass?'PASS':'FAIL'}));ok(pass,`${id} ${scenario}`);};
@@ -102,5 +103,16 @@ const png=(w,hgt)=>{const b=Buffer.from(syntheticGarmentPng(40,40));b.writeUInt3
  const vp8x=Buffer.alloc(30);vp8x.write('RIFF',0);vp8x.writeUInt32LE(22,4);vp8x.write('WEBP',8);vp8x.write('VP8X',12);vp8x.writeUInt32LE(10,16);vp8x.writeUIntLE(1199,24,3);vp8x.writeUIntLE(799,27,3);
  const d=imageDimensions('image/webp',vp8x);row(U,'W-U06','WebP VP8X header parsing','1200×800',`${d.width}x${d.height}`,d.width===1200&&d.height===800);
  const nojpeg=stripJpegMetadata(Buffer.from('not a jpeg'));row(U,'W-U07','metadata strip on non-JPEG input','bytes unchanged, nothing removed',`${nojpeg.removed}`,nojpeg.removed===0);
+{const chunk=(type,data)=>{const t=Buffer.from(type,'latin1'),len=Buffer.alloc(4),crc=Buffer.alloc(4);len.writeUInt32BE(data.length);crc.writeUInt32BE(crc32(Buffer.concat([t,data])));return Buffer.concat([len,t,data,crc]);};
+ const base=syntheticGarmentPng(120,150,[90,20,20]),png=Buffer.concat([base.subarray(0,33),chunk('eXIf',Buffer.from('MM\0*GPSLatitude=24.7136')),chunk('tEXt',Buffer.from('Author\0device-serial-123')),base.subarray(33)]);
+ const sid=await newStyle('PNGMETA'),u=await upload(sid,png,'image/png','meta.png'),row2=db.prepare('SELECT stored_name FROM assets WHERE id=?').get(u.data.id),stored=Buffer.from(await (await env.UPLOADS.get(row2.stored_name)).arrayBuffer());
+ row(U,'W-U10','PNG eXIf / tEXt metadata (GPS, device serial) stripped on upload','201; 2 segments removed; stored bytes contain no GPS/serial and equal the original image chunks; dimensions intact',`${u.r.status} removed=${u.data.metadataSegmentsRemoved} ${u.data.width}×${u.data.height}`,
+   u.r.status===201&&u.data.metadataSegmentsRemoved===2&&!stored.includes('GPSLatitude')&&!stored.includes('device-serial')&&stored.equals(base)&&u.data.width===120);
+ const le=(n)=>{const b=Buffer.alloc(4);b.writeUInt32LE(n);return b;},ch=(id,data)=>Buffer.concat([Buffer.from(id,'latin1'),le(data.length),data,data.length&1?Buffer.alloc(1):Buffer.alloc(0)]);
+ const vp8x=Buffer.alloc(10);vp8x[0]=0x08|0x04;vp8x.writeUIntLE(199,4,3);vp8x.writeUIntLE(99,7,3);
+ const body=Buffer.concat([Buffer.from('WEBP'),ch('VP8X',vp8x),ch('EXIF',Buffer.from('GPS 24.71,46.67')),ch('XMP ',Buffer.from('<x:xmpmeta/>')),ch('VP8L',Buffer.from([0x2f,0,0,0,0]))]),webp=Buffer.concat([Buffer.from('RIFF'),le(body.length),body]);
+ const w=stripWebpMetadata(new Uint8Array(webp)),wb=Buffer.from(w.bytes),dims=imageDimensions('image/webp',w.bytes);
+ row(U,'W-U11','WebP EXIF / XMP chunks stripped; RIFF size and VP8X flags rewritten','2 removed; no GPS text; RIFF size = file-8; EXIF/XMP flags cleared; 200×100 kept',`removed=${w.removed} riff=${wb.readUInt32LE(4)}/${wb.length-8} flags=${wb[20]} ${dims.width}×${dims.height}`,
+   w.removed===2&&!wb.includes('GPS')&&wb.readUInt32LE(4)===wb.length-8&&(wb[20]&0x0c)===0&&dims.width===200&&dims.height===100);}
  const unauth=await call('/uploads/'+db.prepare('SELECT stored_name FROM assets WHERE id=?').get(r4.data.id).stored_name,{cookieOverride:''});row(U,'W-U08','private object fetched without a session (guessing the key)','401; objects are only served through the authenticated route',`${unauth.r.status}`,unauth.r.status===401);
  const cross=await call('/uploads/'+db.prepare('SELECT stored_name FROM assets WHERE id=?').get(r4.data.id).stored_name,{cookieOverride:outC});row(U,'W-U09','other-tenant user fetches our private image by key','403',`${cross.r.status}`,cross.r.status===403);}
