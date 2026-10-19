@@ -8,7 +8,8 @@ export function pdfEngineStatus(env){return env&&env.BROWSER&&typeof env.BROWSER
 // Renders the given HTML to PDF bytes (Uint8Array). Page size comes from the document's CSS @page rule.
 export async function renderPdf(env,{html,headerTemplate='<span></span>',footerTemplate='<span></span>',timeoutMs=60000}){
   if(!pdfEngineStatus(env).available)throw new PdfEngineUnavailable('Browser Rendering binding BROWSER is not configured');
-  const acq=await env.BROWSER.fetch(`${FAKE_HOST}/v1/devtools/browser`,{method:'POST'});const acqText=await acq.text();
+  // A binding that throws while starting a browser (quota, local Chrome launch failure) is an unavailable engine, not a 500.
+  let acq,acqText;try{acq=await env.BROWSER.fetch(`${FAKE_HOST}/v1/devtools/browser`,{method:'POST'});acqText=await acq.text();}catch(e){console.error('pdf_engine_acquire_failed',e?.message);throw new PdfEngineUnavailable('Browser session could not be acquired');}
   if(acq.status!==200)throw new PdfEngineUnavailable(`Browser session could not be acquired (${acq.status})`);
   const {sessionId}=JSON.parse(acqText);
   const up=await env.BROWSER.fetch(`${FAKE_HOST}/v1/devtools/browser/${sessionId}`,{headers:{Upgrade:'websocket'}});

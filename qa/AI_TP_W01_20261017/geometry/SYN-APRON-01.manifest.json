@@ -1,0 +1,68 @@
+{
+ "contract": "SEHHA_PATTERN_GEOMETRY_PROTOTYPE/1",
+ "id": "SYN-APRON-01",
+ "source": "SYNTHETIC_FULLY_SPECIFIED",
+ "unit": "mm",
+ "scale": "1:1",
+ "cutReady": false,
+ "note": "Prototype export of explicitly specified synthetic geometry. Not derived from images; not a validated drafting result; never cut-ready.",
+ "pieces": [
+  {
+   "code": "BODY",
+   "name": "Apron body",
+   "cutQty": 1,
+   "mirrored": false,
+   "fabric": "SHELL",
+   "seamAllowanceMm": [
+    25,
+    10,
+    10,
+    10
+   ],
+   "sewAreaMm2": 280000,
+   "cutAreaMm2": 310424.31,
+   "sewPerimeterMm": 2214.214,
+   "cutPerimeterMm": 2329.616,
+   "cutWidthMm": 527.346,
+   "cutHeightMm": 735
+  },
+  {
+   "code": "POCKET",
+   "name": "Patch pocket",
+   "cutQty": 1,
+   "mirrored": false,
+   "fabric": "SHELL",
+   "seamAllowanceMm": [
+    10,
+    10,
+    25,
+    10
+   ],
+   "sewAreaMm2": 36000,
+   "cutAreaMm2": 47300,
+   "sewPerimeterMm": 760,
+   "cutPerimeterMm": 870,
+   "cutWidthMm": 220,
+   "cutHeightMm": 215
+  },
+  {
+   "code": "TIE",
+   "name": "Waist tie",
+   "cutQty": 2,
+   "mirrored": false,
+   "fabric": "SHELL",
+   "seamAllowanceMm": [
+    10,
+    10,
+    10,
+    10
+   ],
+   "sewAreaMm2": 54000,
+   "cutAreaMm2": 73600,
+   "sewPerimeterMm": 1920,
+   "cutPerimeterMm": 2000,
+   "cutWidthMm": 920,
+   "cutHeightMm": 80
+  }
+ ]
+}

@@ -84,14 +84,14 @@ let abaya;{abaya=await newStyle('ABY','Synthetic abaya 0004-style');await analyz
 // ---- Live provider plumbing (stubbed transport; NOT live inference) ----
 {const id=await newStyle('LIV','Live plumbing');const asset=await upload(id);
  const r0=await analyze(id,{assetIds:[asset],provider:'anthropic'});row(V,'TP-V07','explicit live provider without a key','503 BLOCKED_LIVE_VISION; intake untouched',`${r0.r.status} ${r0.data.code}`,r0.r.status===503&&r0.data.code==='BLOCKED_LIVE_VISION'&&!db.prepare('SELECT 1 x FROM garment_intakes WHERE style_id=?').get(id));
- const realFetch=globalThis.fetch;env.ANTHROPIC_API_KEY='test-key-not-real';let sent=null;
+ const realFetch=globalThis.fetch;env.ANTHROPIC_API_KEY='test-key-not-real';env.VISION_MIN_INTERVAL_S='0';let sent=null;
  try{globalThis.fetch=async(url,init)=>{sent={url:String(url),body:JSON.parse(init.body)};return new Response(JSON.stringify({model:'stub-model',content:[{type:'text',text:'{"category":"JACKET","confidence":"HIGH","approve":true}'}]}),{status:200});};
    const r1=await analyze(id,{assetIds:[asset]});const fr=db.prepare("SELECT status,error_text FROM ai_runs WHERE style_id=? ORDER BY created_at DESC LIMIT 1").get(id);
    row(V,'TP-V08','provider returns drifted JSON (extra "approve" field)','502 VISION_SCHEMA_DRIFT; ai_run FAILED; nothing applied',`${r1.r.status} ${r1.data.code} run=${fr.status}`,r1.r.status===502&&r1.data.code==='VISION_SCHEMA_DRIFT'&&fr.status==='FAILED'&&!db.prepare('SELECT 1 x FROM garment_intakes WHERE style_id=?').get(id));
    globalThis.fetch=async(url,init)=>{sent={url:String(url),body:JSON.parse(init.body)};return new Response(JSON.stringify({model:'stub-model',content:[{type:'text',text:JSON.stringify({category:'JACKET',confidence:'MEDIUM',alternatives:[],views:[{assetId:asset,view:'FRONT'}],details:[{key:'closure',valueAr:'أزرار',valueEn:'buttons',evidence:'OBSERVED'}],unseen:['back'],descriptionAr:'جاكيت',descriptionEn:'jacket',warnings:[]})}]}),{status:200});};
    const r2=await analyze(id,{assetIds:[asset]});const img=sent.body.messages[0].content.find(c=>c.type==='image');
    row(V,'TP-V09','adapter plumbing with a stubbed Anthropic transport','image sent as base64 block; validated result stored with mode LIVE + model + input hash (transport stubbed: not a live inference claim)',`${r2.r.status} ${r2.data.run?.mode} ${r2.data.run?.model}`,r2.r.status===200&&r2.data.run.mode==='LIVE'&&r2.data.run.model==='stub-model'&&img?.source?.type==='base64'&&r2.data.run.inputHashes.length===1&&r2.data.intake.category_source==='AI_HYPOTHESIS');}
- finally{globalThis.fetch=realFetch;delete env.ANTHROPIC_API_KEY;}}
+ finally{globalThis.fetch=realFetch;delete env.ANTHROPIC_API_KEY;delete env.VISION_MIN_INTERVAL_S;}}
 // ---- Quantity matrix + material requirement (never invented) ----
 {const id=await newStyle('QTY','Quantity matrix');await analyze(id,{ownerNotes:'jacket'});await setCat(id,'JACKET');
  const r=await answer(id,{quantityMatrix:{sizes:['M','L'],colors:['Charcoal'],cells:{'M|Charcoal':50,'L|Charcoal':70}}});const t=await call(`/api/styles/${id}/techpack/revisions`,{method:'POST',body:{}}),s=JSON.parse(db.prepare('SELECT snapshot_json FROM techpack_documents WHERE style_id=? AND revision_no=?').get(id,t.data.revisionNo).snapshot_json);

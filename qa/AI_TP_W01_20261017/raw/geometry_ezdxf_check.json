@@ -1,0 +1,37 @@
+{
+ "ezdxf": "1.4.2",
+ "dxfversion": "AC1009",
+ "insunits": 4,
+ "closed_all": true,
+ "cut": 3,
+ "sew": 3,
+ "pieces": [
+  {
+   "piece": "BODY",
+   "cutW": 527.346,
+   "cutH": 735.0,
+   "cutArea": 310424.3,
+   "sewArea": 280000.0,
+   "matchesManifest": true
+  },
+  {
+   "piece": "POCKET",
+   "cutW": 220.0,
+   "cutH": 215.0,
+   "cutArea": 47300.0,
+   "sewArea": 36000.0,
+   "matchesManifest": true
+  },
+  {
+   "piece": "TIE",
+   "cutW": 920.0,
+   "cutH": 80.0,
+   "cutArea": 73600.0,
+   "sewArea": 54000.0,
+   "matchesManifest": true
+  }
+ ],
+ "svg_mm_1to1": true,
+ "svg_cut_ready": "false",
+ "PASS": true
+}

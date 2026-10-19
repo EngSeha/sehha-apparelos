@@ -1,0 +1,31 @@
+
+> sehha-apparelos-cloudflare-preview-21-0@0.21.0 test
+> node tests/run_all.mjs
+
+test:ai-techpack: PASS (68 assertions)
+test:ai-tp-w01: PASS (82 assertions)
+test:asset-security: PASS (9 assertions)
+test:batch04: PASS (30 assertions)
+test:batch05: PASS (57 assertions)
+test:batch06: PASS (55 assertions)
+test:batch07: PASS (35 assertions)
+test:batch08: PASS (43 assertions)
+test:batch09: PASS (25 assertions)
+test:batch10: PASS (26 assertions)
+test:batch11: PASS (10 assertions)
+test:batch12: PASS (7 assertions)
+test:batch13: PASS (16 assertions)
+test:batch14: PASS (16 assertions)
+test:batch15: PASS (14 assertions)
+test:batch16: PASS (15 assertions)
+test:batch17: PASS (17 assertions)
+test:batch18: PASS (14 assertions)
+test:batch19: PASS (11 assertions)
+test:batch20: PASS (10 assertions)
+test:batch21: PASS (20 assertions)
+test:engineering: PASS (35 assertions)
+test:human: PASS (30 assertions)
+test:human-qc: PASS (17 assertions)
+test:human-store: PASS (19 assertions)
+test:upgrade-main: PASS (8 assertions)
+ALL_TESTS_PASS suites=26 assertions=689

@@ -9,7 +9,7 @@
     "tail": "wrangler tail",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
-    "check": "node --check src/worker.js && node --check src/human_experience.js && node --check src/human_qc.js && node --check src/human_store.js && node --check src/engineering.js && node --check src/spreadsheet_adapter.js && node --check src/techpack_composer.js && node --check src/garment_intake.js && node --check src/techpack_pdf.js && node --check src/pdf_engine.js && node --check public/app.js && node --check public/techpack_ui.js && node --check public/human_ui.js && node --check public/human_language.js",
+    "check": "node --check src/worker.js && node --check src/human_experience.js && node --check src/human_qc.js && node --check src/human_store.js && node --check src/engineering.js && node --check src/spreadsheet_adapter.js && node --check src/techpack_composer.js && node --check src/garment_intake.js && node --check src/image_guard.js && node --check src/pattern_geometry.js && node --check src/techpack_pdf.js && node --check src/pdf_engine.js && node --check public/app.js && node --check public/techpack_ui.js && node --check public/human_ui.js && node --check public/human_language.js",
     "test": "node tests/run_all.mjs",
     "test:batch04": "node tests/batch04_integration.mjs",
     "test:batch05": "node tests/batch05_integration.mjs",
@@ -35,7 +35,8 @@
     "test:engineering": "node tests/engineering_foundation.mjs",
     "test:human": "node tests/human_experience.mjs",
     "test:human-qc": "node tests/human_qc.mjs",
-    "test:human-store": "node tests/human_store.mjs"
+    "test:human-store": "node tests/human_store.mjs",
+    "test:ai-tp-w01": "node tests/ai_tp_w01_vision.mjs && node tests/ai_tp_w01_engine.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.45.0"

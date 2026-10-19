@@ -25,3 +25,13 @@ export const SYNTH_SHIRT={code:'SYN-SHIRT-01',name:'Synthetic test shirt',ownerN
 export function longRows(n){return {pom:Array.from({length:n},(_,i)=>({code:`X${String(i+1).padStart(2,'0')}`,name:`قياس إضافي رقم ${i+1} من الكتف حتى نقطة مرجعية`,nameEn:`Additional point of measure ${i+1} from shoulder to reference`,value:20+i,tolerancePlus:0.5,toleranceMinus:0.5,provenance:'OWNER_SUPPLIED',state:'DRAFT'})),
   bom:Array.from({length:n},(_,i)=>({code:`B${String(i+1).padStart(2,'0')}`,category:i%3?'TRIM':'FABRIC',name:`خامة اختبار ${i+1}`,nameEn:`Test material ${i+1}`,specification:'مواصفة تركيبية للاختبار',specificationEn:'Synthetic test specification',qty:1+i/10,unit:i%3?'pcs':'m',status:'DRAFT',provenance:'OWNER_SUPPLIED'})),
   ops:Array.from({length:n},(_,i)=>({seq:(i+1)*10,name:`عملية اختبار ${i+1}`,nameEn:`Test operation ${i+1}`,machine:'SNLS',stitch:'301',qcPoint:`فحص ${i+1}`,qcPointEn:`Check ${i+1}`,state:'DRAFT',provenance:'OWNER_SUPPLIED'}))};}
+// Garment 0004 (khimar) — owner facts only: covered black body, violet/gold embroidery, concealed front zip, weight-band
+// sizing. No measurements were supplied by the owner; tests never invent them. Weight-band labels below are TEST labels.
+export const KHIMAR_0004={code:'0004',name:'Black khimar with violet/gold embroidery',ownerNotes:'خمار أسود مغطى بتطريز بنفسجي وذهبي، سوستة أمامية مخفية، مقاسات بفئات الوزن',
+  specs:{closure:'CONCEALED_ZIP',head_piece:'ATTACHED',embroidery:'تطريز بنفسجي وذهبي حول الوجه والأكمام / violet and gold embroidery (thread colours to be approved from a sample)'},testWeightBands:['WB-TEST-1','WB-TEST-2']};
+// SYNTHETIC fully specified garment for the geometry prototype (apron). Every coordinate, allowance, grain and quantity is
+// explicit test data in millimetres; nothing is derived from an image or a measurement chart.
+export const SYNTH_APRON={id:'SYN-APRON-01',source:'SYNTHETIC_FULLY_SPECIFIED',unit:'mm',pieces:[
+  {code:'BODY',name:'Apron body',polygon:[[0,0],[500,0],[400,700],[100,700]],seamAllowanceMm:[25,10,10,10],cutQty:1,mirrored:false,fabric:'SHELL',grainline:[[250,100],[250,600]],notches:[{edge:2,t:0.5},{edge:0,t:0.5}]},
+  {code:'POCKET',name:'Patch pocket',polygon:[[0,0],[200,0],[200,180],[0,180]],seamAllowanceMm:[10,10,25,10],cutQty:1,mirrored:false,fabric:'SHELL',grainline:[[100,30],[100,150]]},
+  {code:'TIE',name:'Waist tie',polygon:[[0,0],[900,0],[900,60],[0,60]],seamAllowanceMm:10,cutQty:2,mirrored:false,fabric:'SHELL',grainline:[[100,30],[800,30]]}]};

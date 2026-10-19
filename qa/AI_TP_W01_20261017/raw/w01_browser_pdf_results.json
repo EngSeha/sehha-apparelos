@@ -1,0 +1,162 @@
+{
+ "base": "http://127.0.0.1:8800",
+ "styles": {
+  "jk": "sty_cd9cd00edba0efb4b3d562db",
+  "kh": "sty_44449b45ffb2ffd4042c2bcc"
+ },
+ "results": [
+  {
+   "check": "D1 vision state shown as BLOCKED_LIVE_VISION (no provider bound), never presented as live",
+   "result": "PASS"
+  },
+  {
+   "check": "D2 uploaded picture is listed with its role",
+   "result": "PASS"
+  },
+  {
+   "check": "D3 re-uploading the same picture is refused (duplicate guard) — still one asset",
+   "result": "PASS",
+   "detail": {
+    "toast": ""
+   }
+  },
+  {
+   "check": "D4 suggestion labelled MOCK (text only), not live vision",
+   "result": "PASS"
+  },
+  {
+   "check": "D5 measurement questions show the start→end landmark definition",
+   "result": "PASS"
+  },
+  {
+   "check": "D6 tolerance saved only where the owner typed it (CHEST ±1; others stay NO_TOLERANCE)",
+   "result": "PASS"
+  },
+  {
+   "check": "D7 owner description editor saves AR+EN as OWNER_ASSERTION",
+   "result": "PASS"
+  },
+  {
+   "check": "D8 pattern panel: BLOCKED_PATTERN_INPUTS with back-view and seam-allowance gaps in Arabic",
+   "result": "PASS",
+   "detail": {
+    "ready": "BLOCKED_PATTERN_INPUTS"
+   }
+  },
+  {
+   "check": "D9 an implausible seam allowance (100 mm) is rejected by the server and not stored",
+   "result": "PASS",
+   "detail": {
+    "toast": ""
+   }
+  },
+  {
+   "check": "D10 preview: back marked UNOBSERVABLE / REQUIRES_REVIEW, owner description, sign-off table",
+   "result": "PASS"
+  },
+  {
+   "check": "D11 PDF download in this container answers 503 PDF_ENGINE_UNAVAILABLE (local Chrome cannot start as root) — no HTML passed off as PDF",
+   "result": "PASS",
+   "detail": {
+    "status": 503,
+    "code": "PDF_ENGINE_UNAVAILABLE"
+   }
+  },
+  {
+   "check": "D12 no JavaScript errors on the desktop journey",
+   "result": "PASS",
+   "detail": {
+    "errors": []
+   }
+  },
+  {
+   "check": "M1 khimar asks a weight band and the opening length (zip driver); no S/M/L list",
+   "result": "PASS"
+  },
+  {
+   "check": "M2 no horizontal page overflow at 390 px",
+   "result": "PASS",
+   "detail": {
+    "overflowPx": 0
+   }
+  },
+  {
+   "check": "M3 no JavaScript errors on the mobile journey",
+   "result": "PASS",
+   "detail": {
+    "errors": []
+   }
+  },
+  {
+   "check": "P1 JK003_R1_DRAFT: A4 (595×842 pt), multi-page",
+   "result": "PASS",
+   "detail": {
+    "pages": 9
+   }
+  },
+  {
+   "check": "P2 JK003_R1_DRAFT: Arabic + Latin fonts embedded",
+   "result": "PASS"
+  },
+  {
+   "check": "P3 JK003_R1_DRAFT: no blank page (ink coverage per page)",
+   "result": "PASS",
+   "detail": {
+    "ink": [
+     13.32,
+     3.67,
+     1.64,
+     4.26,
+     1.57,
+     2.28,
+     2.55,
+     4.67,
+     3.16
+    ]
+   }
+  },
+  {
+   "check": "P4 JK003_R1_DRAFT: back-review box, sign-off roles and DRAFT marking present in the PDF text",
+   "result": "PASS"
+  },
+  {
+   "check": "P5 JK003_R1_DRAFT: no zipper invented in the BOM, NO_TOLERANCE where unknown, pattern BLOCKED_PATTERN_INPUTS",
+   "result": "PASS"
+  },
+  {
+   "check": "P1 KHIMAR0004_R1_DRAFT: A4 (595×842 pt), multi-page",
+   "result": "PASS",
+   "detail": {
+    "pages": 8
+   }
+  },
+  {
+   "check": "P2 KHIMAR0004_R1_DRAFT: Arabic + Latin fonts embedded",
+   "result": "PASS"
+  },
+  {
+   "check": "P3 KHIMAR0004_R1_DRAFT: no blank page (ink coverage per page)",
+   "result": "PASS",
+   "detail": {
+    "ink": [
+     12.71,
+     3.92,
+     1.34,
+     4.11,
+     1.9,
+     1.96,
+     4.51,
+     3.12
+    ]
+   }
+  },
+  {
+   "check": "P4 KHIMAR0004_R1_DRAFT: back-review box, sign-off roles and DRAFT marking present in the PDF text",
+   "result": "PASS"
+  },
+  {
+   "check": "P5 KHIMAR0004_R1_DRAFT: weight bands, concealed zipper, no invented consumption or GSM",
+   "result": "PASS"
+  }
+ ]
+}

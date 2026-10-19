@@ -1,0 +1,8 @@
+category,label_en,label_ar,blind_prompt_value,sizing,sizes,approval_critical_pom,conditional_pom,pattern_only_pom,specs_critical,components,bom_skeleton,ops_skeleton,owner_confirmation_required
+JACKET,Jacket,جاكيت,jacket,APPAREL,XS S M L XL XXL,BODY_LENGTH CHEST BACK_WIDTH SLEEVE_LENGTH SLEEVE_WIDTH SLEEVE_OPENING,WAIST(fit=FITTED),SHOULDER ARMHOLE NECK_WIDTH BACK_LENGTH BUTTON_START,fit closure lining,Fronts (L/R) | Back | Sleeves | Collar | Facing | Lining (if any),SHELL INTERFACING THREAD LABEL,8,YES
+TROUSERS,Trousers,بنطلون,trousers,APPAREL,28 30 32 34 36 38 40,WAIST HIP FRONT_RISE BACK_RISE THIGH INSEAM LEG_OPENING,,OUTSEAM KNEE WAISTBAND_HEIGHT,closure,Fronts | Backs | Waistband | Pockets | Fly,SHELL POCKETING THREAD LABEL,7,YES
+SHIRT,Shirt,قميص,shirt,APPAREL,XS S M L XL XXL,BODY_LENGTH CHEST SHOULDER SLEEVE_LENGTH COLLAR,,CUFF ARMHOLE NECK_WIDTH,collar,Fronts | Back | Yoke | Sleeves | Collar and stand | Cuffs,SHELL INTERFACING BUTTONS THREAD,7,YES
+DRESS,Dress,فستان,dress,APPAREL,XS S M L XL XXL,BODY_LENGTH CHEST WAIST HIP,,SHOULDER WAIST_POSITION ARMHOLE,closure lining,Front bodice | Back bodice | Skirt | Sleeves (if any),SHELL THREAD LABEL,7,YES
+ABAYA_KHIMAR,Abaya / Khimar,عباية / خمار,abaya_khimar,WEIGHT_BANDS,weight bands (owner-entered),LENGTH WIDTH SLEEVE_LENGTH OPENING,,HEM_WIDTH ARMHOLE FACE_OPENING,closure weight_band,Front body | Back body | Sleeves | Head piece / khimar | Opening facing,SHELL ZIP THREAD,6,YES
+OTHER,Other (manual),أخرى (يدوي),other,APPAREL,XS S M L XL XXL,LENGTH WIDTH,,,garment_name,,SHELL,0,YES
+UNKNOWN,Unknown,غير معروف,unknown,—,—,—,—,—,—,—,—,—,YES (owner must choose)

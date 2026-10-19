@@ -1,0 +1,79 @@
+MATRIX {"area":"ENGINE","id":"E-B01","scenario":"every point of measure carries a start→end landmark definition (AR+EN)","expected":"0 POM without a definition","actual":"48 POM, 0 without: ","verdict":"PASS"}
+PASS E-B01 every point of measure carries a start→end landmark definition (AR+EN)
+MATRIX {"area":"ENGINE","id":"E-B02","scenario":"pattern-only POM are not approval-critical","expected":"JACKET pattern-only = SHOULDER,ARMHOLE,NECK_WIDTH,BACK_LENGTH,BUTTON_START; none critical","actual":"SHOULDER,ARMHOLE,NECK_WIDTH,BACK_LENGTH,BUTTON_START","verdict":"PASS"}
+PASS E-B02 pattern-only POM are not approval-critical
+MATRIX {"area":"ENGINE","id":"E-B03","scenario":"complete approval data: pattern measurements are offered separately and never block","expected":"0 approval groups; patternQuestions = WAIST (fit not FITTED, still needed to draft) + the 5 pattern-only POM","actual":"0 groups · WAIST,SHOULDER,ARMHOLE,NECK_WIDTH,BACK_LENGTH,BUTTON_START","verdict":"PASS"}
+PASS E-B03 complete approval data: pattern measurements are offered separately and never block
+MATRIX {"area":"ENGINE","id":"E-B04","scenario":"explicit tolerance is stored; missing tolerance stays empty (NO_TOLERANCE)","expected":"CHEST ±1; BACK_WIDTH null/null","actual":"200 CHEST 1/1 BACK_WIDTH null/null","verdict":"PASS"}
+PASS E-B04 explicit tolerance is stored; missing tolerance stays empty (NO_TOLERANCE)
+MATRIX {"area":"ENGINE","id":"E-B05","scenario":"implausible tolerance rejected","expected":"400","actual":"400 CHEST tolPlus must be a number between 0 and 20","verdict":"PASS"}
+PASS E-B05 implausible tolerance rejected
+MATRIX {"area":"ENGINE","id":"E-B06","scenario":"owner edits the bilingual technical description","expected":"stored as OWNER_ASSERTION with AR and EN","actual":"200 OWNER_ASSERTION true true","verdict":"PASS"}
+PASS E-B06 owner edits the bilingual technical description
+MATRIX {"area":"ENGINE","id":"E-B07","scenario":"non-text description rejected","expected":"400","actual":"400","verdict":"PASS"}
+PASS E-B07 non-text description rejected
+MATRIX {"area":"ENGINE","id":"E-B08","scenario":"JK-003 component provenance from a single REFERENCE photo + owner facts","expected":"Fronts GEOMETRIC_RULE (no tagged front view), Back GEOMETRIC_RULE + BACK_UNOBSERVED note, Lining OWNER_ASSERTION, Collar OWNER_ASSERTION, sleeves pair","actual":"Fronts (L/R):GEOMETRIC_RULE | Back:GEOMETRIC_RULE(BACK_UNOBSERVED_SHAPE_REQUIRES_REVIEW) | Sleeves:GEOMETRIC_RULE | Collar:OWNER_ASSERTION | Facing:ENGINEERING_PROPOSAL | Lining (if any):OWNER_ASSERTION","verdict":"PASS"}
+PASS E-B08 JK-003 component provenance from a single REFERENCE photo + owner facts
+MATRIX {"area":"ENGINE","id":"E-B09","scenario":"live classification evidence maps to VISIBLE / ENGINEERING_PROPOSAL; unseen lining stays UNVERIFIED","expected":"Fronts VISIBLE, Collar VISIBLE, Lining UNVERIFIED, Back GEOMETRIC_RULE","actual":"{\"Fronts (L/R)\":\"VISIBLE\",\"Back\":\"GEOMETRIC_RULE\",\"Sleeves\":\"GEOMETRIC_RULE\",\"Collar\":\"VISIBLE\",\"Facing\":\"ENGINEERING_PROPOSAL\",\"Lining (if any)\":\"UNVERIFIED\"}","verdict":"PASS"}
+PASS E-B09 live classification evidence maps to VISIBLE / ENGINEERING_PROPOSAL; unseen lining stays UNVERIFIED
+MATRIX {"area":"ENGINE","id":"E-B10","scenario":"snapshot POM rows carry definition, requiredFor and explicit tolerance","expected":"CHEST definition + ±1; BUTTON_START is a pattern input with no value","actual":"true 1/1 PATTERN null","verdict":"PASS"}
+PASS E-B10 snapshot POM rows carry definition, requiredFor and explicit tolerance
+MATRIX {"area":"ENGINE","id":"E-B11","scenario":"0004 owner text suggests abaya/khimar (mock, LOW)","expected":"ABAYA_KHIMAR LOW MOCK","actual":"ABAYA_KHIMAR LOW MOCK","verdict":"PASS"}
+PASS E-B11 0004 owner text suggests abaya/khimar (mock, LOW)
+MATRIX {"area":"ENGINE","id":"E-B12","scenario":"0004 asks a weight band (not S/M/L) and the opening length that drives the concealed zip","expected":"baseSize without S/M/L options; pom:OPENING asked; FACE_OPENING offered for the pattern","actual":"Base weight band of the entered values options=0 · LENGTH,WIDTH,SLEEVE_LENGTH,OPENING · pattern HEM_WIDTH,ARMHOLE,FACE_OPENING","verdict":"PASS"}
+PASS E-B12 0004 asks a weight band (not S/M/L) and the opening length that drives the concealed zip
+MATRIX {"area":"ENGINE","id":"E-B13","scenario":"0004 Tech Pack: concealed zip length tied to the opening, embroidery kept as owner text, head piece OWNER_ASSERTION, no consumption invented","expected":"P-ZP concealed; material CONSUMPTION_NOT_CONFIRMED; quantity total 100; sizing WEIGHT_BANDS","actual":"Concealed zipper · Length from the opening measurement · head OWNER_ASSERTION · CONSUMPTION_NOT_CONFIRMED,CONSUMPTION_NOT_CONFIRMED,CONSUMPTION_NOT_CONFIRMED,CONSUMPTION_NOT_CONFIRMED · total 100 · WEIGHT_BANDS","verdict":"PASS"}
+PASS E-B13 0004 Tech Pack: concealed zip length tied to the opening, embroidery kept as owner text, head piece OWNER_ASSERTION, no consumption invented
+MATRIX {"area":"ENGINE","id":"E-B14","scenario":"separation of duties: author cannot approve their own revision when enabled; another approver can","expected":"default 503 (engine step); enabled: author 409 SELF_APPROVAL_FORBIDDEN, other approver reaches the PDF step (503)","actual":"503 · 409 SELF_APPROVAL_FORBIDDEN · 503 PDF_ENGINE_UNAVAILABLE","verdict":"PASS"}
+PASS E-B14 separation of duties: author cannot approve their own revision when enabled; another approver can
+MATRIX {"area":"TECHPACK","id":"E-C01","scenario":"rendered HTML carries its own CSP (no network, no script) in addition to the response header","expected":"meta CSP default-src none; header present","actual":"true true","verdict":"PASS"}
+PASS E-C01 rendered HTML carries its own CSP (no network, no script) in addition to the response header
+MATRIX {"area":"TECHPACK","id":"E-C02","scenario":"no back photo: the back is shown as UNOBSERVABLE / REQUIRES_REVIEW, never drawn","expected":"back box present","actual":"true","verdict":"PASS"}
+PASS E-C02 no back photo: the back is shown as UNOBSERVABLE / REQUIRES_REVIEW, never drawn
+MATRIX {"area":"TECHPACK","id":"E-C03","scenario":"manual sign-off table for DESIGN / PATTERN / PRODUCTION / QC, stated as not a digital signature","expected":"4 roles + disclaimer","actual":"DESIGN,PATTERN,PRODUCTION,QC","verdict":"PASS"}
+PASS E-C03 manual sign-off table for DESIGN / PATTERN / PRODUCTION / QC, stated as not a digital signature
+MATRIX {"area":"TECHPACK","id":"E-C04","scenario":"owner description is printed before (and separate from) the recognition hypothesis","expected":"owner block first","actual":"7295 < 8050","verdict":"PASS"}
+PASS E-C04 owner description is printed before (and separate from) the recognition hypothesis
+MATRIX {"area":"TECHPACK","id":"E-C05","scenario":"with a TECHNICAL_BACK photo the back reference shows the image and Back becomes VISIBLE","expected":"no UNOBSERVABLE box; Back VISIBLE; views.back true","actual":"false VISIBLE true","verdict":"PASS"}
+PASS E-C05 with a TECHNICAL_BACK photo the back reference shows the image and Back becomes VISIBLE
+MATRIX {"area":"TECHPACK","id":"E-C06","scenario":"R2 put fails during approval","expected":"503 PDF_STORAGE_FAILED; revision stays DRAFT; no object","actual":"503 PDF_STORAGE_FAILED DRAFT objects=0","verdict":"PASS"}
+PASS E-C06 R2 put fails during approval
+MATRIX {"area":"TECHPACK","id":"E-C07","scenario":"D1 write fails after the PDF was stored","expected":"503 APPROVAL_WRITE_FAILED; stored object removed; still DRAFT","actual":"503 APPROVAL_WRITE_FAILED DRAFT objects=0","verdict":"PASS"}
+PASS E-C07 D1 write fails after the PDF was stored
+MATRIX {"area":"TECHPACK","id":"E-C08","scenario":"approval succeeds once; a concurrent loser (stale DRAFT read) loses the compare-and-set and its object is deleted","expected":"winner APPROVED with 2 pages; loser replayed; exactly one object = winner key; one APPROVE audit","actual":"200 APPROVED pages=2 · loser 200 replayed=true · objects 1","verdict":"PASS"}
+PASS E-C08 approval succeeds once; a concurrent loser (stale DRAFT read) loses the compare-and-set and its object is deleted
+MATRIX {"area":"TECHPACK","id":"E-C09","scenario":"approved PDF is served from the frozen R2 bytes (no re-render)","expected":"200 APPROVED, x-pdf-sha256 = stored hash","actual":"200 APPROVED","verdict":"PASS"}
+PASS E-C09 approved PDF is served from the frozen R2 bytes (no re-render)
+MATRIX {"area":"TECHPACK","id":"E-C10","scenario":"storage reconciliation on a consistent style","expected":"consistent, 1 approved, 0 orphans","actual":"{\"c\":true,\"a\":1,\"o\":[]}","verdict":"PASS"}
+PASS E-C10 storage reconciliation on a consistent style
+MATRIX {"area":"TECHPACK","id":"E-C11","scenario":"reconciliation reports an orphan object and hash drift","expected":"1 orphan, 1 drift, consistent=false","actual":"1 orphan 1 drift","verdict":"PASS"}
+PASS E-C11 reconciliation reports an orphan object and hash drift
+MATRIX {"area":"TECHPACK","id":"E-C12","scenario":"orphan cleanup is approver-only, audited, and never touches the approved object","expected":"FACTORY_SUPERVISOR 403; cleanup deletes 1; then consistent","actual":"403 · deleted 1 · true","verdict":"PASS"}
+PASS E-C12 orphan cleanup is approver-only, audited, and never touches the approved object
+MATRIX {"area":"TECHPACK","id":"E-C13","scenario":"unexpected internal error in a Tech Pack route is sanitized","expected":"500 INTERNAL_ERROR with a ref; no SQL/path text in the body","actual":"500 INTERNAL_ERROR ref","verdict":"PASS"}
+PASS E-C13 unexpected internal error in a Tech Pack route is sanitized
+MATRIX {"area":"TECHPACK","id":"E-C14","scenario":"browser binding present but the browser cannot start","expected":"503 PDF_ENGINE_UNAVAILABLE (not a generic 500); no launch text leaked","actual":"503 PDF_ENGINE_UNAVAILABLE","verdict":"PASS"}
+PASS E-C14 browser binding present but the browser cannot start
+MATRIX {"area":"PATTERN","id":"E-D01","scenario":"JK-003 pattern readiness is BLOCKED_PATTERN_INPUTS with the exact missing inputs","expected":"BLOCKED; includes BACK_VIEW_UNOBSERVED, SEAM_ALLOWANCES_NOT_CONFIRMED, EASE_RULES_NOT_DEFINED, PATTERN_POM_MISSING:BUTTON_START, GRAINLINE_NOT_CONFIRMED; cutReady false; no DXF/SVG","actual":"BLOCKED_PATTERN_INPUTS · MEASUREMENT_BASIS_MISSING,CRITICAL_POM_MISSING,POM_BASIS_MISSING,POM_BASIS_MISSING:CHEST,POM_BASIS_MISSING:SLEEVE_WIDTH,POM_BASIS_MISSING:SLEEVE_OPENING,PATTERN_POM_MISSING:WAIST,PATTERN_POM_MISSING:SHOULDER,PATTERN_POM_MISSING:ARMHOLE,PATTERN_POM_MISSING:NECK_WIDTH,PATTERN_POM_MISSING:BACK_LENGTH,PATTERN_POM_MISSING:BUTTON_START,EASE_RULES_NOT_DEFINED,SEAM_ALLOWANCES_NOT_CONFIRMED,BASE_BLOCK_NOT_SELECTED,GRAINLINE_NOT_CONFIRMED,BACK_VIEW_UNOBSERVED · cutReady=false dxf=null","verdict":"PASS"}
+PASS E-D01 JK-003 pattern readiness is BLOCKED_PATTERN_INPUTS with the exact missing inputs
+MATRIX {"area":"PATTERN","id":"E-D02","scenario":"piece manifest: mirrored pairs from structure, grain TBC, no geometry","expected":"Fronts/Sleeves cutQty 2 GEOMETRIC_RULE; every grain TBC; geometry null","actual":"Fronts (L/R):2,Back:-,Sleeves:2,Collar:-,Facing:-,Lining (if any):-","verdict":"PASS"}
+PASS E-D02 piece manifest: mirrored pairs from structure, grain TBC, no geometry
+MATRIX {"area":"PATTERN","id":"E-D03","scenario":"invalid pattern inputs rejected","expected":"seam 100 mm 400; ease for a non-jacket POM 400; unknown seam class 400","actual":"400 400 400","verdict":"PASS"}
+PASS E-D03 invalid pattern inputs rejected
+MATRIX {"area":"PATTERN","id":"E-D04","scenario":"complete synthetic inputs: only the back view blocks until a back photo exists; then inputs complete but still not cut-ready","expected":"before: [BACK_VIEW_UNOBSERVED]; after: INPUTS_COMPLETE__DRAFTING_ENGINE_PENDING, cutReady false","actual":"BACK_VIEW_UNOBSERVED → INPUTS_COMPLETE__DRAFTING_ENGINE_PENDING cutReady=false","verdict":"PASS"}
+PASS E-D04 complete synthetic inputs: only the back view blocks until a back photo exists; then inputs complete but still not cut-ready
+MATRIX {"area":"PATTERN","id":"E-D05","scenario":"body-basis measurements require explicit ease (never defaulted)","expected":"EASE_RULES_NOT_DEFINED present","actual":"EASE_RULES_NOT_DEFINED","verdict":"PASS"}
+PASS E-D05 body-basis measurements require explicit ease (never defaulted)
+MATRIX {"area":"GEOMETRY","id":"E-G01","scenario":"geometry writer refuses anything but explicit synthetic geometry","expected":"5 rejections; OWNER_PHOTO → GEOMETRY_SOURCE_NOT_ALLOWED","actual":"OWNER_PHOTO source:GEOMETRY_SOURCE_NOT_ALLOWED | cm unit:GEOMETRY_UNIT_INVALID | self-intersecting outline:GEOMETRY_SPEC_INVALID | missing allowance:GEOMETRY_SPEC_INVALID | no grainline:GEOMETRY_SPEC_INVALID","verdict":"PASS"}
+PASS E-G01 geometry writer refuses anything but explicit synthetic geometry
+MATRIX {"area":"GEOMETRY","id":"E-G02","scenario":"outward offset of a 100×50 mm rectangle by 10 mm","expected":"120×70 mm, corners at (-10,-10)","actual":"120×70 [-10,-10]","verdict":"PASS"}
+PASS E-G02 outward offset of a 100×50 mm rectangle by 10 mm
+MATRIX {"area":"GEOMETRY","id":"E-G03","scenario":"per-edge allowance (25 mm hem) on the synthetic pocket and body","expected":"pocket cut 220×215; body cut height 735","actual":"220×215 · body 735","verdict":"PASS"}
+PASS E-G03 per-edge allowance (25 mm hem) on the synthetic pocket and body
+MATRIX {"area":"GEOMETRY","id":"E-G04","scenario":"SVG is 1:1 millimetres","expected":"width/height in mm equal the viewBox; 3 CUT + 3 SEW paths; cut-ready false","actual":"1717.346mm×765mm vb 1717.346×765","verdict":"PASS"}
+PASS E-G04 SVG is 1:1 millimetres
+MATRIX {"area":"GEOMETRY","id":"E-G05","scenario":"DXF (R12) parsed independently: mm units, closed outlines, exact vertices","expected":"$INSUNITS 4; 3 closed CUT + 3 closed SEW; pocket CUT bbox 220×215","actual":"units=4 CUT=3 SEW=3 pocket 220×215","verdict":"PASS"}
+PASS E-G05 DXF (R12) parsed independently: mm units, closed outlines, exact vertices
+MATRIX {"area":"GEOMETRY","id":"E-G06","scenario":"geometry manifest never claims cut-ready","expected":"cutReady false; source SYNTHETIC_FULLY_SPECIFIED","actual":"false SYNTHETIC_FULLY_SPECIFIED","verdict":"PASS"}
+PASS E-G06 geometry manifest never claims cut-ready
+AI_TP_W01_ENGINE_DONE
